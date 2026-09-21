@@ -1,0 +1,17 @@
+### State of the player's daily question.
+class: DailyQuiz
+fields:
+  ### Null when already answered today or when no question is available.
+  question: QuizQuestion?
+  saint: SaintInfo?
+  answeredToday: bool
+  ### Result of today's answer, when answered.
+  wasCorrect: bool?
+  correctIndex: int?
+  chosenIndex: int?
+  streak: int
+  bestStreak: int
+  totalAnswered: int
+  totalCorrect: int
+  ### Why there is no question, when [question] is null and not answered.
+  unavailableReason: String?

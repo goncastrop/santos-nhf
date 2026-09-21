@@ -1,0 +1,13 @@
+### The current user's collection state.
+class: CollectionOverview
+fields:
+  ### Number of published saints in the catalog.
+  totalPublished: int
+  ### All cards the user owns, newest first.
+  cards: List<CollectedCard>
+  ### Cards granted in this very call as the starter pack (empty afterwards).
+  newStarterCards: List<CollectedCard>
+  ### Whether the daily card can still be claimed today.
+  canClaimToday: bool
+  ### The card claimed today, if any.
+  todayCard: CollectedCard?

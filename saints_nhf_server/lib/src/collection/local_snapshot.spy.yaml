@@ -1,0 +1,10 @@
+### Everything the app needs to open without network. Stored on the device
+### by the Flutter app after each successful load; never sent to the server.
+class: LocalSnapshot
+fields:
+  catalog: List<SaintInfo>
+  overview: CollectionOverview?
+  profile: MyProfile?
+  quiz: DailyQuiz?
+  patchNotes: List<PatchNoteEntry>
+  savedAt: DateTime

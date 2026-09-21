@@ -1,0 +1,5 @@
+### Whether the current user has admin access.
+class: AdminAccess
+fields:
+  isAdmin: bool
+  email: String?

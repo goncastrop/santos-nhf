@@ -1,0 +1,7 @@
+### A published score change, shown to players as "notas del parche".
+class: PatchNoteEntry
+fields:
+  saint: SaintInfo
+  note: String?
+  changedAt: DateTime
+  changes: List<ScoreChange>

@@ -1,0 +1,9 @@
+enum: CollectionErrorCode
+values:
+  - alreadyClaimedToday
+  - noCardsLeft
+  - saintNotFound
+  - invalidCode
+  - codeAlreadyUsed
+  - codeExhausted
+  - codeExpired

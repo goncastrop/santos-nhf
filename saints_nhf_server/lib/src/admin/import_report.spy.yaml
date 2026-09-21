@@ -1,0 +1,11 @@
+### Result of a CSV import (or of its preview when not applied).
+class: ImportReport
+fields:
+  applied: bool
+  created: int
+  updated: int
+  unchanged: int
+  ### Human-readable list of what changed, one line per row.
+  changes: List<String>
+  ### Rows that could not be imported, with the line number.
+  errors: List<String>

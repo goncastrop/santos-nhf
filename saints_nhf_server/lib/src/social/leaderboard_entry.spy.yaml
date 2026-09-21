@@ -1,0 +1,7 @@
+class: LeaderboardEntry
+fields:
+  authUserId: UuidValue
+  displayName: String
+  value: int
+  isMe: bool
+  isFriend: bool

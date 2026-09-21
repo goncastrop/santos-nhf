@@ -1,0 +1,11 @@
+### What the caller has to do next in a duel.
+enum: DuelPhase
+values:
+  - chooseDeck
+  - waitingOpponentDeck
+  - attack
+  - defend
+  - answer
+  - waitingOpponent
+  - finished
+  - declined

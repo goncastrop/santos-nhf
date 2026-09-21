@@ -1,0 +1,6 @@
+### How a card entered a user's collection.
+enum: CardSource
+values:
+  - starter
+  - daily
+  - code

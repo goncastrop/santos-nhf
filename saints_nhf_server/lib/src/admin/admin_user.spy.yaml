@@ -1,0 +1,5 @@
+### A user with admin access.
+class: AdminUser
+fields:
+  authUserId: UuidValue
+  email: String?

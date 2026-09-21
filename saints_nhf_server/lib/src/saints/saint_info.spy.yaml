@@ -1,0 +1,26 @@
+### Public information about a saint: everything except the card scores.
+class: SaintInfo
+fields:
+  id: int
+  name: String
+  slug: String
+  title: String?
+  titles: List<SaintTitle>?
+  feastMonth: int?
+  feastDay: int?
+  birthYear: int?
+  birthApprox: bool
+  deathYear: int?
+  deathApprox: bool
+  birthPlace: String?
+  birthLat: double?
+  birthLng: double?
+  deathPlace: String?
+  deathLat: double?
+  deathLng: double?
+  bio: String
+  prayer: String?
+  illustrationUrl: String?
+  season: int?
+  episode: int?
+  youtubeUrl: String?

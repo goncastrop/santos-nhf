@@ -1,0 +1,6 @@
+### Global rankings.
+class: Leaderboard
+fields:
+  byCards: List<LeaderboardEntry>
+  byStreak: List<LeaderboardEntry>
+  byDuelsWon: List<LeaderboardEntry>

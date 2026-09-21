@@ -1,0 +1,23 @@
+### A book recommended on a saint's page: either one they wrote or one written
+### about them. Public, like the rest of the saint's content.
+class: SaintBook
+table: saint_book
+fields:
+  saintId: int, relation(parent=saint, onDelete=Cascade)
+  title: String
+  ### Author, e.g. "Marcelle Auclair". Empty for the saint's own works.
+  author: String?
+  kind: BookKind
+  ### Year of writing or of the edition recommended.
+  year: int?
+  publisher: String?
+  ### Why it is worth reading, one or two sentences.
+  note: String?
+  ### Where to read or get it.
+  url: String?
+  ### Order within its group, lowest first.
+  position: int, default=0
+  createdAt: DateTime, default=now
+indexes:
+  saint_book_saint_idx:
+    fields: saintId

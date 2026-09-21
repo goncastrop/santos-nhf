@@ -1,0 +1,15 @@
+### Snapshot of a saint before an admin change, so edits can be reviewed and undone.
+class: SaintRevision
+table: saint_revision
+fields:
+  saintId: int, relation(parent=saint, onDelete=Cascade)
+  ### JSON encoding of the [Saint] as it was before the change.
+  snapshotJson: String
+  ### Admin note describing the change that replaced this snapshot.
+  note: String?
+  changedByEmail: String?
+  changedByAuthUserId: UuidValue?
+  createdAt: DateTime, default=now
+indexes:
+  saint_revision_saint_idx:
+    fields: saintId

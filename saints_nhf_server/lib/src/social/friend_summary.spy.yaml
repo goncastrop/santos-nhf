@@ -1,0 +1,10 @@
+### A friend as shown in the friends list.
+class: FriendSummary
+fields:
+  authUserId: UuidValue
+  displayName: String
+  cards: int
+  streak: int
+  bestStreak: int
+  duelsWon: int
+  since: DateTime

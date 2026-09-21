@@ -1,0 +1,13 @@
+### A multiple-choice question about a saint. Only admins see [correctIndex].
+class: Question
+table: question
+fields:
+  saintId: int, relation(parent=saint, onDelete=Cascade)
+  prompt: String
+  ### Exactly four options.
+  options: List<String>
+  correctIndex: int
+  createdAt: DateTime, default=now
+indexes:
+  question_saint_idx:
+    fields: saintId

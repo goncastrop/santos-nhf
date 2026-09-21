@@ -1,0 +1,7 @@
+### A saint card owned by the current user, with its scores revealed.
+class: CollectedCard
+fields:
+  saint: SaintInfo
+  scores: SaintScores
+  obtainedAt: DateTime
+  source: CardSource

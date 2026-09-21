@@ -1,0 +1,11 @@
+### Who redeemed which code, so each player redeems a code once.
+class: UnlockRedemption
+table: unlock_redemption
+fields:
+  codeId: int, relation(parent=unlock_code, onDelete=Cascade)
+  authUserId: UuidValue
+  createdAt: DateTime, default=now
+indexes:
+  unlock_redemption_unique_idx:
+    fields: codeId, authUserId
+    unique: true

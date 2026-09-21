@@ -1,0 +1,28 @@
+### Full state of a duel from the caller's point of view.
+class: DuelView
+fields:
+  duelId: int
+  status: DuelStatus
+  isVsMachine: bool
+  phase: DuelPhase
+  roundNumber: int
+  myScore: int
+  opponentScore: int
+  opponentName: String
+  opponentId: UuidValue
+  ### My remaining cards, with scores.
+  myDeck: List<CollectedCard>
+  ### Whether I still have to pick my deck.
+  opponentCardsLeft: int
+  usedCategories: List<ScoreCategory>
+  ### Category of the round in progress, when defending or answering.
+  currentCategory: ScoreCategory?
+  attackerIsMe: bool
+  ### Set when [phase] is answer.
+  pendingQuestion: QuizQuestion?
+  pendingSaint: SaintInfo?
+  rounds: List<DuelRoundView>
+  ### True/false when finished with a winner; null on a draw or unfinished.
+  winnerIsMe: bool?
+  pointsToWin: int
+  updatedAt: DateTime

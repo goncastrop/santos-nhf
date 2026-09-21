@@ -1,0 +1,12 @@
+### The five cards a player brings to a duel.
+class: DuelDeck
+table: duel_deck
+fields:
+  duelId: int, relation(parent=duel, onDelete=Cascade)
+  playerId: UuidValue
+  saintIds: List<int>
+  usedSaintIds: List<int>
+indexes:
+  duel_deck_unique_idx:
+    fields: duelId, playerId
+    unique: true

@@ -1,0 +1,4 @@
+### Thrown by admin endpoints on invalid input.
+exception: AdminException
+fields:
+  message: String

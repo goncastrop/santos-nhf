@@ -1,0 +1,3 @@
+exception: QuizException
+fields:
+  message: String

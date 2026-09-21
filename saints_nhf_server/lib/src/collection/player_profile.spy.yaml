@@ -1,0 +1,36 @@
+### Per-user game state.
+class: PlayerProfile
+table: player_profile
+fields:
+  authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  ### Calendar day (yyyy-MM-dd, Argentina time) of the last daily claim.
+  lastDailyClaimDay: String?
+  starterGranted: bool, default=false
+  ### Public name shown to friends and in rankings.
+  displayName: String?
+  ### Code friends use to add this player.
+  friendCode: String?
+  ### Daily quiz: current question and stats.
+  quizDay: String?
+  quizQuestionId: int?
+  quizChosenIndex: int?
+  quizAnswered: bool, default=false
+  ### Day of the last correct daily answer, to continue the streak.
+  lastCorrectDay: String?
+  streak: int, default=0
+  bestStreak: int, default=0
+  totalAnswered: int, default=0
+  totalCorrect: int, default=0
+  ### Cards dealt for the next duel deck; the deck must come from here.
+  pendingHand: List<int>?
+  ### Duel stats.
+  duelsWon: int, default=0
+  duelsPlayed: int, default=0
+  createdAt: DateTime, default=now
+indexes:
+  player_profile_auth_user_idx:
+    fields: authUserId
+    unique: true
+  player_profile_friend_code_idx:
+    fields: friendCode
+    unique: true

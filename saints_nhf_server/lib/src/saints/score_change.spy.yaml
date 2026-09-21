@@ -1,0 +1,8 @@
+### A score change in one category. Values are only sent when the caller owns
+### the card; otherwise only the direction is revealed.
+class: ScoreChange
+fields:
+  category: ScoreCategory
+  increased: bool
+  from: int?
+  to: int?

@@ -1,0 +1,5 @@
+### Publication state of a saint. Drafts are only visible to admins.
+enum: SaintStatus
+values:
+  - draft
+  - published

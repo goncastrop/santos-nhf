@@ -1,0 +1,61 @@
+### A saint of the "santo del día" section, with the six card scores.
+### Only returned to admins; public clients receive [SaintInfo] and, once the
+### card is in their collection, [SaintScores].
+class: Saint
+table: saint
+fields:
+  ### Display name, e.g. "San Francisco de Asís".
+  name: String
+  ### URL-friendly unique identifier, e.g. "san-francisco-de-asis".
+  slug: String, unique
+  ### Short descriptor shown under the name, e.g. "Fundador de los franciscanos".
+  title: String?
+  ### Liturgical titles, e.g. virgen y doctora. Null is read as empty.
+  titles: List<SaintTitle>?
+  ### Feast day (liturgical memorial) month 1-12 and day 1-31.
+  feastMonth: int?
+  feastDay: int?
+  ### Years of birth and death, for the timeline. Negative is BC. Many old
+  ### dates are only approximate, and the flags make them read "c. 1181".
+  birthYear: int?
+  birthApprox: bool, default=false
+  deathYear: int?
+  deathApprox: bool, default=false
+  ### Where they were born and where they died, for the map. The name is kept
+  ### apart from the coordinates because many were born in cities or kingdoms
+  ### that no longer exist: "Tagaste, Numidia" is the honest label for a point
+  ### that today falls in Algeria.
+  birthPlace: String?
+  birthLat: double?
+  birthLng: double?
+  deathPlace: String?
+  deathLat: double?
+  deathLng: double?
+  ### Biography in Markdown-ish plain text.
+  bio: String, default=''
+  ### A prayer to or by the saint.
+  prayer: String?
+  ### Path of the illustration in the public cloud storage.
+  illustrationPath: String?
+  ### NHF season and episode where the saint was presented.
+  season: int?
+  episode: int?
+  ### Link to the stream fragment (YouTube URL with timestamp).
+  youtubeUrl: String?
+  status: SaintStatus, default=draft
+  ### The six card scores (0-99).
+  catequesis: int, default=50
+  escritos: int, default=50
+  oracion: int, default=50
+  patronazgos: int, default=50
+  evangelizacion: int, default=50
+  viajes: int, default=50
+  createdAt: DateTime, default=now
+  updatedAt: DateTime, default=now
+indexes:
+  saint_status_idx:
+    fields: status
+  saint_feast_idx:
+    fields: feastMonth, feastDay
+  saint_death_year_idx:
+    fields: deathYear

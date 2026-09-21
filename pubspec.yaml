@@ -1,0 +1,11 @@
+name: _
+publish_to: none
+
+environment:
+  sdk: '^3.12.2'
+
+workspace:
+  - saints_nhf_client
+  - saints_nhf_server
+  - saints_nhf_flutter
+

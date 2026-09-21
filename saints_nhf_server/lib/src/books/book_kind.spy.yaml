@@ -1,0 +1,12 @@
+### What a recommended book is, in relation to the saint. Ordered so that the
+### saint's own writings come first: the ficha groups the first three under
+### "escritos del santo" and the rest under "libros sobre él".
+enum: BookKind
+values:
+  - obra
+  - autobiografia
+  - compilado
+  - biografia
+  - estudio
+  - novela
+  - infantil

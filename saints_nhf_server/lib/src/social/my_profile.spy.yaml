@@ -1,0 +1,11 @@
+### The caller's public identity and stats.
+class: MyProfile
+fields:
+  authUserId: UuidValue
+  displayName: String
+  friendCode: String
+  cards: int
+  streak: int
+  bestStreak: int
+  duelsWon: int
+  duelsPlayed: int

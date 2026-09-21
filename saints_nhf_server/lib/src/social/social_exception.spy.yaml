@@ -1,0 +1,3 @@
+exception: SocialException
+fields:
+  message: String

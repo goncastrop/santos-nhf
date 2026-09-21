@@ -1,0 +1,13 @@
+### Two players who added each other. Stored once, with the lower uuid first.
+class: Friendship
+table: friendship
+fields:
+  playerA: UuidValue
+  playerB: UuidValue
+  createdAt: DateTime, default=now
+indexes:
+  friendship_unique_idx:
+    fields: playerA, playerB
+    unique: true
+  friendship_b_idx:
+    fields: playerB

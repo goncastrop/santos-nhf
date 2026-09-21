@@ -1,0 +1,9 @@
+### The six card scores of a saint (0-99).
+class: SaintScores
+fields:
+  catequesis: int
+  escritos: int
+  oracion: int
+  patronazgos: int
+  evangelizacion: int
+  viajes: int

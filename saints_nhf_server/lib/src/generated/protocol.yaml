@@ -1,0 +1,83 @@
+adminAccess:
+  - myAccess:
+  - requestAccess:
+adminBook:
+  - listFor:
+  - counts:
+  - save:
+  - delete:
+  - reorder:
+adminCatalog:
+  - exportSaintsCsv:
+  - exportQuestionsCsv:
+  - exportBooksCsv:
+  - importSaintsCsv:
+  - importQuestionsCsv:
+  - importBooksCsv:
+adminCodes:
+  - list:
+  - create:
+  - setActive:
+  - delete:
+adminQuestion:
+  - listFor:
+  - counts:
+  - save:
+  - delete:
+adminSaint:
+  - listAll:
+  - get:
+  - illustrationUrl:
+  - save:
+  - delete:
+  - revisions:
+  - revisionSnapshot:
+  - restore:
+  - uploadIllustration:
+adminUsers:
+  - listAdmins:
+  - grantAdmin:
+  - revokeAdmin:
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+  - hasAccount:
+jwtRefresh:
+  - refreshAccessToken:
+collection:
+  - overview:
+  - claimDaily:
+  - redeem:
+duel:
+  - eligibleSaintIds:
+  - dealHand:
+  - createVsMachine:
+  - challenge:
+  - accept:
+  - decline:
+  - myDuels:
+  - view:
+  - attack:
+  - defend:
+  - answer:
+quiz:
+  - today:
+  - answer:
+saint:
+  - list:
+  - detail:
+  - recentChanges:
+friends:
+  - me:
+  - setDisplayName:
+  - addByCode:
+  - list:
+  - remove:
+  - collectionOf:
+leaderboard:
+  - top:

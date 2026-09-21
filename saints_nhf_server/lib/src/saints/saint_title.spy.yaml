@@ -1,0 +1,19 @@
+### Liturgical titles a saint is presented with, e.g. "virgen y mártir".
+### Ordered by how distinctive they are: the first one a saint has is the one
+### shown on the card emblem.
+enum: SaintTitle
+values:
+  - doctor
+  - apostol
+  - evangelista
+  - papa
+  - obispo
+  - presbitero
+  - diacono
+  - martir
+  - virgen
+  - fundador
+  - religioso
+  - misionero
+  - confesor
+  - laico

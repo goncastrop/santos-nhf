@@ -1,0 +1,12 @@
+### A saint card in a user's collection.
+class: UserSaintCard
+table: user_saint_card
+fields:
+  authUserId: UuidValue
+  saint: Saint?, relation(onDelete=Cascade)
+  source: CardSource
+  obtainedAt: DateTime, default=now
+indexes:
+  user_saint_card_unique_idx:
+    fields: authUserId, saintId
+    unique: true

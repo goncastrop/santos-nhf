@@ -1,0 +1,14 @@
+### A code handed out during the stream that unlocks a card.
+class: UnlockCode
+table: unlock_code
+fields:
+  code: String, unique
+  ### Null grants a random card the player is missing.
+  saintId: int?, relation(parent=saint, onDelete=Cascade)
+  ### Null means unlimited.
+  maxUses: int?
+  uses: int, default=0
+  expiresAt: DateTime?
+  active: bool, default=true
+  note: String?
+  createdAt: DateTime, default=now

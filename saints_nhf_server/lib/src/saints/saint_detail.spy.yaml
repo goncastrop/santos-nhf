@@ -1,0 +1,7 @@
+### A saint's public info plus the card, when the current user owns it.
+class: SaintDetail
+fields:
+  saint: SaintInfo
+  card: CollectedCard?
+  ### Recommended reading, already ordered for display.
+  books: List<SaintBook>

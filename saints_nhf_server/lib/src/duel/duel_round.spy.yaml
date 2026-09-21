@@ -1,0 +1,27 @@
+### One round of a duel: attacker and defender each play a card and answer a
+### question about it.
+class: DuelRound
+table: duel_round
+fields:
+  duelId: int, relation(parent=duel, onDelete=Cascade)
+  roundNumber: int
+  category: ScoreCategory
+  attackerId: UuidValue
+  defenderId: UuidValue
+  attackerSaintId: int
+  attackerQuestionId: int?
+  attackerAnswerIndex: int?
+  attackerCorrect: bool?
+  defenderSaintId: int?
+  defenderQuestionId: int?
+  defenderAnswerIndex: int?
+  defenderCorrect: bool?
+  attackerScore: int?
+  defenderScore: int?
+  pointTo: UuidValue?
+  resolved: bool, default=false
+  createdAt: DateTime, default=now
+indexes:
+  duel_round_unique_idx:
+    fields: duelId, roundNumber
+    unique: true

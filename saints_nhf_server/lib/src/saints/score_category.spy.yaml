@@ -1,0 +1,9 @@
+### One of the six card categories.
+enum: ScoreCategory
+values:
+  - catequesis
+  - escritos
+  - oracion
+  - patronazgos
+  - evangelizacion
+  - viajes

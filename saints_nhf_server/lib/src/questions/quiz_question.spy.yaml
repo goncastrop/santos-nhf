@@ -1,0 +1,7 @@
+### A question as shown to players: no correct answer included.
+class: QuizQuestion
+fields:
+  id: int
+  saintId: int
+  prompt: String
+  options: List<String>

@@ -1,0 +1,25 @@
+### A duel between two players (or a player and the machine).
+class: Duel
+table: duel
+fields:
+  challengerId: UuidValue
+  opponentId: UuidValue
+  isVsMachine: bool, default=false
+  status: DuelStatus, default=pendingDeck
+  roundNumber: int, default=1
+  ### Attacker of the current round.
+  attackerId: UuidValue?
+  ### Player who has to act now. Null when finished.
+  turnOf: UuidValue?
+  challengerScore: int, default=0
+  opponentScore: int, default=0
+  ### Null while unfinished, and on a draw.
+  winnerId: UuidValue?
+  createdAt: DateTime, default=now
+  updatedAt: DateTime, default=now
+  finishedAt: DateTime?
+indexes:
+  duel_challenger_idx:
+    fields: challengerId
+  duel_opponent_idx:
+    fields: opponentId

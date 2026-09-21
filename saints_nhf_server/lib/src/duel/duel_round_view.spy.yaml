@@ -1,0 +1,16 @@
+### A round as seen by one of the players. The opponent's card is only
+### revealed once the round is resolved.
+class: DuelRoundView
+fields:
+  roundNumber: int
+  category: ScoreCategory
+  attackerIsMe: bool
+  resolved: bool
+  mySaint: SaintInfo?
+  myScore: int?
+  myCorrect: bool?
+  opponentSaint: SaintInfo?
+  opponentScore: int?
+  opponentCorrect: bool?
+  ### True: I got the point. False: the opponent did. Null: nobody.
+  pointToMe: bool?

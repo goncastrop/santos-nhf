@@ -1,0 +1,12 @@
+### A duel in the player's list.
+class: DuelSummary
+fields:
+  duelId: int
+  status: DuelStatus
+  isVsMachine: bool
+  opponentName: String
+  myScore: int
+  opponentScore: int
+  isMyTurn: bool
+  winnerIsMe: bool?
+  updatedAt: DateTime

@@ -1,0 +1,6 @@
+### Result of claiming the daily card.
+class: DailyClaimResult
+fields:
+  card: CollectedCard
+  ### True when the card is the saint whose feast is today.
+  isFeastDay: bool

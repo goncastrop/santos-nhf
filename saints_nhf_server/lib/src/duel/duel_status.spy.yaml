@@ -1,0 +1,7 @@
+enum: DuelStatus
+values:
+  ### Waiting for the opponent to accept and pick a deck.
+  - pendingDeck
+  - active
+  - finished
+  - declined

@@ -1,0 +1,6 @@
+### A friend's collection: saints only, scores stay hidden unless the caller
+### also owns the card (the client resolves that).
+class: FriendCollection
+fields:
+  friend: FriendSummary
+  saints: List<SaintInfo>

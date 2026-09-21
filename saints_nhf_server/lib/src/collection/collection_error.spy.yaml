@@ -1,0 +1,5 @@
+### Thrown by the collection endpoint when a claim is not possible.
+exception: CollectionException
+fields:
+  message: String
+  code: CollectionErrorCode
