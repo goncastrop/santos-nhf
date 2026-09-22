@@ -77,10 +77,17 @@ por los endpoints admin. El catálogo público nunca los incluye.
   y `home_shell` muestra el aviso. Las ilustraciones usan `cached_network_image`.
 - Al agregar un plugin de Flutter nuevo, la app web no lo registra hasta que `serverpod start`
   relanza el proceso de Flutter (un `hot_restart` no alcanza): si un plugin falla en silencio,
-  esperar el relanzamiento o usar `spawn_flutter_app`.
+  esperar el relanzamiento o usar `spawn_flutter_app`. Hoy los plugins son `share_plus`
+  (compartir la tarjeta), `file_selector` y `file_saver` (CSV), `image_picker`,
+  `url_launcher`, `shared_preferences` y `cached_network_image`.
 - `widgets/saint_card.dart`: la tarjeta se dibuja en Flutter a partir de la ilustración y
   los puntajes (`SaintCard`), con dorso (`SaintCardBack`) y animación de giro (`FlipCard`).
   Con `scores == null` se muestra bloqueada en gris.
+- `widgets/share_card.dart`: la tarjeta como imagen para redes. `ShareCardImage` es el lienzo
+  fijo de 1080 × 1350 (`shareImageSize`), `captureShareCard` lo dibuja en el overlay fuera de
+  la pantalla y saca el PNG con `RepaintBoundary.toImage` (fuera del overlay no se pinta y no
+  hay foto), y `ShareCardButton` lo pasa a `share_plus`. El botón sale en la ficha solo para
+  las cartas que ya tenés.
 - `utils/world.dart` + `assets/world.json`: los contornos del mundo (Natural Earth, dominio
   público) y la proyección Web Mercator. El mapa no usa ningún servicio de teselas: se dibuja
   con un `CustomPainter`, así que anda sin conexión y no hay clave ni cuota. El `LEEME.md` del
@@ -114,9 +121,23 @@ por los endpoints admin. El catálogo público nunca los incluye.
 - `state/app_state.dart` vigila el cambio de día argentino (`watchDayChange` con un Timer hasta la
   medianoche y `checkDayChange` al volver del segundo plano) y recarga: la carta del día y la
   pregunta diaria son por día. `today_screen` además olvida la carta reclamada ayer.
+- `widgets/common.dart`: además de los ladrillos compartidos (`Eyebrow`, `Ornament`, `InfoChip`,
+  `ErrorView`, `showMessage`), `openLink` abre un link afuera de la app y, si el navegador lo
+  bloquea por popup, lo copia al portapapeles.
 - `widgets/waiting_view.dart`: pantalla de espera con un santo para leer, usada al crear un duelo.
 - `widgets/card_reveal.dart`: animación de carta nueva (`CardReveal`), usada en Hoy y en el
   mazo inicial. `credits.dart`: datos de la pantalla de créditos, para editar a mano.
+- `help_content.dart` y `holiness.dart`: el contenido de la ayuda, también para editar a mano.
+  El primero tiene un capítulo por pestaña (`HelpChapter`, con `HelpSection.ofTab` para abrir la
+  guía donde estaba el lector) y las preguntas frecuentes; el segundo, los conceptos sobre la
+  santidad (`HolinessTopic`) con su cita textual, la referencia y el link a vatican.va, más
+  `topicOfTheDay` para el que se muestra en Hoy. Lo que afirman tiene que ser verdad en el
+  código: si cambia una regla del juego, cambian estos archivos.
+- `screens/guide_screen.dart` (la guía "Cómo funciona", con los capítulos plegables) y
+  `screens/welcome_screen.dart` (la bienvenida de la primera vez, que `home_shell` muestra una
+  sola vez según la marca de `LocalCache.welcomeSeen`). Las dos se abren también desde Perfil, y
+  la guía desde el signo de pregunta de la barra de arriba. `widgets/holiness_card.dart` es la
+  cita del día en la pestaña Hoy.
 - `church_events.dart`: los concilios ecuménicos y los hechos grandes de la Iglesia
   (`ChurchEvent`, lista `churchEvents`), también para editar a mano. La línea de tiempo los
   dibuja de fondo; `churchEventsBetween` deja solo los que caen dentro de los años que cubren

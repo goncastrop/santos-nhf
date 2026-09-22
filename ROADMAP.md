@@ -90,6 +90,22 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
   Los datos se editan en `saints_nhf_flutter/lib/credits.dart`.
 - [x] Animación al obtener una carta nueva (carta del día, código y mazo inicial): la carta
   se eleva con un halo dorado, gira, estalla en chispas, la cruza un destello y se asienta.
+- [x] **Compartir la tarjeta como imagen.** En la ficha de un santo que ya tenés, el botón
+  "Compartir la tarjeta" arma un PNG de 1080 × 1350 (4:5, la proporción que las redes muestran
+  entera) con la misma tarjeta que dibuja la app, agrandada, sobre el fondo de capilla, con
+  "El santo del día" arriba y el nombre del programa abajo. El lienzo es de tamaño fijo y no
+  de la pantalla: la imagen que sale de un teléfono chico es igual a la que sale de una tablet.
+  Se dibuja fuera de la pantalla en el overlay —un `Offstage` no pinta y no habría nada que
+  fotografiar—, se espera a que la ilustración termine su fundido y se saca la foto con
+  `RepaintBoundary.toImage`. Después va al menú de compartir del sistema (`share_plus`).
+
+  En la web casi ninguna computadora puede compartir archivos —la Web Share API no está, o
+  `canShare` dice que no—, así que ahí bajamos la imagen con `file_saver` y lo decimos:
+  "te descargamos la imagen; desde el celular el botón abre el menú para compartir". No se usa
+  el plan B del plugin, que mete la imagen entera dentro de la URL de un ancla: con una tarjeta
+  de 1080 × 1350 eso es un megabyte o más de URL, y algunos navegadores lo rechazan tirando un
+  error (era el cartel rojo que aparecía al compartir desde el navegador). Solo para las
+  cartas que están en tu álbum: la tarjeta con sus puntajes es lo que hay para mostrar.
 
 ## Cuentas e ingreso
 
@@ -227,6 +243,32 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
   sin tener que cambiar de modo. Hay botones de +, − y "ver todo el mundo", porque con mouse no
   hay forma obvia de hacer zoom.
 
+## Explicar la app, y por qué los santos
+
+- [x] **Bienvenida la primera vez.** Al abrir la app por primera vez en un dispositivo, cuatro
+  pantallas que contestan lo que nos preguntan antes de que lo pregunten: qué es esto, cómo se
+  consiguen las cartas, qué se hace con ellas, y por qué los santos. Se puede saltear, y se
+  vuelve a ver desde Perfil. Se marca como vista al mostrarla, no al terminarla: el que la
+  saltea tampoco quiere verla de nuevo. La marca vive en el dispositivo
+  (`shared_preferences`), aparte de la foto de los datos, así cerrar sesión no la reinicia.
+- [x] **Guía "Cómo funciona".** Un signo de pregunta en la barra de arriba, en todas las
+  pestañas. Abre la guía **en la sección de la pestaña donde estaba el lector**: el que
+  pregunta desde Jugar quiere leer sobre Jugar, no el índice entero. Un capítulo por pestaña,
+  uno de "Por qué los santos" y las preguntas frecuentes; todos plegables. Las preguntas son
+  las que nos hicieron de verdad —cómo se consiguen, si se repiten, si se cambian, qué pasa si
+  un día no entro— y las respuestas dicen lo que el código hace hoy: no hay repetidas porque la
+  carta del día sale siempre entre las que faltan, no hay intercambio, y en los duelos no se
+  ponen en juego las cartas.
+- [x] **Conceptos sobre la santidad, con la fuente oficial.** Seis temas —el llamado universal,
+  "también para vos", los santos de la puerta de al lado, la comunión de los santos, por qué se
+  les pide a ellos y para qué los canoniza la Iglesia—, cada uno explicado en la voz del
+  programa y anclado en una cita corta del Catecismo, de Lumen gentium (a través del Catecismo)
+  o de Gaudete et exsultate, con la referencia y el link al documento en vatican.va. Las citas
+  están copiadas de vatican.va, no de memoria. Además, la pestaña Hoy muestra el tema del día,
+  que rota solo con el día y es el mismo para todos, y lleva a la guía.
+  El contenido vive en `saints_nhf_flutter/lib/holiness.dart` y `lib/help_content.dart`, para
+  editar a mano como los créditos.
+
 ## Reglas del duelo, tal como quedaron implementadas
 
 - La app reparte 8 cartas al azar del álbum (con preguntas cargadas) y el jugador elige 5.
@@ -243,5 +285,4 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
 
 - Que los libros de la ficha se puedan filtrar por categoría cuando un santo tenga muchos.
 - Sección de oraciones generales y oración del día.
-- Compartir la tarjeta como imagen en redes.
 - Ediciones especiales de tarjetas.

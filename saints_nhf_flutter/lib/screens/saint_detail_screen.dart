@@ -14,6 +14,7 @@ import '../utils/years.dart';
 import '../widgets/common.dart';
 import '../widgets/saint_card.dart';
 import '../widgets/saint_illustration.dart';
+import '../widgets/share_card.dart';
 
 /// Full page of a saint: illustration, card, life, prayer and stream link.
 class SaintDetailScreen extends StatefulWidget {
@@ -89,33 +90,6 @@ class _DetailBody extends StatelessWidget {
   const _DetailBody({required this.detail});
 
   final SaintDetail detail;
-
-  Future<void> _openStream(BuildContext context, String url) async {
-    final uri = Uri.tryParse(url.trim());
-    if (uri == null || !uri.hasScheme) {
-      showMessage(context, 'El link del programa no es válido.', error: true);
-      return;
-    }
-    // On the web a new tab is the right target; browsers may block it if
-    // they consider it a popup, so we fall back to copying the link.
-    final opened = await launchUrl(
-      uri,
-      mode: kIsWeb
-          ? LaunchMode.platformDefault
-          : LaunchMode.externalApplication,
-      webOnlyWindowName: '_blank',
-    );
-    if (!opened && context.mounted) {
-      await Clipboard.setData(ClipboardData(text: uri.toString()));
-      if (!context.mounted) return;
-      showMessage(
-        context,
-        'No pudimos abrir YouTube. Copiamos el link para que lo pegues en el '
-        'navegador.',
-        error: true,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +198,7 @@ class _DetailBody extends StatelessWidget {
                           color: Palette.parchmentDim,
                         ),
                       )
-                    else
+                    else ...[
                       Text(
                         'En tu álbum desde el '
                         '${dateTimeShort(card.obtainedAt).split(',').first}',
@@ -232,13 +206,19 @@ class _DetailBody extends StatelessWidget {
                           color: Palette.parchmentDim,
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      // Solo las que ya tenés: la carta con sus puntajes es
+                      // lo que hay para mostrar.
+                      ShareCardButton(saint: saint, scores: card.scores),
+                    ],
                   ],
                 ),
               ),
               const SizedBox(height: 32),
               if (saint.youtubeUrl != null) ...[
                 FilledButton.icon(
-                  onPressed: () => _openStream(context, saint.youtubeUrl!),
+                  onPressed: () =>
+                      openLink(context, saint.youtubeUrl!, what: 'YouTube'),
                   icon: const Icon(Icons.play_circle_outline_rounded),
                   label: const Text('VER EN EL PROGRAMA'),
                 ),

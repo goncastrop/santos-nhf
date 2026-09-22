@@ -9,6 +9,8 @@ import 'admin/admin_catalog_screen.dart';
 import 'admin/admin_codes_screen.dart';
 import 'admin/admin_saints_screen.dart';
 import 'credits_screen.dart';
+import 'guide_screen.dart';
+import 'welcome_screen.dart';
 import 'admin/admin_users_screen.dart';
 
 /// Account info, sign-out and the door to the admin panel.
@@ -187,6 +189,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
           const SizedBox(height: 24),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.help_outline_rounded,
+                    color: Palette.gold,
+                  ),
+                  title: const Text('Cómo funciona'),
+                  subtitle: const Text(
+                    'Qué hace cada pestaña, por qué los santos y las '
+                    'preguntas frecuentes',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => GuideScreen.open(context),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(
+                    Icons.waving_hand_outlined,
+                    color: Palette.gold,
+                  ),
+                  title: const Text('Ver la bienvenida de nuevo'),
+                  subtitle: const Text('La presentación de la primera vez'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => WelcomeScreen.open(context),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           Card(
             child: ListTile(
               leading: const Icon(

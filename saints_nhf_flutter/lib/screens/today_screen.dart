@@ -7,6 +7,7 @@ import '../utils/feast.dart';
 import '../widgets/card_reveal.dart';
 import '../widgets/common.dart';
 import '../widgets/daily_quiz_card.dart';
+import '../widgets/holiness_card.dart';
 import '../widgets/patch_notes.dart';
 import '../widgets/saint_card.dart';
 import 'saint_detail_screen.dart';
@@ -169,6 +170,8 @@ class _TodayScreenState extends State<TodayScreen> {
           ),
           const SizedBox(height: 24),
           const DailyQuizCard(),
+          const SizedBox(height: 24),
+          HolinessCard(day: state.day),
           const SizedBox(height: 24),
           if (overview.cards.isNotEmpty) ...[
             const Eyebrow('Últimas cartas'),

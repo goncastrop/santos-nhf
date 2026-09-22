@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../help_content.dart';
 import '../state/app_state.dart';
+import '../state/local_cache.dart';
 import '../theme.dart';
 import '../utils/feast.dart';
 import '../widgets/common.dart';
 import 'album_screen.dart';
 import 'explore_screen.dart';
+import 'guide_screen.dart';
 import 'friends/friends_screen.dart';
 import 'play/play_screen.dart';
 import 'profile_screen.dart';
 import 'sign_in_screen.dart';
 import '../widgets/account_gate.dart';
 import 'today_screen.dart';
+import 'welcome_screen.dart';
 
 /// Bottom-navigation shell shown once the user is signed in.
 class HomeShell extends StatefulWidget {
@@ -33,7 +37,19 @@ class _HomeShellState extends State<HomeShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = AppState.of(context);
       if (state.catalog == null && !state.loading) state.loadAll();
+      _maybeWelcome();
     });
+  }
+
+  /// La primera vez que se abre la app en este dispositivo, la bienvenida.
+  /// Se marca como vista al mostrarla y no al terminarla: el que la saltea
+  /// tampoco quiere verla de nuevo.
+  Future<void> _maybeWelcome() async {
+    final cache = LocalCache();
+    if (await cache.welcomeSeen()) return;
+    await cache.markWelcomeSeen();
+    if (!mounted) return;
+    await WelcomeScreen.open(context);
   }
 
   @override
@@ -48,6 +64,13 @@ class _HomeShellState extends State<HomeShell> {
       appBar: AppBar(
         title: Text(_titles[_index].toUpperCase()),
         actions: [
+          IconButton(
+            tooltip: 'Cómo funciona',
+            icon: const Icon(Icons.help_outline_rounded, color: Palette.gold),
+            // Abre en la sección de la pestaña donde está parado el lector.
+            onPressed: () =>
+                GuideScreen.open(context, section: HelpSection.ofTab(_index)),
+          ),
           if (!state.signedIn)
             TextButton(
               onPressed: () => SignInScreen.open(context),

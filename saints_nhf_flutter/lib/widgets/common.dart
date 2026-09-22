@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:saints_nhf_client/saints_nhf_client.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../theme.dart';
 
@@ -122,6 +125,38 @@ String friendlyError(Object error) => switch (error) {
   ServerpodClientForbidden() => 'No tenés permisos para hacer esto.',
   _ => 'No pudimos conectarnos con el servidor. Probá de nuevo.',
 };
+
+/// Abre un link afuera de la app.
+///
+/// En la web el destino es una pestaña nueva, y el navegador puede
+/// bloquearla por creerla un popup; entonces copiamos el link para que se
+/// pueda pegar a mano.
+Future<void> openLink(BuildContext context, String url, {String? what}) async {
+  final uri = Uri.tryParse(url.trim());
+  if (uri == null || !uri.hasScheme) {
+    showMessage(
+      context,
+      'El link${what == null ? '' : ' de $what'} no es '
+      'válido.',
+      error: true,
+    );
+    return;
+  }
+  final opened = await launchUrl(
+    uri,
+    mode: kIsWeb ? LaunchMode.platformDefault : LaunchMode.externalApplication,
+    webOnlyWindowName: '_blank',
+  );
+  if (opened || !context.mounted) return;
+  await Clipboard.setData(ClipboardData(text: uri.toString()));
+  if (!context.mounted) return;
+  showMessage(
+    context,
+    'No pudimos abrir ${what ?? 'el link'}. Lo copiamos para que lo pegues '
+    'en el navegador.',
+    error: true,
+  );
+}
 
 void showMessage(BuildContext context, String message, {bool error = false}) {
   ScaffoldMessenger.of(context).showSnackBar(

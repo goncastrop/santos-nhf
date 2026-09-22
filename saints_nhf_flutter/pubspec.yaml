@@ -40,6 +40,7 @@ dependencies:
   serverpod_flutter: 4.0.1
   shared_preferences: ^2.5.3
   url_launcher: ^6.3.2
+  share_plus: ^13.3.0
 
 dev_dependencies:
   # Used for agents to drive the app through the Dart MCP

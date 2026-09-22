@@ -12,6 +12,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalCache {
   static const _key = 'santos_nhf.snapshot.v1';
 
+  /// Aparte de la foto de los datos: cerrar sesión borra el snapshot, pero
+  /// la bienvenida ya la vio esta persona y no hay que volver a mostrarla.
+  static const _welcomeKey = 'santos_nhf.welcome_seen.v1';
+
+  /// Si ya se mostró la bienvenida en este dispositivo. Ante la duda dice
+  /// que sí: mejor no mostrarla que mostrarla dos veces.
+  Future<bool> welcomeSeen() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_welcomeKey) ?? false;
+    } catch (e) {
+      debugPrint('LocalCache.welcomeSeen failed: $e');
+      return true;
+    }
+  }
+
+  Future<void> markWelcomeSeen() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_welcomeKey, true);
+    } catch (e) {
+      debugPrint('LocalCache.markWelcomeSeen failed: $e');
+    }
+  }
+
   Future<LocalSnapshot?> load() async {
     try {
       final prefs = await SharedPreferences.getInstance();
