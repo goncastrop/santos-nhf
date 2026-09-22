@@ -182,6 +182,76 @@ void main() {
       expect(me.duelsPlayed, 1);
     });
 
+    test('when a round closes then it recaps my question and reveals the '
+        'rival card, so the player can see why the point moved', () async {
+      DuelService.random = Random(7);
+      // The machine always answers right, so a miss of mine decides the
+      // round on its own.
+      DuelService.machineAccuracy = 1;
+      addTearDown(() {
+        DuelService.random = Random();
+        DuelService.machineAccuracy = 0.6;
+      });
+
+      final hand = await endpoints.duel.dealHand(user);
+      var view = await endpoints.duel.createVsMachine(
+        user,
+        hand.take(5).toList(),
+      );
+
+      var safety = 0;
+      while (!view.rounds.any((r) => r.resolved) && safety++ < 10) {
+        switch (view.phase) {
+          case DuelPhase.attack:
+            view = await endpoints.duel.attack(
+              user,
+              view.duelId,
+              ScoreCategory.values.firstWhere(
+                (c) => !view.usedCategories.contains(c),
+              ),
+              view.myDeck.first.saint.id,
+            );
+          case DuelPhase.defend:
+            view = await endpoints.duel.defend(
+              user,
+              view.duelId,
+              view.myDeck.first.saint.id,
+            );
+          case DuelPhase.answer:
+            // The question is still in front of me: nothing to recap yet.
+            final open = view.rounds.singleWhere(
+              (r) => r.roundNumber == view.roundNumber,
+            );
+            expect(open.myQuestionPrompt, isNull);
+            expect(open.myAnswer, isNull);
+            expect(open.myRightAnswer, isNull);
+            expect(open.opponentSaint, isNull, reason: 'still face down');
+            // Answer wrong on purpose: anything that is not "A".
+            view = await endpoints.duel.answer(
+              user,
+              view.duelId,
+              view.pendingQuestion!.options.indexWhere((o) => o != 'A'),
+            );
+          default:
+            fail('Unexpected phase ${view.phase} against the machine');
+        }
+      }
+
+      final round = view.rounds.first;
+      expect(round.resolved, isTrue);
+      expect(round.myQuestionPrompt, isNotNull);
+      expect(round.myAnswer, isNotNull);
+      expect(round.myAnswer, isNot('A'));
+      expect(round.myRightAnswer, 'A');
+      expect(round.myCorrect, isFalse);
+      expect(round.opponentCorrect, isTrue);
+      expect(round.opponentSaint, isNotNull);
+      expect(round.opponentScore, isNotNull);
+      // I missed and the machine did not: the point is never mine, whatever
+      // the cards said.
+      expect(round.pointToMe, isFalse);
+    });
+
     test('when the deck is invalid then the duel is rejected', () async {
       await endpoints.duel.dealHand(user);
       await expectLater(

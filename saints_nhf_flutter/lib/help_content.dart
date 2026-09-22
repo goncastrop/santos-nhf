@@ -143,7 +143,11 @@ const helpChapters = <HelpChapter>[
       'Los dos responden una pregunta sobre su santo antes de saber quién '
           'ganó la comparación.',
       'El punto es para la carta más alta, si esa persona respondió bien; si '
-          'no, se lo lleva la otra si acertó. Gana el primero que llega a 3.',
+          'no, se lo lleva la otra si acertó. Si erraron los dos, la ronda '
+          'queda sin punto, y si las cartas empatan decide la pregunta. '
+          'Gana el primero que llega a 3.',
+      'Al cerrarse cada ronda se ve la carta del rival, los dos puntajes y '
+          'por qué el punto fue para donde fue.',
       'Se puede jugar contra El Sacristán, la máquina, o contra un amigo. '
           'Contra un amigo cada uno juega cuando puede: nadie espera a nadie.',
       'Adivinar el puntaje: se tapa una tarjeta y hay que decir en qué '

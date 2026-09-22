@@ -14,3 +14,8 @@ fields:
   opponentCorrect: bool?
   ### True: I got the point. False: the opponent did. Null: nobody.
   pointToMe: bool?
+  ### My question in the round, and the two answers as text. Only once I
+  ### answered: before that the round is still in front of me.
+  myQuestionPrompt: String?
+  myAnswer: String?
+  myRightAnswer: String?

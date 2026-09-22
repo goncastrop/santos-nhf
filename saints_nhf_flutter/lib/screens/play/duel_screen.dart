@@ -6,8 +6,10 @@ import 'package:saints_nhf_client/saints_nhf_client.dart';
 import '../../client.dart';
 import '../../state/app_state.dart';
 import '../../theme.dart';
+import '../../utils/duel_outcome.dart';
 import '../../utils/scores.dart';
 import '../../widgets/common.dart';
+import '../../widgets/duel_round_card.dart';
 import '../../widgets/quiz_view.dart';
 import '../../widgets/waiting_view.dart';
 import '../../widgets/saint_card.dart';
@@ -75,6 +77,11 @@ class _DuelScreenState extends State<DuelScreen> {
   ScoreCategory? _pickedCategory;
   int? _pickedSaint;
   int? _lastAnswer;
+
+  /// Result panel the player already closed, so it does not come back on
+  /// every poll. Keyed by round and state, so the same round opens it again
+  /// when it goes from "answered" to resolved.
+  String? _dismissedResult;
   Timer? _poll;
 
   int? _duelId;
@@ -178,6 +185,20 @@ class _DuelScreenState extends State<DuelScreen> {
     }
   }
 
+  /// The round to show face up over the board: the last one that resolved,
+  /// or the one in progress once I answered my question, unless the player
+  /// already closed it.
+  DuelRoundView? _lastResult(DuelView v) {
+    final last = v.rounds
+        .where((r) => r.resolved || r.myCorrect != null)
+        .lastOrNull;
+    if (last == null || _keyOf(last) == _dismissedResult) return null;
+    return last;
+  }
+
+  static String _keyOf(DuelRoundView r) =>
+      '${r.roundNumber}:${r.resolved ? 'fin' : 'abierta'}';
+
   @override
   Widget build(BuildContext context) {
     final v = _view;
@@ -208,13 +229,30 @@ class _DuelScreenState extends State<DuelScreen> {
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
               children: [
                 _ScoreBoard(view: v),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 260),
+                  child: switch (_lastResult(v)) {
+                    final r? => Padding(
+                      key: ValueKey(_keyOf(r)),
+                      padding: const EdgeInsets.only(top: 20),
+                      child: RoundResultPanel(
+                        round: r,
+                        opponentName: v.opponentName,
+                        onDismiss: () =>
+                            setState(() => _dismissedResult = _keyOf(r)),
+                      ),
+                    ),
+                    null => const SizedBox.shrink(),
+                  },
+                ),
                 const SizedBox(height: 20),
                 _phaseSection(v),
                 const SizedBox(height: 28),
                 if (v.rounds.isNotEmpty) ...[
                   const Eyebrow('Rondas'),
                   const SizedBox(height: 10),
-                  for (final r in v.rounds.reversed) _RoundTile(round: r),
+                  for (final r in v.rounds.reversed)
+                    RoundTile(round: r, opponentName: v.opponentName),
                 ],
                 if (v.phase != DuelPhase.finished &&
                     v.phase != DuelPhase.declined &&
@@ -393,6 +431,7 @@ class _DuelScreenState extends State<DuelScreen> {
         );
       case DuelPhase.finished:
         final draw = v.winnerIsMe == null;
+        final tally = DuelTally.of(v.rounds);
         return _Panel(
           title: draw
               ? 'Empate'
@@ -400,17 +439,29 @@ class _DuelScreenState extends State<DuelScreen> {
               ? '¡Ganaste!'
               : 'Ganó ${v.opponentName}',
           body: draw
-              ? 'Terminaron ${v.myScore} a ${v.opponentScore}. La próxima se define.'
+              ? 'Terminaron ${v.myScore} a ${v.opponentScore}. '
+                    '${tally.sentence} La próxima se define.'
               : v.winnerIsMe!
-              ? 'Te llevaste el duelo ${v.myScore} a ${v.opponentScore}.'
-              : 'Perdiste ${v.myScore} a ${v.opponentScore}. Repasá las vidas '
-                    'de tus santos y pedí revancha.',
+              ? 'Te llevaste el duelo ${v.myScore} a ${v.opponentScore}. '
+                    '${tally.sentence}'
+              : 'Perdiste ${v.myScore} a ${v.opponentScore}. '
+                    '${tally.sentence} Repasá las vidas de tus santos y '
+                    'pedí revancha.',
           actions: [
             OutlinedButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('VOLVER'),
             ),
           ],
+          child: tally.none > 0
+              ? Text(
+                  'Una ronda queda sin punto cuando erraron los dos, o '
+                  'cuando las cartas empataron y los dos respondieron igual.',
+                  style: textTheme.bodySmall?.copyWith(
+                    color: Palette.parchmentDim,
+                  ),
+                )
+              : null,
         );
       case DuelPhase.declined:
         return _Panel(
@@ -629,106 +680,6 @@ class _DeckRow extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _RoundTile extends StatelessWidget {
-  const _RoundTile({required this.round});
-
-  final DuelRoundView round;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final r = round;
-    String outcome;
-    Color color;
-    if (!r.resolved) {
-      outcome = 'En juego';
-      color = Palette.parchmentDim;
-    } else if (r.pointToMe == true) {
-      outcome = 'Punto tuyo';
-      color = Palette.gold;
-    } else if (r.pointToMe == false) {
-      outcome = 'Punto rival';
-      color = Palette.crimsonLight;
-    } else {
-      outcome = 'Sin punto';
-      color = Palette.parchmentDim;
-    }
-    Widget mark(bool? correct) => correct == null
-        ? const SizedBox.shrink()
-        : Icon(
-            correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
-            size: 14,
-            color: correct ? Palette.gold : Palette.crimsonLight,
-          );
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Text('R${r.roundNumber}', style: textTheme.labelSmall),
-                Text(
-                  r.category.abbreviation,
-                  style: textTheme.labelLarge?.copyWith(color: Palette.gold),
-                ),
-              ],
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          r.mySaint == null
-                              ? 'Vos: por jugar'
-                              : 'Vos: ${r.mySaint!.name} (${r.myScore})',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: Palette.parchment,
-                          ),
-                        ),
-                      ),
-                      mark(r.myCorrect),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          r.opponentSaint == null
-                              ? 'Rival: ${r.resolved ? '—' : 'oculto'}'
-                              : 'Rival: ${r.opponentSaint!.name} (${r.opponentScore})',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: Palette.parchmentDim,
-                          ),
-                        ),
-                      ),
-                      mark(r.opponentCorrect),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              outcome.toUpperCase(),
-              style: textTheme.labelSmall?.copyWith(color: color),
-            ),
-          ],
-        ),
       ),
     );
   }

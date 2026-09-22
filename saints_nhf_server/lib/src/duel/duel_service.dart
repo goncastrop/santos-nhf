@@ -963,6 +963,20 @@ class DuelService {
       transaction: transaction,
     );
 
+    // The questions I already answered, to recap them once the round is
+    // behind me. Only mine: the opponent's is about their own saint.
+    final myQuestionIds = <int>{
+      for (final r in rounds) ?_myAnsweredQuestionId(r, me),
+    };
+    final myQuestions = myQuestionIds.isEmpty
+        ? <Question>[]
+        : await Question.db.find(
+            session,
+            where: (t) => t.id.inSet(myQuestionIds),
+            transaction: transaction,
+          );
+    final questionById = {for (final q in myQuestions) q.id!: q};
+
     final roundViews = <DuelRoundView>[];
     for (final r in rounds) {
       final attackerIsMe = r.attackerId == me;
@@ -972,6 +986,10 @@ class DuelService {
       final theirCorrect = attackerIsMe ? r.defenderCorrect : r.attackerCorrect;
       final mySaint = mySaintId == null ? null : saintById[mySaintId];
       final theirSaint = theirSaintId == null ? null : saintById[theirSaintId];
+      final myAnswerIndex = attackerIsMe
+          ? r.attackerAnswerIndex
+          : r.defenderAnswerIndex;
+      final myQuestion = questionById[_myAnsweredQuestionId(r, me)];
       roundViews.add(
         DuelRoundView(
           roundNumber: r.roundNumber,
@@ -989,6 +1007,9 @@ class DuelService {
               : null,
           opponentCorrect: r.resolved ? theirCorrect : null,
           pointToMe: r.pointTo == null ? null : r.pointTo == me,
+          myQuestionPrompt: myQuestion?.prompt,
+          myAnswer: _optionAt(myQuestion, myAnswerIndex),
+          myRightAnswer: _optionAt(myQuestion, myQuestion?.correctIndex),
         ),
       );
     }
@@ -1030,6 +1051,27 @@ class DuelService {
       updatedAt: duel.updatedAt,
     );
   }
+
+  /// The question [me] answered in [round], or null while they have not
+  /// answered it yet.
+  static int? _myAnsweredQuestionId(DuelRound round, UuidValue me) {
+    final attacking = round.attackerId == me;
+    final answered = attacking
+        ? round.attackerAnswerIndex != null
+        : round.defenderAnswerIndex != null;
+    if (!answered) return null;
+    return attacking ? round.attackerQuestionId : round.defenderQuestionId;
+  }
+
+  /// The text of one option, or null when there is none: an answer that
+  /// arrived with a position that does not exist is stored as -1.
+  static String? _optionAt(Question? question, int? index) =>
+      question == null ||
+          index == null ||
+          index < 0 ||
+          index >= question.options.length
+      ? null
+      : question.options[index];
 
   static Future<QuizQuestion?> _quiz(
     Session session,

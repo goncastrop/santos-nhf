@@ -31,6 +31,9 @@ abstract class DuelRoundView
     this.opponentScore,
     this.opponentCorrect,
     this.pointToMe,
+    this.myQuestionPrompt,
+    this.myAnswer,
+    this.myRightAnswer,
   });
 
   factory DuelRoundView({
@@ -45,6 +48,9 @@ abstract class DuelRoundView
     int? opponentScore,
     bool? opponentCorrect,
     bool? pointToMe,
+    String? myQuestionPrompt,
+    String? myAnswer,
+    String? myRightAnswer,
   }) = _DuelRoundViewImpl;
 
   factory DuelRoundView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -80,6 +86,9 @@ abstract class DuelRoundView
       pointToMe: jsonSerialization['pointToMe'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['pointToMe']),
+      myQuestionPrompt: jsonSerialization['myQuestionPrompt'] as String?,
+      myAnswer: jsonSerialization['myAnswer'] as String?,
+      myRightAnswer: jsonSerialization['myRightAnswer'] as String?,
     );
   }
 
@@ -106,6 +115,14 @@ abstract class DuelRoundView
   /// True: I got the point. False: the opponent did. Null: nobody.
   bool? pointToMe;
 
+  /// My question in the round, and the two answers as text. Only once I
+  /// answered: before that the round is still in front of me.
+  String? myQuestionPrompt;
+
+  String? myAnswer;
+
+  String? myRightAnswer;
+
   /// Returns a shallow copy of this [DuelRoundView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -121,6 +138,9 @@ abstract class DuelRoundView
     int? opponentScore,
     bool? opponentCorrect,
     bool? pointToMe,
+    String? myQuestionPrompt,
+    String? myAnswer,
+    String? myRightAnswer,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -137,6 +157,9 @@ abstract class DuelRoundView
       if (opponentScore != null) 'opponentScore': opponentScore,
       if (opponentCorrect != null) 'opponentCorrect': opponentCorrect,
       if (pointToMe != null) 'pointToMe': pointToMe,
+      if (myQuestionPrompt != null) 'myQuestionPrompt': myQuestionPrompt,
+      if (myAnswer != null) 'myAnswer': myAnswer,
+      if (myRightAnswer != null) 'myRightAnswer': myRightAnswer,
     };
   }
 
@@ -156,6 +179,9 @@ abstract class DuelRoundView
       if (opponentScore != null) 'opponentScore': opponentScore,
       if (opponentCorrect != null) 'opponentCorrect': opponentCorrect,
       if (pointToMe != null) 'pointToMe': pointToMe,
+      if (myQuestionPrompt != null) 'myQuestionPrompt': myQuestionPrompt,
+      if (myAnswer != null) 'myAnswer': myAnswer,
+      if (myRightAnswer != null) 'myRightAnswer': myRightAnswer,
     };
   }
 
@@ -180,6 +206,9 @@ class _DuelRoundViewImpl extends DuelRoundView {
     int? opponentScore,
     bool? opponentCorrect,
     bool? pointToMe,
+    String? myQuestionPrompt,
+    String? myAnswer,
+    String? myRightAnswer,
   }) : super._(
          roundNumber: roundNumber,
          category: category,
@@ -192,6 +221,9 @@ class _DuelRoundViewImpl extends DuelRoundView {
          opponentScore: opponentScore,
          opponentCorrect: opponentCorrect,
          pointToMe: pointToMe,
+         myQuestionPrompt: myQuestionPrompt,
+         myAnswer: myAnswer,
+         myRightAnswer: myRightAnswer,
        );
 
   /// Returns a shallow copy of this [DuelRoundView]
@@ -210,6 +242,9 @@ class _DuelRoundViewImpl extends DuelRoundView {
     Object? opponentScore = _Undefined,
     Object? opponentCorrect = _Undefined,
     Object? pointToMe = _Undefined,
+    Object? myQuestionPrompt = _Undefined,
+    Object? myAnswer = _Undefined,
+    Object? myRightAnswer = _Undefined,
   }) {
     return DuelRoundView(
       roundNumber: roundNumber ?? this.roundNumber,
@@ -229,6 +264,13 @@ class _DuelRoundViewImpl extends DuelRoundView {
           ? opponentCorrect
           : this.opponentCorrect,
       pointToMe: pointToMe is bool? ? pointToMe : this.pointToMe,
+      myQuestionPrompt: myQuestionPrompt is String?
+          ? myQuestionPrompt
+          : this.myQuestionPrompt,
+      myAnswer: myAnswer is String? ? myAnswer : this.myAnswer,
+      myRightAnswer: myRightAnswer is String?
+          ? myRightAnswer
+          : this.myRightAnswer,
     );
   }
 }
