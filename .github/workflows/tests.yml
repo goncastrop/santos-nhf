@@ -44,6 +44,25 @@ jobs:
       # Serverpod arranca y administra su propio PostgreSQL embebido. Levantar
       # además el `postgres_test` del docker-compose le robaba el puerto 9090 y
       # los tests no podían abrir su base.
+      #
+      # `-r expanded` porque el reporte por defecto lista los tests que fallan
+      # pero se come el mensaje, que es justo lo que hace falta para diagnosticar.
       - name: Run tests
         working-directory: saints_nhf_server
-        run: dart test
+        run: dart test -r expanded
+
+      # El PostgreSQL embebido escribe acá por qué no pudo arrancar. Sin esto, un
+      # fallo de la base se ve como "todos los tests de integración fallaron" y
+      # nada más.
+      - name: Database log on failure
+        if: failure()
+        working-directory: saints_nhf_server
+        run: |
+          for f in .serverpod/test/*.log; do
+            [ -f "$f" ] || continue
+            echo "===== $f ====="
+            tail -80 "$f"
+          done
+          echo "===== versiones ====="
+          dart --version
+          uname -a
