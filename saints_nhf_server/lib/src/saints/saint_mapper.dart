@@ -103,10 +103,24 @@ class SaintMapper {
 
   static Future<String?> illustrationUrl(Session session, String? path) async {
     if (path == null) return null;
-    final url = await session.storage.publicDownloadUrl(
-      storageId: storageId,
-      path: path,
-    );
-    return url.toString();
+    try {
+      final url = await session.storage.publicDownloadUrl(
+        storageId: storageId,
+        path: path,
+      );
+      return url.toString();
+    } on CloudStorageFileNotFoundException {
+      // The row can outlive the file: a storage migration, an upload that was
+      // interrupted, a file deleted by hand. The card falls back to its
+      // monogram, which the app already draws for saints without an
+      // illustration — far better than a 500 from every endpoint that maps
+      // this saint. `toInfos` already behaves this way, because the bulk
+      // `publicDownloadUrls` returns nulls instead of throwing.
+      session.log(
+        'La ilustración "$path" está referenciada pero no existe en el storage.',
+        level: LogLevel.warning,
+      );
+      return null;
+    }
   }
 }
