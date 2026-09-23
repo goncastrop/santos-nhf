@@ -1,0 +1,103 @@
+# Stack de producción del Cloud Server de DonWeb.
+#
+# Este archivo vive en /srv/santos-nhf/ en el servidor, junto al Caddyfile y a
+# un .env que no está en el repo (ver env.example). La imagen la construye
+# GitHub Actions y se baja de GHCR: acá nunca se compila nada.
+#
+#   docker compose pull && docker compose up -d
+#
+# El servicio `migrate` corre una sola vez con el rol `maintenance`, aplica las
+# migraciones pendientes y sale; si falla, sale con código 1 y `server` no
+# arranca, así que una migración rota no deja la app a medias.
+
+name: santos-nhf
+
+# Entorno compartido entre `migrate` y `server`: los dos hablan con la misma
+# base y necesitan los mismos secretos.
+x-server-env: &server-env
+  SERVERPOD_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD}
+  SERVERPOD_SERVICE_SECRET: ${SERVICE_SECRET:?falta SERVICE_SECRET}
+  # Peppers de la auth. TIENEN que ser los mismos que usa hoy Serverpod Cloud:
+  # si cambian, las contraseñas guardadas dejan de validar y los refresh tokens
+  # se invalidan.
+  SERVERPOD_PASSWORD_emailSecretHashPepper: ${EMAIL_SECRET_HASH_PEPPER:?falta EMAIL_SECRET_HASH_PEPPER}
+  SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: ${JWT_REFRESH_TOKEN_HASH_PEPPER:?falta JWT_REFRESH_TOKEN_HASH_PEPPER}
+  # Quién puede pedir acceso admin (lista separada por comas).
+  SERVERPOD_PASSWORD_adminEmails: ${ADMIN_EMAILS:-}
+  # SMTP de Brevo para los códigos de verificación y el reset de contraseña.
+  SERVERPOD_PASSWORD_smtpHost: ${SMTP_HOST:-smtp-relay.brevo.com}
+  SERVERPOD_PASSWORD_smtpPort: ${SMTP_PORT:-587}
+  SERVERPOD_PASSWORD_smtpUsername: ${SMTP_USERNAME:?falta SMTP_USERNAME}
+  SERVERPOD_PASSWORD_smtpPassword: ${SMTP_PASSWORD:?falta SMTP_PASSWORD}
+  SERVERPOD_PASSWORD_smtpFromAddress: ${SMTP_FROM_ADDRESS:-no-responder@nhf.com.ar}
+
+services:
+  postgres:
+    image: ghcr.io/serverpod/postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: saints_nhf
+      POSTGRES_USER: serverpod
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # El puerto no se publica: solo se llega desde la red de Compose. Para
+    # conectar un cliente SQL, túnel SSH contra el host.
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U serverpod -d saints_nhf']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  migrate:
+    image: ${SERVER_IMAGE:?falta SERVER_IMAGE}
+    # El ENTRYPOINT del Dockerfile está en forma shell, así que `command` no lo
+    # complementa: hay que reemplazarlo entero.
+    entrypoint:
+      [
+        './bin/server',
+        '--mode=production',
+        '--role=maintenance',
+        '--apply-migrations',
+        '--logging=normal',
+      ]
+    environment: *server-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+
+  server:
+    image: ${SERVER_IMAGE:?falta SERVER_IMAGE}
+    restart: unless-stopped
+    environment: *server-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    expose:
+      - '8080'
+      - '8081'
+      - '8082'
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    # El único servicio con puertos al mundo.
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?falta ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

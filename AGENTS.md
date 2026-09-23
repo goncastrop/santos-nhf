@@ -166,17 +166,36 @@ carta del día y en los duelos mientras estén cargados.
 `client.dart` inicializa Google solo si se compila con `GOOGLE_WEB_CLIENT_ID`. Pasos completos
 en `ROADMAP.md`, sección "Cuentas e ingreso".
 
-**Despliegue (Serverpod Cloud)**: `.scloudignore` excluye `config/passwords.yaml` y todos los
-`config/*.yaml`, así que nada de lo que está en esos archivos llega a producción. Los secretos se
-definen con `scloud password set <nombre> <valor>` (quedan en `session.passwords`) y los ajustes de
-configuración con `scloud variable set <VAR> <valor>` (nombres `SERVERPOD_*`, por ejemplo
-`SERVERPOD_MAX_REQUEST_SIZE`). Ambos requieren un `scloud deploy` posterior para tomar efecto.
-Pendientes conocidos en producción: `adminEmails` (sin él nadie puede ser el primer admin) y
-`SERVERPOD_MAX_REQUEST_SIZE` (sin él el límite por defecto es 512 kB y falla la subida de
-ilustraciones).
+**Despliegue (DonWeb)**: en migración desde Serverpod Cloud hacia un Cloud Server de DonWeb.
+Toda la infra vive en `deploy/` (`docker-compose.yml` con Caddy + Postgres 16 + el servidor,
+`Caddyfile`, `env.example`, `provision.sh`) y el runbook completo —pasos manuales, DNS, Brevo,
+migración de datos, operación y rollback— está en `deploy/README.md`: **leerlo antes de tocar
+cualquier cosa de producción**. El deploy lo hace `.github/workflows/deploy.yml` en cada push a
+`main` que pase los tests: compila la app web, publica la imagen en GHCR taggeada con el SHA y
+hace `pull` + `up -d` por SSH. Los secretos van por variables de entorno
+(`SERVERPOD_PASSWORD_<clave>`, `SERVERPOD_DATABASE_PASSWORD`, `SERVERPOD_SERVICE_SECRET`) desde
+`/srv/santos-nhf/.env`, nunca en la imagen: `.dockerignore` excluye `config/passwords.yaml`, que
+el Dockerfile copiaría junto al resto de `config/`. `santos.nhf.com.ar` sirve la app y
+`api.santos.nhf.com.ar` la API; Insights (8081) no se publica. Las ilustraciones quedan en
+`DatabaseCloudStorage`, al que `ServerpodCloudProvider` cae solo fuera de Serverpod Cloud; si
+crecen, el camino es `serverpod_cloud_storage_s3_compat`.
 
-**Cuentas**: en desarrollo los códigos de verificación y de recuperación solo se imprimen en la
-consola del servidor (`tail_server_logs`, líneas "Registration code" / "Password reset code").
+Mientras dure la convivencia, `.scloudignore` excluye `config/passwords.yaml` y todos los
+`config/*.yaml`, así que `config/production.yaml` —que ahora apunta al dominio propio— no llega a
+Serverpod Cloud. Ahí los secretos se definen con `scloud password set <nombre> <valor>` y los
+ajustes con `scloud variable set <VAR> <valor>`, y ambos requieren `scloud deploy` para tomar
+efecto. Los peppers de auth de Serverpod Cloud no se pueden recuperar, así que el corte obliga a
+todos los usuarios existentes a usar "olvidé mi contraseña"; los datos viajan intactos.
+
+**Cuentas**: los códigos de verificación y de recuperación los manda
+`src/email/verification_emails.dart` (`appEmailIdpConfig`) por SMTP con el paquete `mailer`,
+configurado con las claves `smtpHost`, `smtpPort`, `smtpUsername`, `smtpPassword` y
+`smtpFromAddress` (Brevo en producción, pero no hay nada atado al proveedor). Si falta alguna, el
+código se escribe en el log en vez de enviarse —eso es lo normal en desarrollo
+(`tail_server_logs`, líneas "Registration code" / "Password reset code")— y en producción queda
+además un log de error nombrando las que faltan. El envío es best-effort y nunca lanza: si lo
+hiciera, una caída del relay rompería el registro y en el reset revelaría si una cuenta existe.
+Para probar el envío real en local, poner esas claves bajo `development:` en `passwords.yaml`.
 Para restablecer una contraseña a mano: `dart run bin/set_password.dart <email> <contraseña>` en
 el paquete del servidor (arranca Serverpod en rol `maintenance` sobre la base de desarrollo).
 Los nombres públicos por defecto son aleatorios ("Peregrino 412") y nunca derivan del código de
@@ -188,7 +207,14 @@ firmada: en Serverpod Cloud el storage es un bucket de objetos en otro dominio y
 bloquea ese PUT por CORS, sin dejar rastro en los logs del servidor. Pasar por el servidor también
 unifica el camino entre el storage de base de datos (local) y el de la nube. Límite de 6 MB en
 `AdminSaintEndpoint.maxIllustrationBytes` y en la pantalla de edición: los bytes viajan en base64,
-que agrega un tercio, y el `maxRequestSize` es de 10 MB.
+que agrega un tercio, y el `maxRequestSize` es de 10 MB. Cada archivo se guarda con
+`Cache-Control: public, max-age=31536000, immutable` (`illustrationCacheControl`), que el endpoint
+público reenvía desde el metadata; el reemplazo de una imagen se nota porque `SaintMapper` le
+agrega `?v=<updatedAt>` a la URL, así que no hay que purgar ninguna caché.
+
+**Optimizar ilustraciones**: `tools/optimizar_ilustraciones.sh <carpeta>` pasa un lote a WebP con
+transparencia, limita el lado mayor a 1200 px (alcanza para la tarjeta compartible de 1080 × 1350)
+y saca los metadatos. Con la colección original: 109 MB a 10 MB. Necesita ImageMagick.
 
 **Imágenes en desarrollo**: las ilustraciones se sirven desde el endpoint
 `serverpod_cloud_storage` del puerto 8080. En Serverpod 4.0.0 ese endpoint se perdía tras cada hot

@@ -1,79 +1,55 @@
-# This is the configuration file for your production environment.
-# Typically, you will want to route the traffic through a load balancer
-# which adds SSL security through https. If you use Serverpod's standard
-# Terraform scripts to deploy your server, all you need to change in
-# this file is the examplepod.com domain name.
+# Configuración de producción: un Cloud Server de DonWeb con Docker Compose
+# (ver `deploy/`). Caddy termina TLS y hace reverse proxy hacia estos puertos,
+# así que el servidor habla HTTP plano dentro de la red de Docker.
+#
+# Nada de esto es secreto. Las contraseñas van por variables de entorno:
+# SERVERPOD_DATABASE_PASSWORD, SERVERPOD_SERVICE_SECRET y
+# SERVERPOD_PASSWORD_<clave> para las propias de la app.
 
-# Configuration for the main API server.
+# API que consume la app Flutter.
 apiServer:
   port: 8080
-  publicHost: api.examplepod.com
+  publicHost: api.santos.nhf.com.ar
   publicPort: 443
   publicScheme: https
 
-# Configuration for the Insights server.
+# Insights no se publica: Caddy no lo expone y el puerto no sale del host.
+# Para usarlo, túnel SSH: ssh -L 8081:localhost:8081 <host>
 insightsServer:
   port: 8081
-  publicHost: insights.examplepod.com
-  publicPort: 443
-  publicScheme: https
+  publicHost: localhost
+  publicPort: 8081
+  publicScheme: http
 
-# Configuration for the web server.
+# Servidor web: sirve la app Flutter compilada y el callback de OAuth.
 webServer:
   port: 8082
-  publicHost: app.examplepod.com
+  publicHost: santos.nhf.com.ar
   publicPort: 443
   publicScheme: https
 
-# This is the database setup for your servers. The default for the Google Cloud
-# Engine Terraform configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. database.examplepod.com.
+# Postgres corre en el mismo Compose. El tráfico no sale de la red interna de
+# Docker, y el puerto no se publica al host, así que no se pide SSL.
 database:
-  host: database.private-production.examplepod.com
+  host: postgres
   port: 5432
-  name: serverpod
-  user: postgres
-  requireSsl: true
-  #isUnixSocket: true # defaults to false
-  #maxConnectionCount: 10 # Defaults to 10, a negative or null value removes the limit
+  name: saints_nhf
+  user: serverpod
+  requireSsl: false
 
-# This is the setup for Redis. The default for the Google Cloud Engine Terraform
-# configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. redis.examplepod.com.
 redis:
   enabled: false
-  host: redis.private-production.examplepod.com
+  host: redis
   port: 6379
-  #user: # defaults to empty
-  #requireSsl: true # defaults to false
 
 maxRequestSize: 10485760 # 10 MB, so saint illustrations can be uploaded
 
+# Los logs van a stdout del contenedor (`docker compose logs`), con rotación
+# configurada en el daemon de Docker por `deploy/provision.sh`. Los logs
+# persistentes quedan apagados para no llenar el disco del servidor; si se
+# quieren ver las sesiones en Insights, poner `persistentEnabled: true` y
+# configurar una retención.
 sessionLogs:
-  consoleEnabled: false
-# persistentEnabled: true
-# consoleLogFormat: json # Defaults to "json", options are "text" or "json"
-
-# futureCallExecutionEnabled: true # Defaults to true
-
-#futureCall:
-#  concurrencyLimit: 1 # Defaults to 1, a negative or null value removes the limit
-#  scanInterval: 5000 # Unit in milliseconds, defaults to 5000
-
-# Recommended when serving web clients: keeps auth tokens in httpOnly
-# cookies. Without this, web tokens live in JavaScript-readable storage,
-# where any XSS can steal them. Web clients opt in with
-# `client.cookieAuth = true`. Requires `allowedOrigins`; browsers from
-# origins not in the list lose cross-origin access, including to public
-# endpoints.
-#authCookie:
-#  sameSite: lax # Defaults to "lax", options are "strict" or "none"
-#  #name: serverpod_auth # Defaults to "serverpod_auth"
-#  #refreshName: serverpod_auth_refresh # Defaults to "<name>_refresh"
-#  #domain: examplepod.com # Defaults to host-only; set to share across subdomains
-#  #path: / # Defaults to "/"
-#  #secure: true # Defaults to true; the cookie is only sent over https
-#allowedOrigins:
-#  - https://app.examplepod.com # The origin serving your Flutter web app
+  consoleEnabled: true
+  consoleLogFormat: json
+  persistentEnabled: false

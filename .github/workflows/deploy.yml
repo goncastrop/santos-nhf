@@ -1,0 +1,136 @@
+name: Deploy
+
+# Push a main = deploy. Se ejecuta después de que Tests haya pasado, así que un
+# commit que rompe la suite no llega al servidor.
+on:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+    branches: [main]
+  # Redeploy manual sin tocar el código (por ejemplo tras cambiar el .env).
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/santos-nhf-server
+
+jobs:
+  deploy:
+    # `workflow_run` dispara también cuando Tests falla: hay que filtrarlo.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      # La imagen sirve la app Flutter ya compilada desde web/app, que está
+      # gitignoreada: hay que construirla acá antes del docker build.
+      - name: Compilar la app web
+        working-directory: saints_nhf_flutter
+        run: flutter build web --base-href / --output ../saints_nhf_server/web/app
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y publicar la imagen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: saints_nhf_server/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Preparar SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" >~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >>~/.ssh/known_hosts 2>/dev/null
+
+      # El servidor solo necesita el compose y el Caddyfile; el .env lo mantiene
+      # el operador a mano y este paso no lo toca.
+      - name: Copiar la configuración del stack
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT" \
+            deploy/docker-compose.yml deploy/Caddyfile \
+            "$DEPLOY_USER@$DEPLOY_HOST:/srv/santos-nhf/"
+
+      # SERVER_IMAGE se fija al SHA de este commit, así un rollback es volver a
+      # correr este workflow desde el commit anterior.
+      - name: Levantar la nueva versión
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ssh -i ~/.ssh/id_deploy -p "$DEPLOY_PORT" \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "IMAGE='${IMAGE}:${{ github.sha }}' ACTOR='${{ github.actor }}' TOKEN='$GHCR_TOKEN' bash -s" <<'REMOTE'
+          set -euo pipefail
+          cd /srv/santos-nhf
+          echo "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+          # SERVER_IMAGE del .env se sobreescribe para este deploy.
+          export SERVER_IMAGE="$IMAGE"
+          docker compose pull --quiet server migrate
+          docker compose up -d --remove-orphans
+          docker compose ps
+          docker logout ghcr.io
+          docker image prune -f --filter 'until=168h'
+          REMOTE
+
+      # Mientras el dominio no resuelva, dejar HEALTHCHECK_URL sin definir: el
+      # paso avisa y no falla. Con el dominio arriba, definir el secreto
+      # HEALTHCHECK_URL como https://santos.nhf.com.ar/ para que un deploy que
+      # no levanta se marque en rojo.
+      - name: Verificar que responde
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          if [[ -z "${HEALTHCHECK_URL:-}" ]]; then
+            echo "HEALTHCHECK_URL sin definir: no se verifica"
+            exit 0
+          fi
+          for i in $(seq 1 10); do
+            if curl -fsS --max-time 10 "$HEALTHCHECK_URL" >/dev/null; then
+              echo "arriba"
+              exit 0
+            fi
+            echo "reintento $i"
+            sleep 10
+          done
+          echo "el servidor no respondió después del deploy" >&2
+          exit 1

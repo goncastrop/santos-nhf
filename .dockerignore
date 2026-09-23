@@ -1,0 +1,22 @@
+# Contexto de build de la imagen del servidor. El Dockerfile se construye desde
+# la raíz del repo (`docker build -f saints_nhf_server/Dockerfile .`), así que
+# acá se excluye todo y después se vuelve a incluir solo lo que necesita.
+#
+# Las reglas se evalúan en orden y gana la última que coincide.
+*
+
+!pubspec.lock
+!saints_nhf_server
+
+# Nunca dentro de la imagen: los secretos viajan por variables de entorno
+# (SERVERPOD_PASSWORD_<clave>, SERVERPOD_DATABASE_PASSWORD, …).
+saints_nhf_server/config/passwords.yaml
+saints_nhf_server/config/google_client_secret.json
+saints_nhf_server/config/firebase_service_account_key.json
+
+# Artefactos locales que no hacen falta para compilar.
+saints_nhf_server/.dart_tool
+saints_nhf_server/.serverpod
+saints_nhf_server/build
+saints_nhf_server/test
+saints_nhf_server/docker-compose.yaml

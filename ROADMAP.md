@@ -131,23 +131,23 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
      producción `GOOGLE_REDIRECT_URI`). En iOS, agregar `GIDClientID`, `GIDServerClientID` y el
      URL scheme en `Info.plist`.
   Las tablas de Google ya están en las migraciones.
-- [ ] **Primer administrador en producción.** El despliegue no sube `config/passwords.yaml`,
-  así que la lista `adminEmails` hay que definirla en el servidor:
-  `scloud password set adminEmails "<emails separados por coma>"` y después `scloud deploy`.
+- [ ] **Primer administrador en producción.** La imagen no incluye `config/passwords.yaml`, así
+  que la lista `adminEmails` va como `ADMIN_EMAILS` en `/srv/santos-nhf/.env` del servidor.
   Luego se crea la cuenta en la app con ese email y se usa Perfil → Solicitar acceso. Desde ahí,
   ese admin puede dar acceso a otros por email sin volver a desplegar.
 - [x] **Subida de ilustraciones en producción.** El navegador no puede subir directo al bucket de
   la nube: está en otro dominio y el PUT queda bloqueado por CORS, sin error visible en el servidor.
   Ahora la imagen se manda al servidor y él la guarda en el storage. Máximo 6 MB.
-- [ ] **Límite de subida en producción.** También por `.scloudignore`, `config/production.yaml`
-  no se sube: el `maxRequestSize` de 10 MB solo aplica local. En la nube hace falta
-  `scloud variable set SERVERPOD_MAX_REQUEST_SIZE 10485760` y redesplegar, o las ilustraciones
-  de más de 512 kB fallarán.
-- [ ] **Envío de emails.** En desarrollo los códigos se imprimen en la consola del servidor.
-  En producción hace falta un servicio de email: si se despliega en Serverpod Cloud, la
-  configuración actual (`ServerpodCloudEmailIdpConfig`) usa su servicio sin cambios; si no,
-  reemplazarla por `EmailIdpConfigFromPasswords` con un callback que envíe el código por un
-  proveedor (Resend, SendGrid, Postmark, SMTP propio).
+- [x] **Límite de subida en producción.** `config/production.yaml` viaja dentro de la imagen del
+  servidor, así que el `maxRequestSize` de 10 MB aplica en producción. Caddy deja pasar hasta
+  12 MB para que el que rechace sea el servidor, con su mensaje, y no el proxy con un 413.
+- [x] **Envío de emails.** `src/email/verification_emails.dart` manda los códigos por SMTP con el
+  paquete `mailer` (Brevo, plan gratuito de 300 envíos por día). Sin las claves `smtp*` el código
+  se escribe en el log, que es el camino de desarrollo. Falta autenticar el dominio en Brevo
+  (DKIM, SPF, DMARC): ver `deploy/README.md`.
+- [ ] **Migración a DonWeb.** Infra en `deploy/`, runbook y pendientes en `deploy/README.md`. El
+  corte obliga a todos los usuarios a usar "olvidé mi contraseña", porque los peppers de auth de
+  Serverpod Cloud no se pueden recuperar; los datos viajan intactos en el dump.
 
 ## Sin conexión
 

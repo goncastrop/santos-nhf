@@ -1,0 +1,39 @@
+# Caddy pide y renueva los certificados de Let's Encrypt solo. Para que
+# funcione, los dos nombres tienen que resolver a la IP del servidor ANTES de
+# levantar el stack: si el desafío HTTP falla, Caddy reintenta con backoff y el
+# sitio queda sin TLS mientras tanto.
+
+{
+	email {$ACME_EMAIL}
+	# Un solo servidor, sin balanceador: los logs de acceso van a stdout.
+	log {
+		output stdout
+		format json
+	}
+}
+
+# La app Flutter compilada, servida por el web server de Serverpod.
+santos.nhf.com.ar {
+	encode zstd gzip
+	reverse_proxy server:8082
+}
+
+# La API que consume la app. Es el mismo origen que publica
+# `config/production.yaml` en apiServer.publicHost, y también por acá se sirven
+# las ilustraciones del cloud storage.
+api.santos.nhf.com.ar {
+	encode zstd gzip
+
+	# Las ilustraciones viajan en base64 dentro del request, que puede llegar a
+	# ~8 MB con el límite de 6 MB por imagen. `maxRequestSize` del servidor son
+	# 10 MB; acá se deja un poco más para que el que rechace sea el servidor,
+	# con su mensaje de error, y no el proxy con un 413 pelado.
+	request_body {
+		max_size 12MB
+	}
+
+	reverse_proxy server:8080
+}
+
+# Insights (8081) queda deliberadamente afuera: expone logs de sesiones y
+# acceso a la base. Para usarlo, túnel SSH contra el host.

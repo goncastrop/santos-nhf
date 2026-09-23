@@ -13,6 +13,8 @@ dependencies:
   serverpod: 4.0.1
   serverpod_auth_idp_server: 4.0.1
   serverpod_cloud_storage: 4.0.1
+  # SMTP client for the verification and password reset emails.
+  mailer: ^7.2.0
 
 dev_dependencies:
   lints: '>=3.0.0 <7.0.0'

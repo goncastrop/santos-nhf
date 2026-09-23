@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:serverpod_auth_idp_server/core.dart';
-import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'package:serverpod_auth_idp_server/providers/google.dart';
 import 'package:serverpod_cloud_storage/serverpod_cloud_storage.dart';
 
 import 'src/cache_busting.dart';
+import 'src/email/verification_emails.dart';
 import 'src/generated/serverpod.dart';
 import 'src/books/seed_books.dart';
 import 'src/questions/seed_questions.dart';
@@ -32,15 +32,11 @@ void run(List<String> args) async {
     ],
     identityProviderBuilders: [
       if (googleEnabled) GoogleIdpConfigFromPasswords(),
-      // Configure the email identity provider for email/password authentication.
-      // The default setup works with Serverpod Cloud without configuration. In
-      // development the verification codes are logged to the console, and in
-      // staging and production they are sent through the Serverpod Cloud email
-      // service. If you want to use a custom provider for sending emails, use
-      // `EmailIdpConfigFromPasswords`.
-      ServerpodCloudEmailIdpConfig(
-        appDisplayName: 'Santos NHF',
-      ),
+      // Email/password sign-in. The verification codes go out through an SMTP
+      // relay configured with the `smtp*` passwords; without them the codes are
+      // logged instead, which is how development works. See
+      // `src/email/verification_emails.dart`.
+      appEmailIdpConfig(appDisplayName: 'Santos NHF'),
     ],
   );
 

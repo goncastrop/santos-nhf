@@ -21,6 +21,11 @@ class AdminSaintEndpoint extends Endpoint {
   /// Largest illustration accepted, in bytes.
   static const maxIllustrationBytes = 6 * 1024 * 1024;
 
+  /// Cache header stored with every illustration. A year, and immutable:
+  /// replacing an image changes the `?v=` of its public URL, so a stale copy
+  /// is never served.
+  static const illustrationCacheControl = 'public, max-age=31536000, immutable';
+
   /// Every saint, drafts included, ordered by name.
   Future<List<Saint>> listAll(Session session) {
     return Saint.db.find(session, orderBy: (t) => t.name);
@@ -145,7 +150,15 @@ class AdminSaintEndpoint extends Endpoint {
       path: path,
       byteData: bytes,
       options: StoreFileOptions(
-        metadata: FileMetadata(contentType: _contentTypeOf(path)),
+        metadata: FileMetadata(
+          contentType: _contentTypeOf(path),
+          // The path of an illustration never changes, so the bytes behind a
+          // URL can only change when the admin replaces the image. The public
+          // URL carries `?v=<updatedAt>` (see `SaintMapper`), which changes on
+          // every replacement, so the client asks for a new URL instead of
+          // revalidating this one. Anything shorter only costs round trips.
+          cacheControl: illustrationCacheControl,
+        ),
       ),
     );
     final previousPath = saint.illustrationPath;
