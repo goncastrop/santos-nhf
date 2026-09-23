@@ -83,13 +83,17 @@ jobs:
 
       # El servidor solo necesita el compose y el Caddyfile; el .env lo mantiene
       # el operador a mano y este paso no lo toca.
+      #
+      # Sin `--delete` a propósito: son dos archivos fijos, y con `--delete`
+      # rsync podría borrar del destino lo que no viaja en la transferencia, o
+      # sea el .env y la carpeta de backups.
       - name: Copiar la configuración del stack
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          rsync -az --delete \
+          rsync -az \
             -e "ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT" \
             deploy/docker-compose.yml deploy/Caddyfile \
             "$DEPLOY_USER@$DEPLOY_HOST:/srv/santos-nhf/"
