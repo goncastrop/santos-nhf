@@ -30,16 +30,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # `dart install` deja los ejecutables en el bin del pub cache, que no está
-      # en el PATH del runner: sin esto, `serverpod` da "command not found".
+      # `dart install` deja el ejecutable en un directorio que no está en el PATH
+      # del runner y que su propio help no documenta. `pub global activate` lo
+      # instala y `pub global run` lo invoca por paquete, sin depender del PATH.
       - name: Install Serverpod CLI
-        run: |
-          dart install "serverpod_cli@$VERSION"
-          echo "${PUB_CACHE:-$HOME/.pub-cache}/bin" >>"$GITHUB_PATH"
+        run: dart pub global activate serverpod_cli "$VERSION"
 
       - name: Run Serverpod generator
         working-directory: saints_nhf_server
-        run: serverpod generate
+        run: dart pub global run serverpod_cli:serverpod_cli generate
 
       # Sin Docker a propósito: `config/test.yaml` define `dataPath`, así que
       # Serverpod arranca y administra su propio PostgreSQL embebido. Levantar
