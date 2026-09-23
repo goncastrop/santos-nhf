@@ -17,11 +17,12 @@ name: santos-nhf
 x-server-env: &server-env
   SERVERPOD_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD}
   SERVERPOD_SERVICE_SECRET: ${SERVICE_SECRET:?falta SERVICE_SECRET}
-  # Peppers de la auth. TIENEN que ser los mismos que usa hoy Serverpod Cloud:
-  # si cambian, las contraseñas guardadas dejan de validar y los refresh tokens
-  # se invalidan.
+  # Claves de la auth. TIENEN que ser las mismas que usa hoy Serverpod Cloud:
+  # si cambian, las contraseñas guardadas dejan de validar, los refresh tokens
+  # se invalidan y los access tokens emitidos dejan de verificar.
   SERVERPOD_PASSWORD_emailSecretHashPepper: ${EMAIL_SECRET_HASH_PEPPER:?falta EMAIL_SECRET_HASH_PEPPER}
   SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: ${JWT_REFRESH_TOKEN_HASH_PEPPER:?falta JWT_REFRESH_TOKEN_HASH_PEPPER}
+  SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: ${JWT_HMAC_SHA512_PRIVATE_KEY:?falta JWT_HMAC_SHA512_PRIVATE_KEY}
   # Quién puede pedir acceso admin (lista separada por comas).
   SERVERPOD_PASSWORD_adminEmails: ${ADMIN_EMAILS:-}
   # SMTP de Brevo para los códigos de verificación y el reset de contraseña.

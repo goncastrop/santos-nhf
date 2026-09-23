@@ -19,6 +19,7 @@ jobs:
       SERVERPOD_PASSWORD_redis: 'NXJ5QIQhC7Ww5KBUkLi4Hk68BQxBSNzc'
       SERVERPOD_PASSWORD_emailSecretHashPepper: 'pepper-de-test-no-es-un-secreto'
       SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'pepper-de-test-no-es-un-secreto'
+      SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'clave-de-firma-de-test-no-es-un-secreto'
 
     steps:
       - uses: actions/checkout@v4

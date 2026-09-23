@@ -345,13 +345,14 @@ docker compose run --rm --entrypoint ./bin/server server \
 
 ## Contraseñas de los usuarios
 
-Los peppers de Serverpod Cloud (`emailSecretHashPepper`,
-`jwtRefreshTokenHashPepper`) no se pueden recuperar, así que en el servidor nuevo
-son valores nuevos. Consecuencias:
+Las claves de auth de Serverpod Cloud (`emailSecretHashPepper`,
+`jwtRefreshTokenHashPepper`, `jwtHmacSha512PrivateKey`) no se pueden recuperar,
+así que en el servidor nuevo son valores nuevos. Consecuencias:
 
 - Ninguna contraseña guardada valida. Todos los usuarios existentes tienen que
   pasar por "olvidé mi contraseña".
-- Todas las sesiones se caen, que es lo que queremos de todas formas.
+- Todas las sesiones se caen: los refresh tokens dejan de validar y los access
+  tokens emitidos dejan de verificar. Que es lo que queremos de todas formas.
 - **No se pierde nada más**: cuentas, colección, cartas, rachas y perfiles
   viajan intactos en el dump. Lo único que cambia es la credencial.
 
