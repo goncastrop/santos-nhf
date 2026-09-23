@@ -95,13 +95,46 @@ class CollectionService {
     return published.where((s) => !ownedIds.contains(s.id)).toList();
   }
 
+  /// Reads the profile inside [tx] with its row locked, so that two calls
+  /// racing on the same player take turns instead of both acting.
+  ///
+  /// The app fires several endpoints at once on sign-in and each one needs the
+  /// profile, so two transactions reach the same "did this already happen?"
+  /// check at the same time. The naive check is unsafe under PostgreSQL's
+  /// default READ COMMITTED, because every *statement* gets a fresh snapshot:
+  /// both read `starterGranted == false`, then the second one reads a list of
+  /// missing saints that already excludes the first one's cards, so its picks
+  /// never collide with the unique index on (authUserId, saintId) and both
+  /// grants land. That is how a new player could start with ten cards instead
+  /// of five — or, back when the catalog had nine saints, with all nine.
+  ///
+  /// `for update` makes the second transaction wait for the first to commit and
+  /// then read the flag it wrote. The profile is created first on purpose:
+  /// locking a row that does not exist yet locks nothing, and it is the upsert
+  /// in [ProfileService.ensure] that serializes the very first pair of calls.
+  static Future<PlayerProfile> _lockedProfile(
+    Session session,
+    UuidValue authUserId,
+    Transaction tx,
+  ) async {
+    await profileFor(session, authUserId, transaction: tx);
+    await PlayerProfile.db.lockRows(
+      session,
+      where: (t) => t.authUserId.equals(authUserId),
+      lockMode: LockMode.forUpdate,
+      transaction: tx,
+    );
+    // Re-read: whatever the waiting transaction wrote is only visible now.
+    return profileFor(session, authUserId, transaction: tx);
+  }
+
   /// Grants the starter pack once. Returns the granted cards.
   static Future<List<CollectedCard>> grantStarterPackIfNeeded(
     Session session,
     UuidValue authUserId,
   ) async {
     return session.db.transaction((tx) async {
-      final profile = await profileFor(session, authUserId, transaction: tx);
+      final profile = await _lockedProfile(session, authUserId, tx);
       if (profile.starterGranted) return const [];
       final missing = await missingSaints(session, authUserId, transaction: tx);
       missing.shuffle(_random);
@@ -143,7 +176,10 @@ class CollectionService {
     UuidValue authUserId,
   ) async {
     return session.db.transaction((tx) async {
-      final profile = await profileFor(session, authUserId, transaction: tx);
+      // Same race as the starter pack: without the lock, two taps (or a retry
+      // after a slow response) both read a day key that has not been written
+      // yet and both grant a card.
+      final profile = await _lockedProfile(session, authUserId, tx);
       final today = todayKey();
       if (profile.lastDailyClaimDay == today) {
         throw CollectionException(
