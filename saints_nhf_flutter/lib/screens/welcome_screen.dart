@@ -284,7 +284,7 @@ class _ClosingView extends StatelessWidget {
         const Center(child: Ornament(width: 120)),
         const SizedBox(height: 18),
         Text(
-          'Las tarjetas son un juego. Los santos no: son gente que le creyó '
+          'Las tarjetas son un juego, pero los santos no. Son gente que le creyó '
           'a Dios hasta el final, y la Iglesia los muestra porque lo que '
           'hicieron ellos se puede hacer.',
           textAlign: TextAlign.center,
