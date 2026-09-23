@@ -10,9 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      VERSION: '4.0.0'
+      # Misma versión exacta que los paquetes serverpod* de los pubspecs.
+      VERSION: '4.0.1'
+      # `config/passwords.yaml` no está en el repo, así que en CI las claves
+      # vienen por entorno. Son de test y no protegen nada: la base embebida se
+      # crea de cero en cada corrida y los peppers no firman nada que sobreviva.
       SERVERPOD_PASSWORD_database: 'CdHY12yuHqk5og4hwFtZnekISP3zoHmq'
       SERVERPOD_PASSWORD_redis: 'NXJ5QIQhC7Ww5KBUkLi4Hk68BQxBSNzc'
+      SERVERPOD_PASSWORD_emailSecretHashPepper: 'pepper-de-test-no-es-un-secreto'
+      SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'pepper-de-test-no-es-un-secreto'
 
     steps:
       - uses: actions/checkout@v4
@@ -21,25 +27,24 @@ jobs:
         with:
           flutter-version: '3.44.4'
 
-      - name: Start containers
-        working-directory: saints_nhf_server
-        run: docker compose up --quiet-pull --build -d
-
       - name: Install dependencies
         run: flutter pub get
 
+      # `dart install` deja los ejecutables en el bin del pub cache, que no está
+      # en el PATH del runner: sin esto, `serverpod` da "command not found".
       - name: Install Serverpod CLI
-        run: dart install serverpod_cli $VERSION
+        run: |
+          dart install "serverpod_cli@$VERSION"
+          echo "${PUB_CACHE:-$HOME/.pub-cache}/bin" >>"$GITHUB_PATH"
 
       - name: Run Serverpod generator
         working-directory: saints_nhf_server
         run: serverpod generate
 
+      # Sin Docker a propósito: `config/test.yaml` define `dataPath`, así que
+      # Serverpod arranca y administra su propio PostgreSQL embebido. Levantar
+      # además el `postgres_test` del docker-compose le robaba el puerto 9090 y
+      # los tests no podían abrir su base.
       - name: Run tests
         working-directory: saints_nhf_server
         run: dart test
-
-      - name: Stop containers
-        if: always()
-        working-directory: saints_nhf_server
-        run: docker compose down -v
