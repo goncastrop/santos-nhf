@@ -279,27 +279,68 @@ Verificar: `https://santos.nhf.com.ar/` sirve la app, la API responde y
 
 ### 8. Migrar los datos
 
-`scloud` da host, puerto y nombre de la base de Serverpod Cloud, y deja crear un
-usuario para conectarse. Con eso:
+Hecho el 23/09/2026. La base de origen es **Neon** (PostgreSQL 17) en
+`eu-central-1`; el destino es PostgreSQL 16 en Docker. `serverpod cloud db
+connection` da host, puerto y base, y `serverpod cloud db user create --username
+<nombre>` crea un superusuario cuya contraseña conviene dejar en un archivo del
+servidor con permisos 600, para que `pg_dump` la lea de `PGPASSWORD` sin que
+aparezca en ninguna línea de comandos.
+
+Cuatro cosas que definieron el procedimiento:
+
+- **Usar el endpoint directo de Neon, sin el sufijo `-pooler`.** El pooler es
+  PgBouncer en modo transacción y no soporta las operaciones de sesión que
+  `pg_dump` necesita para un snapshot consistente.
+- **El cliente tiene que ser de la versión del origen o mayor.** El contenedor de
+  Postgres trae el 16 y se niega a dumpear un servidor 17: el dump se corre con
+  un `postgres:17-alpine` descartable.
+- **Restaurar solo datos, no el esquema.** Las migraciones de los dos lados
+  coincidían, el destino tenía todas las tablas de la aplicación vacías, y así se
+  evita tanto recrear la base como importar los logs y las métricas de salud de
+  la nube. Requiere `--disable-triggers` (hay una FK circular entre
+  `serverpod_auth_core_profile` y `serverpod_auth_core_profile_image`) y excluir
+  con `--exclude-table-data` las tablas operativas de Serverpod, que en el
+  destino ya tienen filas escritas al arrancar: `serverpod_migrations`,
+  `serverpod_runtime_settings`, `serverpod_health_metric`,
+  `serverpod_health_connection_info`, los cuatro `*_log`, `serverpod_method`,
+  `serverpod_readwrite_test` y los dos `serverpod_future_call*`.
+- **Un dump de PostgreSQL 17 trae `SET transaction_timeout = 0;`**, un parámetro
+  que 16 no conoce y que aborta la restauración. Es una sola línea y se filtra.
+
+El comando, desde el servidor:
 
 ```bash
-pg_dump -h <host-scloud> -U <usuario> -d <base> --format=custom --no-owner \
-  --no-acl -f saints_nhf.dump
+PW="$(tr -d '\r\n' </root/.neon_pw)"
+URL="postgresql://<usuario>@<endpoint-directo>:5432/default?sslmode=require"
 
-scp -P <puerto> saints_nhf.dump root@<ip>:/tmp/
-ssh -p <puerto> root@<ip>
-docker compose -f /srv/santos-nhf/docker-compose.yml cp \
-  /tmp/saints_nhf.dump postgres:/tmp/
-docker compose -f /srv/santos-nhf/docker-compose.yml exec postgres \
-  pg_restore -U serverpod -d saints_nhf --no-owner --no-acl /tmp/saints_nhf.dump
+docker run --rm -e PGPASSWORD="$PW" -v /root/migracion:/out postgres:17-alpine \
+  pg_dump "$URL" --data-only --disable-triggers --no-owner --no-acl \
+  --exclude-table-data=serverpod_migrations \
+  --exclude-table-data=serverpod_runtime_settings \
+  ... \
+  --file=/out/datos.sql
+
+grep -v 'SET transaction_timeout = 0;' /root/migracion/datos.sql >/root/migracion/datos_pg16.sql
+
+docker compose stop server
+docker compose exec -T postgres psql -U serverpod -d saints_nhf \
+  -v ON_ERROR_STOP=1 --single-transaction --quiet </root/migracion/datos_pg16.sql
+docker compose up -d
 ```
 
-Usar el `pg_dump` de la versión de destino o superior. Importante: la tabla de
-migraciones viaja en el dump, así que el `migrate` del stack no va a querer
-reaplicar nada. Confirmarlo antes de dejar entrar tráfico.
+`--single-transaction` con `ON_ERROR_STOP=1` hace que un error deje la base como
+estaba en vez de a medio importar. Los `setval` del dump reposicionan las
+secuencias: sin eso, el primer `insert` nuevo choca con un id existente.
 
-Las ilustraciones **no** se migran: se vuelven a subir optimizadas (ver abajo),
-lo que de paso resuelve el problema del peso.
+Al terminar, comparar los conteos de los dos lados y borrar el usuario de
+migración con `serverpod cloud db user delete`. Resultado de esta migración: 59
+santos (58 publicados), 7 usuarios con sus 7 cuentas de email, 53 cartas, 7
+perfiles, 177 preguntas, 178 libros, 20 duelos y 2 amistades.
+
+Las ilustraciones **no** viajan: en Serverpod Cloud vivían en un bucket, así que
+`serverpod_cloud_storage` estaba vacía. Se vuelven a subir optimizadas (ver
+"Imágenes"), lo que de paso resuelve el problema del peso. Hasta que se suban,
+las tarjetas muestran el monograma.
 
 ## Migraciones del esquema
 
@@ -415,22 +456,17 @@ la versión nueva, y correr la suite de integración antes.
 ## Pendientes
 
 Hecho: servidor creado y provisionado (Docker, swap, rotación de logs, backup
-diario), compose y Caddyfile instalados en `/srv/santos-nhf/`, imágenes de
-postgres y caddy pre-bajadas, `.env` creado con `POSTGRES_PASSWORD`,
-`SERVICE_SECRET` y los dos peppers generados en el servidor, y las dos claves
-SSH instaladas.
+diario), stack desplegado y sirviendo `santos.nhf.com.ar` y
+`api.santos.nhf.com.ar` con certificados de Let's Encrypt, mails de Brevo
+probados de punta a punta, y los datos migrados desde Serverpod Cloud.
 
-- [ ] Completar en `/srv/santos-nhf/.env`: `ADMIN_EMAILS`, `SMTP_USERNAME`,
-      `SMTP_PASSWORD` y `ACME_EMAIL`. Los cuatro son datos que no pasan por el
-      chat.
-- [ ] Dominio pago y delegado, con los A/AAAA apuntando al servidor. Hasta que
-      resuelva, **no** levantar el stack: Caddy falla el desafío de Let's
-      Encrypt y entra en backoff.
-- [ ] Dominio autenticado en Brevo (TXT, DKIM, SPF, DMARC) y prueba a Gmail y
-      Outlook.
-- [ ] Secretos de GitHub: `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER` y
-      `DEPLOY_SSH_KEY` (la privada de `~/.ssh/santos_nhf_ci_ed25519`).
-- [ ] Primer deploy y migración de los datos desde Serverpod Cloud.
-- [ ] Subir las 93 ilustraciones optimizadas.
-- [ ] Avisar a los usuarios existentes que tienen que resetear la contraseña.
+- [ ] Subir las 93 ilustraciones optimizadas. Hasta entonces las tarjetas
+      muestran el monograma.
+- [ ] Borrar el usuario de migración de la base de Cloud:
+      `serverpod cloud db user delete --username <nombre>`, y el archivo con su
+      contraseña en `/root/.neon_pw`.
+- [ ] Avisar a los 7 usuarios existentes que tienen que resetear la contraseña.
+- [ ] SPF en Cloudflare: TXT en la raíz con `v=spf1 include:spf.brevo.com ~all`.
+- [ ] Deshabilitar la autenticación por contraseña en `sshd`, ahora que las
+      claves funcionan.
 - [ ] Apagar el proyecto de Serverpod Cloud, recién con todo verificado.

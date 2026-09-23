@@ -113,7 +113,11 @@ jobs:
           set -euo pipefail
           cd /srv/santos-nhf
           echo "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
-          # SERVER_IMAGE del .env se sobreescribe para este deploy.
+          # Se fija en el .env, no solo en el entorno de este comando: al salir
+          # hacemos docker logout, así que un `docker compose up -d` manual con
+          # SERVER_IMAGE apuntando a :latest intentaría bajar de GHCR sin
+          # credenciales y fallaría. Con el tag por SHA, la imagen ya está local.
+          sed -i "s|^SERVER_IMAGE=.*|SERVER_IMAGE=${IMAGE}|" .env
           export SERVER_IMAGE="$IMAGE"
           docker compose pull --quiet server migrate
           docker compose up -d --remove-orphans
