@@ -55,6 +55,10 @@ class ProfileService {
               ? _randomName()
               : profile.displayName,
         ),
+        // Solo la identidad pública. Escribir la fila entera desde una lectura
+        // previa revierte lo que otro endpoint haya escrito en el medio: así se
+        // perdía la marca del mazo inicial y el jugador recibía otro.
+        columns: (t) => [t.friendCode, t.displayName],
         transaction: transaction,
       );
     }

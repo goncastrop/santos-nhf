@@ -539,6 +539,7 @@ class DuelService {
           duelsPlayed: profile.duelsPlayed + 1,
           duelsWon: profile.duelsWon + (duel.winnerId == player ? 1 : 0),
         ),
+        columns: (t) => [t.duelsPlayed, t.duelsWon],
         transaction: transaction,
       );
     }
@@ -740,6 +741,7 @@ class DuelService {
     await PlayerProfile.db.updateRow(
       session,
       profile.copyWith(pendingHand: null),
+      columns: (t) => [t.pendingHand],
       transaction: transaction,
     );
   }
@@ -760,6 +762,7 @@ class DuelService {
     await PlayerProfile.db.updateRow(
       session,
       profile.copyWith(pendingHand: hand),
+      columns: (t) => [t.pendingHand],
     );
     return hand;
   }

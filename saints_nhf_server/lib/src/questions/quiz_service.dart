@@ -27,6 +27,7 @@ class QuizService {
         profile = await PlayerProfile.db.updateRow(
           session,
           profile.copyWith(streak: 0),
+          columns: (t) => [t.streak],
           transaction: tx,
         );
       }
@@ -41,6 +42,15 @@ class QuizService {
             quizAnswered: false,
             quizChosenIndex: null,
           ),
+          // Solo las columnas del quiz: escribir la fila entera revertía lo que
+          // otro endpoint hubiera escrito mientras tanto, y así se perdió más
+          // de una vez la marca del mazo inicial.
+          columns: (t) => [
+            t.quizDay,
+            t.quizQuestionId,
+            t.quizAnswered,
+            t.quizChosenIndex,
+          ],
           transaction: tx,
         );
       }
@@ -95,6 +105,15 @@ class QuizService {
           totalCorrect: profile.totalCorrect + (correct ? 1 : 0),
           lastCorrectDay: correct ? today : profile.lastCorrectDay,
         ),
+        columns: (t) => [
+          t.quizAnswered,
+          t.quizChosenIndex,
+          t.streak,
+          t.bestStreak,
+          t.totalAnswered,
+          t.totalCorrect,
+          t.lastCorrectDay,
+        ],
         transaction: tx,
       );
       return _state(session, profile, transaction: tx);

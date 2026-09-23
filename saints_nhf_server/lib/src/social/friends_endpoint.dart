@@ -29,6 +29,7 @@ class FriendsEndpoint extends Endpoint {
     profile = await PlayerProfile.db.updateRow(
       session,
       profile.copyWith(displayName: trimmed),
+      columns: (t) => [t.displayName],
     );
     return _myProfile(session, profile);
   }

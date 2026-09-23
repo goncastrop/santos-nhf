@@ -154,6 +154,11 @@ class CollectionService {
       await PlayerProfile.db.updateRow(
         session,
         profile.copyWith(starterGranted: true),
+        // Only this column. `updateRow` writes the whole row by default, so an
+        // endpoint that read the profile earlier and writes it back later would
+        // revert this flag to the value it saw — which is exactly how players
+        // ended up with a second starter pack.
+        columns: (t) => [t.starterGranted],
         transaction: tx,
       );
       final infos = await SaintMapper.toInfos(session, picked);
@@ -213,6 +218,7 @@ class CollectionService {
       await PlayerProfile.db.updateRow(
         session,
         profile.copyWith(lastDailyClaimDay: today),
+        columns: (t) => [t.lastDailyClaimDay],
         transaction: tx,
       );
       return DailyClaimResult(
