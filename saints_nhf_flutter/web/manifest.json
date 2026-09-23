@@ -1,11 +1,11 @@
 {
-    "name": "saints_nhf_flutter",
-    "short_name": "saints_nhf_flutter",
+    "name": "Santos NHF",
+    "short_name": "Santos NHF",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0C0B16",
+    "theme_color": "#0C0B16",
+    "description": "El santo del día de No Hacemos Fotocopias: coleccioná las tarjetas, leé su biografía y su oración.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
