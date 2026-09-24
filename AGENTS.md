@@ -30,7 +30,12 @@ Build for multiple users, use Serverpod's built-in authentication, which is alre
   `AdminUsersEndpoint` (dar/quitar admin por email).
 - `questions/`: banco de preguntas (`Question`, 4 opciones), `QuestionService`, y el quiz
   diario (`QuizService`, `QuizEndpoint`): una pregunta por día sobre un santo de tu
-  colección, con racha guardada en `PlayerProfile`.
+  colección, con racha guardada en `PlayerProfile`. `QuestionSeen` (tabla `question_seen`,
+  par jugador + pregunta) recuerda qué preguntas ya le tocaron a cada uno:
+  `QuestionService.pickForPlayer` elige siempre entre las que nunca vio y solo cuando se
+  agota el pozo vuelve a las vistas hace más tiempo, al azar dentro de la mitad más vieja.
+  El Sacristán no se registra ahí (no tiene usuario) y sigue usando `randomFor`. En el duelo
+  además se excluyen las preguntas ya jugadas en ese mismo duelo (`_usedQuestionIds`).
 - `duel/`: motor del duelo (`DuelService`) con tablas `duel`, `duel_deck` y `duel_round`,
   `DuelEndpoint`, y la máquina "El Sacristán" (id fijo `11111111-1111-4111-8111-111111111111`,
   juega dentro de la misma transacción tras cada jugada humana). Reglas en `ROADMAP.md`.

@@ -22,7 +22,84 @@ class QuestionService {
     options: order.apply(q.options),
   );
 
-  /// A random question about [saintId], or null when there is none.
+  /// A question about one of [saintIds] that [me] has not been asked yet, or
+  /// null when those saints have no questions at all.
+  ///
+  /// A plain random draw over the whole bank kept bringing the same questions
+  /// back — with a handful per saint the birthday problem is brutal, and the
+  /// player reads it as "always the same ones". So unseen questions come
+  /// first, and only when every one has come up does it start over with the
+  /// ones seen longest ago.
+  ///
+  /// [exclude] drops questions that cannot be used right now (already played
+  /// in this duel), and is ignored when it would leave nothing to ask.
+  static Future<Question?> pickForPlayer(
+    Session session,
+    UuidValue me,
+    Set<int> saintIds, {
+    Set<int> exclude = const {},
+    Transaction? transaction,
+  }) async {
+    if (saintIds.isEmpty) return null;
+    final all = await Question.db.find(
+      session,
+      where: (t) => t.saintId.inSet(saintIds),
+      transaction: transaction,
+    );
+    var pool = all.where((q) => !exclude.contains(q.id)).toList();
+    if (pool.isEmpty) pool = all;
+    if (pool.isEmpty) return null;
+
+    final seenRows = await QuestionSeen.db.find(
+      session,
+      where: (t) =>
+          t.authUserId.equals(me) &
+          t.questionId.inSet({for (final q in pool) q.id!}),
+      transaction: transaction,
+    );
+    final seenAt = {for (final r in seenRows) r.questionId: r.seenAt};
+    final unseen = pool.where((q) => !seenAt.containsKey(q.id)).toList();
+    if (unseen.isNotEmpty) return unseen[_random.nextInt(unseen.length)];
+
+    // Second lap: the oldest half, at random inside it, so the order of the
+    // first lap does not repeat either.
+    pool.sort((a, b) => seenAt[a.id]!.compareTo(seenAt[b.id]!));
+    final oldest = pool.take(max(1, pool.length ~/ 2)).toList();
+    return oldest[_random.nextInt(oldest.length)];
+  }
+
+  /// Records that [me] was asked [questionId]. Call it when the question is
+  /// handed to the player, not when they answer: an abandoned duel round still
+  /// showed it.
+  static Future<void> markSeen(
+    Session session,
+    UuidValue me,
+    int questionId, {
+    Transaction? transaction,
+  }) async {
+    final existing = await QuestionSeen.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(me) & t.questionId.equals(questionId),
+      transaction: transaction,
+    );
+    if (existing == null) {
+      await QuestionSeen.db.insertRow(
+        session,
+        QuestionSeen(authUserId: me, questionId: questionId),
+        transaction: transaction,
+      );
+    } else {
+      await QuestionSeen.db.updateRow(
+        session,
+        existing.copyWith(seenAt: DateTime.now().toUtc()),
+        columns: (t) => [t.seenAt],
+        transaction: transaction,
+      );
+    }
+  }
+
+  /// A random question about [saintId], or null when there is none. Used for
+  /// the machine opponent, which has no history of its own.
   static Future<Question?> randomFor(
     Session session,
     int saintId, {

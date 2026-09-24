@@ -64,6 +64,7 @@ import 'duel/duel_summary.dart' as _iqx58u4g;
 import 'duel/duel_view.dart' as _inhuti79;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
+import 'questions/question_seen.dart' as _iqz00a3b;
 import 'questions/quiz_exception.dart' as _ilkzvlf7;
 import 'questions/quiz_question.dart' as _icdqdbld;
 import 'saints/patch_note_entry.dart' as _i3y4zho1;
@@ -111,6 +112,7 @@ export 'duel/duel_summary.dart';
 export 'duel/duel_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
+export 'questions/question_seen.dart';
 export 'questions/quiz_exception.dart';
 export 'questions/quiz_question.dart';
 export 'saints/patch_note_entry.dart';
@@ -807,6 +809,72 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'question_seen',
+      dartName: 'QuestionSeen',
+      schema: 'public',
+      module: 'saints_nhf',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'questionId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'seenAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'question_seen_fk_0',
+          columns: ['questionId'],
+          referenceTable: 'question',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'question_seen_unique_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'questionId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1618,6 +1686,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ihstiddh.Question) {
       return _ihstiddh.Question.fromJson(data) as T;
     }
+    if (t == _iqz00a3b.QuestionSeen) {
+      return _iqz00a3b.QuestionSeen.fromJson(data) as T;
+    }
     if (t == _ilkzvlf7.QuizException) {
       return _ilkzvlf7.QuizException.fromJson(data) as T;
     }
@@ -1774,6 +1845,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ihstiddh.Question?>()) {
       return (data != null ? _ihstiddh.Question.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iqz00a3b.QuestionSeen?>()) {
+      return (data != null ? _iqz00a3b.QuestionSeen.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ilkzvlf7.QuizException?>()) {
       return (data != null ? _ilkzvlf7.QuizException.fromJson(data) : null)
@@ -2026,6 +2100,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _inhuti79.DuelView => 'DuelView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
+      _iqz00a3b.QuestionSeen => 'QuestionSeen',
       _ilkzvlf7.QuizException => 'QuizException',
       _icdqdbld.QuizQuestion => 'QuizQuestion',
       _i3y4zho1.PatchNoteEntry => 'PatchNoteEntry',
@@ -2115,6 +2190,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'DailyQuiz';
       case _ihstiddh.Question():
         return 'Question';
+      case _iqz00a3b.QuestionSeen():
+        return 'QuestionSeen';
       case _ilkzvlf7.QuizException():
         return 'QuizException';
       case _icdqdbld.QuizQuestion():
@@ -2263,6 +2340,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Question') {
       return deserialize<_ihstiddh.Question>(data['data']);
     }
+    if (dataClassName == 'QuestionSeen') {
+      return deserialize<_iqz00a3b.QuestionSeen>(data['data']);
+    }
     if (dataClassName == 'QuizException') {
       return deserialize<_ilkzvlf7.QuizException>(data['data']);
     }
@@ -2379,6 +2459,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ih8y80e4.DuelRound.t;
       case _ihstiddh.Question:
         return _ihstiddh.Question.t;
+      case _iqz00a3b.QuestionSeen:
+        return _iqz00a3b.QuestionSeen.t;
       case _iqo2xiq1.Saint:
         return _iqo2xiq1.Saint.t;
       case _igrhtj8i.SaintRevision:

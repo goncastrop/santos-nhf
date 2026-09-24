@@ -88,7 +88,8 @@ const helpChapters = <HelpChapter>[
           'carta que te toca. Si no, sale una al azar entre las que te faltan.',
       'Al crear la cuenta se reparten 5 cartas para empezar.',
       'La pregunta del día es sobre un santo de tu álbum y suma racha: '
-          'cuenta los días seguidos que respondés bien.',
+          'cuenta los días seguidos que respondés bien. No se repite una '
+          'pregunta hasta que se te terminen las nuevas.',
       'Si el programa da un código, se canjea acá.',
       'Las notas del parche avisan cuándo se corrigió el puntaje de un santo.',
     ],

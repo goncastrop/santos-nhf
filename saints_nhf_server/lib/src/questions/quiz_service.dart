@@ -10,8 +10,6 @@ import 'question_service.dart';
 
 /// The daily question: one per day about a saint in the player's collection.
 class QuizService {
-  static final _random = Random();
-
   static Future<DailyQuiz> today(Session session, UuidValue me) async {
     return session.db.transaction((tx) async {
       var profile = await ProfileService.ensure(session, me, transaction: tx);
@@ -120,7 +118,8 @@ class QuizService {
     });
   }
 
-  /// A random question about one of the player's published cards.
+  /// A question about one of the player's published cards that they have not
+  /// been asked before.
   static Future<Question?> _pickForPlayer(
     Session session,
     UuidValue me, {
@@ -133,15 +132,23 @@ class QuizService {
           t.saint.status.equals(SaintStatus.published),
       transaction: transaction,
     );
-    final saintIds = cards.map((c) => c.saintId).toSet();
+    final saintIds = {for (final c in cards) c.saintId};
     if (saintIds.isEmpty) return null;
-    final questions = await Question.db.find(
+    final question = await QuestionService.pickForPlayer(
       session,
-      where: (t) => t.saintId.inSet(saintIds),
+      me,
+      saintIds,
       transaction: transaction,
     );
-    if (questions.isEmpty) return null;
-    return questions[_random.nextInt(questions.length)];
+    if (question != null) {
+      await QuestionService.markSeen(
+        session,
+        me,
+        question.id!,
+        transaction: transaction,
+      );
+    }
+    return question;
   }
 
   /// Ties the shuffle to this player's question for this day, so the options

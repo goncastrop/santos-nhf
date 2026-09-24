@@ -185,14 +185,22 @@ class DuelService {
       }
       final deck = await _deckOf(session, duel.id!, me, transaction: tx);
       _requireInDeck(deck, saintId);
-      final question = await QuestionService.randomFor(
+      final question = await QuestionService.pickForPlayer(
         session,
-        saintId,
+        me,
+        {saintId},
+        exclude: await _usedQuestionIds(session, duel.id!, transaction: tx),
         transaction: tx,
       );
       if (question == null) {
         throw DuelException(message: 'Ese santo no tiene preguntas cargadas.');
       }
+      await QuestionService.markSeen(
+        session,
+        me,
+        question.id!,
+        transaction: tx,
+      );
       await DuelRound.db.insertRow(
         session,
         DuelRound(
@@ -232,14 +240,22 @@ class DuelService {
       }
       final deck = await _deckOf(session, duel.id!, me, transaction: tx);
       _requireInDeck(deck, saintId);
-      final question = await QuestionService.randomFor(
+      final question = await QuestionService.pickForPlayer(
         session,
-        saintId,
+        me,
+        {saintId},
+        exclude: await _usedQuestionIds(session, duel.id!, transaction: tx),
         transaction: tx,
       );
       if (question == null) {
         throw DuelException(message: 'Ese santo no tiene preguntas cargadas.');
       }
+      await QuestionService.markSeen(
+        session,
+        me,
+        question.id!,
+        transaction: tx,
+      );
       await DuelRound.db.updateRow(
         session,
         round.copyWith(
@@ -824,6 +840,26 @@ class DuelService {
       transaction: transaction,
     );
     return rounds.map((r) => r.category).toSet();
+  }
+
+  /// Questions already played in this duel, by either side. Asking one of them
+  /// again inside the same duel would hand the second player a free point.
+  static Future<Set<int>> _usedQuestionIds(
+    Session session,
+    int duelId, {
+    Transaction? transaction,
+  }) async {
+    final rounds = await DuelRound.db.find(
+      session,
+      where: (t) => t.duelId.equals(duelId),
+      transaction: transaction,
+    );
+    return {
+      for (final r in rounds) ...[
+        ?r.attackerQuestionId,
+        ?r.defenderQuestionId,
+      ],
+    };
   }
 
   static Future<DuelDeck> _deckOf(

@@ -1,0 +1,16 @@
+### One row per question a player has already been asked, so the same one does
+### not come back while there are unseen ones left. [seenAt] is refreshed every
+### time it comes up, so once the pool runs out the oldest are reused first.
+###
+### Only real players are recorded: the machine opponent picks its questions
+### without looking here.
+class: QuestionSeen
+table: question_seen
+fields:
+  authUserId: UuidValue
+  question: Question?, relation(onDelete=Cascade)
+  seenAt: DateTime, default=now
+indexes:
+  question_seen_unique_idx:
+    fields: authUserId, questionId
+    unique: true
