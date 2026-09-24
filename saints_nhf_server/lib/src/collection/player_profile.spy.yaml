@@ -26,6 +26,8 @@ fields:
   ### Duel stats.
   duelsWon: int, default=0
   duelsPlayed: int, default=0
+  ### Best score ever reached in La Letanía.
+  litanyBest: int, default=0
   createdAt: DateTime, default=now
 indexes:
   player_profile_auth_user_idx:

@@ -4,3 +4,5 @@ fields:
   byCards: List<LeaderboardEntry>
   byStreak: List<LeaderboardEntry>
   byDuelsWon: List<LeaderboardEntry>
+  ### Best score in La Letanía.
+  byLitany: List<LeaderboardEntry>

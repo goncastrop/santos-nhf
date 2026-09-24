@@ -1,0 +1,35 @@
+### One run of La Letanía: questions about the saints in your album until you
+### run out of lives.
+###
+### There is at most one unfinished run per player, so closing the app and
+### coming back picks it up where it was instead of losing the score.
+class: LitanyRun
+table: litany_run
+fields:
+  authUserId: UuidValue
+  lives: int, default=3
+  score: int, default=0
+  ### Correct answers in a row, which drives the multiplier.
+  streak: int, default=0
+  bestStreak: int, default=0
+  answered: int, default=0
+  correct: int, default=0
+  ### Question on the table. Null when the run is over.
+  questionId: int?
+  ### Null while the current question has not been answered; set to the stored
+  ### index the player picked once it is graded, so a reload still shows the
+  ### result before moving on.
+  chosenIndex: int?
+  ### Questions already asked in this run. The global no-repeat rule can start
+  ### reusing old questions once the pool is exhausted, and a run long enough
+  ### to reach that point should still not ask the same thing twice.
+  askedQuestionIds: List<int>?
+  finished: bool, default=false
+  ### Whether this run beat the player's previous best, so a tie is not
+  ### announced as a record.
+  wasRecord: bool, default=false
+  startedAt: DateTime, default=now
+  finishedAt: DateTime?
+indexes:
+  litany_run_user_idx:
+    fields: authUserId

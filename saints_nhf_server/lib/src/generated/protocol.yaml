@@ -65,6 +65,12 @@ duel:
   - attack:
   - defend:
   - answer:
+litany:
+  - state:
+  - start:
+  - answer:
+  - next:
+  - giveUp:
 quiz:
   - today:
   - answer:

@@ -1,0 +1,3 @@
+exception: LitanyException
+fields:
+  message: String

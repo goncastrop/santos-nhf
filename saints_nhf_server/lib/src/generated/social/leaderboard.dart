@@ -21,12 +21,14 @@ abstract class Leaderboard
     required this.byCards,
     required this.byStreak,
     required this.byDuelsWon,
+    required this.byLitany,
   });
 
   factory Leaderboard({
     required List<_i3um952z.LeaderboardEntry> byCards,
     required List<_i3um952z.LeaderboardEntry> byStreak,
     required List<_i3um952z.LeaderboardEntry> byDuelsWon,
+    required List<_i3um952z.LeaderboardEntry> byLitany,
   }) = _LeaderboardImpl;
 
   factory Leaderboard.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -43,6 +45,10 @@ abstract class Leaderboard
           .deserialize<List<_i3um952z.LeaderboardEntry>>(
             jsonSerialization['byDuelsWon'],
           ),
+      byLitany: _itw3ru38.Protocol()
+          .deserialize<List<_i3um952z.LeaderboardEntry>>(
+            jsonSerialization['byLitany'],
+          ),
     );
   }
 
@@ -52,6 +58,9 @@ abstract class Leaderboard
 
   List<_i3um952z.LeaderboardEntry> byDuelsWon;
 
+  /// Best score in La Letanía.
+  List<_i3um952z.LeaderboardEntry> byLitany;
+
   /// Returns a shallow copy of this [Leaderboard]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -59,6 +68,7 @@ abstract class Leaderboard
     List<_i3um952z.LeaderboardEntry>? byCards,
     List<_i3um952z.LeaderboardEntry>? byStreak,
     List<_i3um952z.LeaderboardEntry>? byDuelsWon,
+    List<_i3um952z.LeaderboardEntry>? byLitany,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -67,6 +77,7 @@ abstract class Leaderboard
       'byCards': byCards.toJson(valueToJson: (v) => v.toJson()),
       'byStreak': byStreak.toJson(valueToJson: (v) => v.toJson()),
       'byDuelsWon': byDuelsWon.toJson(valueToJson: (v) => v.toJson()),
+      'byLitany': byLitany.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -79,6 +90,7 @@ abstract class Leaderboard
       'byDuelsWon': byDuelsWon.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
+      'byLitany': byLitany.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -93,10 +105,12 @@ class _LeaderboardImpl extends Leaderboard {
     required List<_i3um952z.LeaderboardEntry> byCards,
     required List<_i3um952z.LeaderboardEntry> byStreak,
     required List<_i3um952z.LeaderboardEntry> byDuelsWon,
+    required List<_i3um952z.LeaderboardEntry> byLitany,
   }) : super._(
          byCards: byCards,
          byStreak: byStreak,
          byDuelsWon: byDuelsWon,
+         byLitany: byLitany,
        );
 
   /// Returns a shallow copy of this [Leaderboard]
@@ -107,12 +121,14 @@ class _LeaderboardImpl extends Leaderboard {
     List<_i3um952z.LeaderboardEntry>? byCards,
     List<_i3um952z.LeaderboardEntry>? byStreak,
     List<_i3um952z.LeaderboardEntry>? byDuelsWon,
+    List<_i3um952z.LeaderboardEntry>? byLitany,
   }) {
     return Leaderboard(
       byCards: byCards ?? this.byCards.map((e0) => e0.copyWith()).toList(),
       byStreak: byStreak ?? this.byStreak.map((e0) => e0.copyWith()).toList(),
       byDuelsWon:
           byDuelsWon ?? this.byDuelsWon.map((e0) => e0.copyWith()).toList(),
+      byLitany: byLitany ?? this.byLitany.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

@@ -34,6 +34,8 @@ import 'package:saints_nhf_server/src/generated/duel/duel_summary.dart'
     as _i55m6l7d;
 import 'package:saints_nhf_server/src/generated/duel/duel_view.dart'
     as _idz2oq7y;
+import 'package:saints_nhf_server/src/generated/litany/litany_view.dart'
+    as _i5hnua76;
 import 'package:saints_nhf_server/src/generated/protocol.dart' as _itw3ru38;
 import 'package:saints_nhf_server/src/generated/questions/daily_quiz.dart'
     as _ijyfrtfo;
@@ -212,6 +214,8 @@ class TestEndpoints {
 
   late final _DuelEndpoint duel;
 
+  late final _LitanyEndpoint litany;
+
   late final _QuizEndpoint quiz;
 
   late final _SaintEndpoint saint;
@@ -269,6 +273,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     duel = _DuelEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    litany = _LitanyEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2212,6 +2220,168 @@ class _DuelEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_idz2oq7y.DuelView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _LitanyEndpoint {
+  _LitanyEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_i5hnua76.LitanyView> state(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'litany',
+            method: 'state',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'litany',
+          methodName: 'state',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i5hnua76.LitanyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i5hnua76.LitanyView> start(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'litany',
+            method: 'start',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'litany',
+          methodName: 'start',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i5hnua76.LitanyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i5hnua76.LitanyView> answer(
+    _ist.TestSessionBuilder sessionBuilder,
+    int chosenIndex,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'litany',
+            method: 'answer',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'litany',
+          methodName: 'answer',
+          parameters: _ist.testObjectToJson({'chosenIndex': chosenIndex}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i5hnua76.LitanyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i5hnua76.LitanyView> next(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'litany',
+            method: 'next',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'litany',
+          methodName: 'next',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i5hnua76.LitanyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i5hnua76.LitanyView> giveUp(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'litany',
+            method: 'giveUp',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'litany',
+          methodName: 'giveUp',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i5hnua76.LitanyView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

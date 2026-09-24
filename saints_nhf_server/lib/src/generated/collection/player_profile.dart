@@ -39,6 +39,7 @@ abstract class PlayerProfile
     this.pendingHand,
     int? duelsWon,
     int? duelsPlayed,
+    int? litanyBest,
     DateTime? createdAt,
   }) : starterGranted = starterGranted ?? false,
        quizAnswered = quizAnswered ?? false,
@@ -48,6 +49,7 @@ abstract class PlayerProfile
        totalCorrect = totalCorrect ?? 0,
        duelsWon = duelsWon ?? 0,
        duelsPlayed = duelsPlayed ?? 0,
+       litanyBest = litanyBest ?? 0,
        createdAt = createdAt ?? DateTime.now();
 
   factory PlayerProfile({
@@ -70,6 +72,7 @@ abstract class PlayerProfile
     List<int>? pendingHand,
     int? duelsWon,
     int? duelsPlayed,
+    int? litanyBest,
     DateTime? createdAt,
   }) = _PlayerProfileImpl;
 
@@ -108,6 +111,7 @@ abstract class PlayerProfile
             ),
       duelsWon: jsonSerialization['duelsWon'] as int?,
       duelsPlayed: jsonSerialization['duelsPlayed'] as int?,
+      litanyBest: jsonSerialization['litanyBest'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -164,6 +168,9 @@ abstract class PlayerProfile
 
   int duelsPlayed;
 
+  /// Best score ever reached in La Letanía.
+  int litanyBest;
+
   DateTime createdAt;
 
   @override
@@ -192,6 +199,7 @@ abstract class PlayerProfile
     List<int>? pendingHand,
     int? duelsWon,
     int? duelsPlayed,
+    int? litanyBest,
     DateTime? createdAt,
   });
   @override
@@ -217,6 +225,7 @@ abstract class PlayerProfile
       if (pendingHand != null) 'pendingHand': pendingHand?.toJson(),
       'duelsWon': duelsWon,
       'duelsPlayed': duelsPlayed,
+      'litanyBest': litanyBest,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -244,6 +253,7 @@ abstract class PlayerProfile
       if (pendingHand != null) 'pendingHand': pendingHand?.toJson(),
       'duelsWon': duelsWon,
       'duelsPlayed': duelsPlayed,
+      'litanyBest': litanyBest,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -299,6 +309,7 @@ class _PlayerProfileImpl extends PlayerProfile {
     List<int>? pendingHand,
     int? duelsWon,
     int? duelsPlayed,
+    int? litanyBest,
     DateTime? createdAt,
   }) : super._(
          id: id,
@@ -320,6 +331,7 @@ class _PlayerProfileImpl extends PlayerProfile {
          pendingHand: pendingHand,
          duelsWon: duelsWon,
          duelsPlayed: duelsPlayed,
+         litanyBest: litanyBest,
          createdAt: createdAt,
        );
 
@@ -347,6 +359,7 @@ class _PlayerProfileImpl extends PlayerProfile {
     Object? pendingHand = _Undefined,
     int? duelsWon,
     int? duelsPlayed,
+    int? litanyBest,
     DateTime? createdAt,
   }) {
     return PlayerProfile(
@@ -381,6 +394,7 @@ class _PlayerProfileImpl extends PlayerProfile {
           : this.pendingHand?.map((e0) => e0).toList(),
       duelsWon: duelsWon ?? this.duelsWon,
       duelsPlayed: duelsPlayed ?? this.duelsPlayed,
+      litanyBest: litanyBest ?? this.litanyBest,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -479,6 +493,11 @@ class PlayerProfileUpdateTable extends _is.UpdateTable<PlayerProfileTable> {
     value,
   );
 
+  _is.ColumnValue<int, int> litanyBest(int value) => _is.ColumnValue(
+    table.litanyBest,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -566,6 +585,11 @@ class PlayerProfileTable extends _is.Table<int?> {
       this,
       hasDefault: true,
     );
+    litanyBest = _is.ColumnInt(
+      'litanyBest',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -618,6 +642,9 @@ class PlayerProfileTable extends _is.Table<int?> {
 
   late final _is.ColumnInt duelsPlayed;
 
+  /// Best score ever reached in La Letanía.
+  late final _is.ColumnInt litanyBest;
+
   late final _is.ColumnDateTime createdAt;
 
   _iacs.AuthUserTable get authUser {
@@ -653,6 +680,7 @@ class PlayerProfileTable extends _is.Table<int?> {
     pendingHand,
     duelsWon,
     duelsPlayed,
+    litanyBest,
     createdAt,
   ];
 

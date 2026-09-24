@@ -35,6 +35,7 @@ import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../collection/collection_endpoint.dart' as _igyw9xw4;
 import '../duel/duel_endpoint.dart' as _inwr4dl6;
+import '../litany/litany_endpoint.dart' as _ir5yijij;
 import '../questions/quiz_endpoint.dart' as _i9pu1r99;
 import '../saints/saint_endpoint.dart' as _i0hn8dfu;
 import '../social/friends_endpoint.dart' as _iejqgreb;
@@ -108,6 +109,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'duel',
+          null,
+        ),
+      'litany': _ir5yijij.LitanyEndpoint()
+        ..initialize(
+          server,
+          'litany',
           null,
         ),
       'quiz': _i9pu1r99.QuizEndpoint()
@@ -1302,6 +1309,72 @@ class Endpoints extends _is.EndpointDispatch {
                 params['duelId'],
                 params['chosenIndex'],
               ),
+        ),
+      },
+    );
+    connectors['litany'] = _is.EndpointConnector(
+      name: 'litany',
+      endpoint: endpoints['litany']!,
+      methodConnectors: {
+        'state': _is.MethodConnector(
+          name: 'state',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['litany'] as _ir5yijij.LitanyEndpoint)
+                  .state(session),
+        ),
+        'start': _is.MethodConnector(
+          name: 'start',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['litany'] as _ir5yijij.LitanyEndpoint)
+                  .start(session),
+        ),
+        'answer': _is.MethodConnector(
+          name: 'answer',
+          params: {
+            'chosenIndex': _is.ParameterDescription(
+              name: 'chosenIndex',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['litany'] as _ir5yijij.LitanyEndpoint).answer(
+                    session,
+                    params['chosenIndex'],
+                  ),
+        ),
+        'next': _is.MethodConnector(
+          name: 'next',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['litany'] as _ir5yijij.LitanyEndpoint).next(
+                session,
+              ),
+        ),
+        'giveUp': _is.MethodConnector(
+          name: 'giveUp',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['litany'] as _ir5yijij.LitanyEndpoint)
+                  .giveUp(session),
         ),
       },
     );

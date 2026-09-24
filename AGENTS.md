@@ -39,6 +39,15 @@ Build for multiple users, use Serverpod's built-in authentication, which is alre
 - `duel/`: motor del duelo (`DuelService`) con tablas `duel`, `duel_deck` y `duel_round`,
   `DuelEndpoint`, y la máquina "El Sacristán" (id fijo `11111111-1111-4111-8111-111111111111`,
   juega dentro de la misma transacción tras cada jugada humana). Reglas en `ROADMAP.md`.
+- `litany/`: "La Letanía", el juego individual (`LitanyRun` en la tabla `litany_run`,
+  `LitanyService`, `LitanyEndpoint`, DTO `LitanyView`). Una corrida de preguntas sobre los
+  santos del álbum con 3 vidas: acertar suma `basePoints` por el multiplicador, que sube un
+  paso cada `streakPerStep` aciertos seguidos hasta `maxMultiplier`; errar cuesta una vida y
+  corta la racha. Hay como máximo una corrida sin terminar por jugador, así que volver a la
+  pantalla la retoma en lugar de perder el puntaje. `askedQuestionIds` evita repetir dentro de
+  la corrida incluso cuando el pozo global ya se agotó. Al terminar, el puntaje queda en
+  `PlayerProfile.litanyBest` y entra en `Leaderboard.byLitany`. Las reglas (`maxLives`,
+  `maxMultiplier`) viajan en el DTO para que la app no tenga su propia copia de los números.
 - `social/`: `ProfileService` (nombre público y código de amigo), `FriendsEndpoint`
   (amistad inmediata por código, tabla `friendship` con el par ordenado) y
   `LeaderboardEndpoint` (rankings con SQL crudo para contar cartas).
@@ -118,7 +127,8 @@ por los endpoints admin. El catálogo público nunca los incluye.
   separaría abre una lista en vez de acercar),
   `saint_detail_screen`, `album_screen`, `profile_screen` (cerrar
   sesión, acceso admin), `screens/play/` (hub, selector de mazo, tablero del duelo con
-  sondeo cada 8 s en duelos entre amigos, adivinar el puntaje), `screens/friends/`
+  sondeo cada 8 s en duelos entre amigos, adivinar el puntaje, `litany_screen` con La
+  Letanía), `screens/friends/`
   (código, amigos, desafiar, rankings, álbum de un amigo) y `screens/admin/` (santos,
   edición, historial, preguntas, libros, códigos, admins).
 - `utils/scores.dart`: extensión sobre el enum compartido `ScoreCategory` (label,

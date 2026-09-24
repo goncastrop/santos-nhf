@@ -62,6 +62,9 @@ import 'duel/duel_round_view.dart' as _izgr1lt8;
 import 'duel/duel_status.dart' as _iawu1v59;
 import 'duel/duel_summary.dart' as _iqx58u4g;
 import 'duel/duel_view.dart' as _inhuti79;
+import 'litany/litany_exception.dart' as _ihfep1t2;
+import 'litany/litany_run.dart' as _i0tq7vpz;
+import 'litany/litany_view.dart' as _iyteid9u;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_seen.dart' as _iqz00a3b;
@@ -110,6 +113,9 @@ export 'duel/duel_round_view.dart';
 export 'duel/duel_status.dart';
 export 'duel/duel_summary.dart';
 export 'duel/duel_view.dart';
+export 'litany/litany_exception.dart';
+export 'litany/litany_run.dart';
+export 'litany/litany_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_seen.dart';
@@ -568,6 +574,131 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'litany_run',
+      dartName: 'LitanyRun',
+      schema: 'public',
+      module: 'saints_nhf',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'lives',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '3',
+        ),
+        _isp.ColumnDefinition(
+          name: 'score',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'streak',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bestStreak',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'answered',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'correct',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'questionId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'chosenIndex',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'askedQuestionIds',
+          columnType: _isp.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<int>?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'finished',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'wasRecord',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'startedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(
+          name: 'finishedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'litany_run_user_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'player_profile',
       dartName: 'PlayerProfile',
       schema: 'public',
@@ -685,6 +816,13 @@ class Protocol extends _is.DatabaseSerializationManager {
         ),
         _isp.ColumnDefinition(
           name: 'duelsPlayed',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'litanyBest',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
@@ -1680,6 +1818,15 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _inhuti79.DuelView) {
       return _inhuti79.DuelView.fromJson(data) as T;
     }
+    if (t == _ihfep1t2.LitanyException) {
+      return _ihfep1t2.LitanyException.fromJson(data) as T;
+    }
+    if (t == _i0tq7vpz.LitanyRun) {
+      return _i0tq7vpz.LitanyRun.fromJson(data) as T;
+    }
+    if (t == _iyteid9u.LitanyView) {
+      return _iyteid9u.LitanyView.fromJson(data) as T;
+    }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
     }
@@ -1839,6 +1986,16 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_inhuti79.DuelView?>()) {
       return (data != null ? _inhuti79.DuelView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ihfep1t2.LitanyException?>()) {
+      return (data != null ? _ihfep1t2.LitanyException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i0tq7vpz.LitanyRun?>()) {
+      return (data != null ? _i0tq7vpz.LitanyRun.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iyteid9u.LitanyView?>()) {
+      return (data != null ? _iyteid9u.LitanyView.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
@@ -2098,6 +2255,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iawu1v59.DuelStatus => 'DuelStatus',
       _iqx58u4g.DuelSummary => 'DuelSummary',
       _inhuti79.DuelView => 'DuelView',
+      _ihfep1t2.LitanyException => 'LitanyException',
+      _i0tq7vpz.LitanyRun => 'LitanyRun',
+      _iyteid9u.LitanyView => 'LitanyView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _iqz00a3b.QuestionSeen => 'QuestionSeen',
@@ -2186,6 +2346,12 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'DuelSummary';
       case _inhuti79.DuelView():
         return 'DuelView';
+      case _ihfep1t2.LitanyException():
+        return 'LitanyException';
+      case _i0tq7vpz.LitanyRun():
+        return 'LitanyRun';
+      case _iyteid9u.LitanyView():
+        return 'LitanyView';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -2334,6 +2500,15 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'DuelView') {
       return deserialize<_inhuti79.DuelView>(data['data']);
     }
+    if (dataClassName == 'LitanyException') {
+      return deserialize<_ihfep1t2.LitanyException>(data['data']);
+    }
+    if (dataClassName == 'LitanyRun') {
+      return deserialize<_i0tq7vpz.LitanyRun>(data['data']);
+    }
+    if (dataClassName == 'LitanyView') {
+      return deserialize<_iyteid9u.LitanyView>(data['data']);
+    }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);
     }
@@ -2457,6 +2632,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iu4yo7o5.DuelDeck.t;
       case _ih8y80e4.DuelRound:
         return _ih8y80e4.DuelRound.t;
+      case _i0tq7vpz.LitanyRun:
+        return _i0tq7vpz.LitanyRun.t;
       case _ihstiddh.Question:
         return _ihstiddh.Question.t;
       case _iqz00a3b.QuestionSeen:

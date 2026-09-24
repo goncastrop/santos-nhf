@@ -9,6 +9,7 @@ import '../../widgets/common.dart';
 import 'deck_picker_screen.dart';
 import 'duel_screen.dart';
 import 'guess_score_screen.dart';
+import 'litany_screen.dart';
 
 /// Hub of the games: duels, solo games and the list of ongoing duels.
 class PlayScreen extends StatefulWidget {
@@ -85,6 +86,15 @@ class _PlayScreenState extends State<PlayScreen> {
               context,
               'Elegí un amigo en la pestaña Amigos y tocá el ícono de duelo.',
             ),
+          ),
+          const SizedBox(height: 10),
+          _GameTile(
+            icon: Icons.format_list_bulleted_rounded,
+            title: 'La Letanía',
+            subtitle:
+                'Solo vos: preguntas sobre los santos de tu álbum, una tras '
+                'otra, con tres vidas y multiplicador por racha.',
+            onTap: () => LitanyScreen.open(context),
           ),
           const SizedBox(height: 10),
           _GameTile(

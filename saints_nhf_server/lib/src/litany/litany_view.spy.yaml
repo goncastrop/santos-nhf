@@ -1,0 +1,36 @@
+### What the app needs to draw La Letanía.
+class: LitanyView
+fields:
+  ### Null when there is no run going on.
+  runId: int?
+  lives: int
+  score: int
+  streak: int
+  ### What the next correct answer is worth, including the streak multiplier.
+  nextPoints: int
+  multiplier: int
+  answered: int
+  correct: int
+  ### The question waiting to be answered. Null while showing the result of
+  ### the previous one, and when the run is over.
+  question: QuizQuestion?
+  ### Who the current question is about.
+  saint: SaintInfo?
+  ### Result of the question just answered, while it is still on screen.
+  lastWasCorrect: bool?
+  ### Points that answer was worth. The multiplier moves with the streak, so
+  ### the app cannot infer it from [nextPoints] without duplicating the rules.
+  lastGain: int?
+  correctIndex: int?
+  chosenIndex: int?
+  finished: bool
+  ### The rules, so the app draws the hearts and the ceiling without keeping
+  ### its own copy of the numbers.
+  maxLives: int
+  maxMultiplier: int
+  ### Best score this player ever reached.
+  bestScore: int
+  ### Set when the run beat the previous record.
+  newRecord: bool
+  ### Why no run can start, when [runId] is null.
+  unavailableReason: String?

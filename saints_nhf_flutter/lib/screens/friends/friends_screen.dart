@@ -386,6 +386,7 @@ class _Rankings extends StatelessWidget {
         table('Ranking · álbum', board.byCards, 'cartas'),
         table('Ranking · mejor racha', board.byStreak, 'días'),
         table('Ranking · duelos ganados', board.byDuelsWon, 'duelos'),
+        table('Ranking · La Letanía', board.byLitany, 'puntos'),
       ],
     );
   }

@@ -61,6 +61,9 @@ import 'duel/duel_round_view.dart' as _izgr1lt8;
 import 'duel/duel_status.dart' as _iawu1v59;
 import 'duel/duel_summary.dart' as _iqx58u4g;
 import 'duel/duel_view.dart' as _inhuti79;
+import 'litany/litany_exception.dart' as _ihfep1t2;
+import 'litany/litany_run.dart' as _i0tq7vpz;
+import 'litany/litany_view.dart' as _iyteid9u;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_seen.dart' as _iqz00a3b;
@@ -109,6 +112,9 @@ export 'duel/duel_round_view.dart';
 export 'duel/duel_status.dart';
 export 'duel/duel_summary.dart';
 export 'duel/duel_view.dart';
+export 'litany/litany_exception.dart';
+export 'litany/litany_run.dart';
+export 'litany/litany_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_seen.dart';
@@ -244,6 +250,15 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _inhuti79.DuelView) {
       return _inhuti79.DuelView.fromJson(data) as T;
+    }
+    if (t == _ihfep1t2.LitanyException) {
+      return _ihfep1t2.LitanyException.fromJson(data) as T;
+    }
+    if (t == _i0tq7vpz.LitanyRun) {
+      return _i0tq7vpz.LitanyRun.fromJson(data) as T;
+    }
+    if (t == _iyteid9u.LitanyView) {
+      return _iyteid9u.LitanyView.fromJson(data) as T;
     }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
@@ -404,6 +419,16 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_inhuti79.DuelView?>()) {
       return (data != null ? _inhuti79.DuelView.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ihfep1t2.LitanyException?>()) {
+      return (data != null ? _ihfep1t2.LitanyException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i0tq7vpz.LitanyRun?>()) {
+      return (data != null ? _i0tq7vpz.LitanyRun.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iyteid9u.LitanyView?>()) {
+      return (data != null ? _iyteid9u.LitanyView.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
@@ -660,6 +685,9 @@ class Protocol extends _isc.SerializationManager {
       _iawu1v59.DuelStatus => 'DuelStatus',
       _iqx58u4g.DuelSummary => 'DuelSummary',
       _inhuti79.DuelView => 'DuelView',
+      _ihfep1t2.LitanyException => 'LitanyException',
+      _i0tq7vpz.LitanyRun => 'LitanyRun',
+      _iyteid9u.LitanyView => 'LitanyView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _iqz00a3b.QuestionSeen => 'QuestionSeen',
@@ -748,6 +776,12 @@ class Protocol extends _isc.SerializationManager {
         return 'DuelSummary';
       case _inhuti79.DuelView():
         return 'DuelView';
+      case _ihfep1t2.LitanyException():
+        return 'LitanyException';
+      case _i0tq7vpz.LitanyRun():
+        return 'LitanyRun';
+      case _iyteid9u.LitanyView():
+        return 'LitanyView';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -891,6 +925,15 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'DuelView') {
       return deserialize<_inhuti79.DuelView>(data['data']);
+    }
+    if (dataClassName == 'LitanyException') {
+      return deserialize<_ihfep1t2.LitanyException>(data['data']);
+    }
+    if (dataClassName == 'LitanyRun') {
+      return deserialize<_i0tq7vpz.LitanyRun>(data['data']);
+    }
+    if (dataClassName == 'LitanyView') {
+      return deserialize<_iyteid9u.LitanyView>(data['data']);
     }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);

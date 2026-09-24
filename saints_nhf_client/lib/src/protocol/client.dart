@@ -33,6 +33,8 @@ import 'package:saints_nhf_client/src/protocol/duel/duel_summary.dart'
     as _ihyypura;
 import 'package:saints_nhf_client/src/protocol/duel/duel_view.dart'
     as _i0xdwvjk;
+import 'package:saints_nhf_client/src/protocol/litany/litany_view.dart'
+    as _inkd0p69;
 import 'package:saints_nhf_client/src/protocol/questions/daily_quiz.dart'
     as _iw94znon;
 import 'package:saints_nhf_client/src/protocol/questions/question.dart'
@@ -809,6 +811,52 @@ class EndpointDuel extends _isc.EndpointRef {
   );
 }
 
+/// La Letanía: the solo run of questions.
+/// {@category Endpoint}
+class EndpointLitany extends _isc.EndpointRef {
+  EndpointLitany(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'litany';
+
+  /// The run in progress, if any.
+  _ida.Future<_inkd0p69.LitanyView> state() =>
+      caller.callServerEndpoint<_inkd0p69.LitanyView>(
+        'litany',
+        'state',
+        {},
+      );
+
+  /// Starts a run, or picks up the one already going on.
+  _ida.Future<_inkd0p69.LitanyView> start() =>
+      caller.callServerEndpoint<_inkd0p69.LitanyView>(
+        'litany',
+        'start',
+        {},
+      );
+
+  _ida.Future<_inkd0p69.LitanyView> answer(int chosenIndex) =>
+      caller.callServerEndpoint<_inkd0p69.LitanyView>(
+        'litany',
+        'answer',
+        {'chosenIndex': chosenIndex},
+      );
+
+  _ida.Future<_inkd0p69.LitanyView> next() =>
+      caller.callServerEndpoint<_inkd0p69.LitanyView>(
+        'litany',
+        'next',
+        {},
+      );
+
+  _ida.Future<_inkd0p69.LitanyView> giveUp() =>
+      caller.callServerEndpoint<_inkd0p69.LitanyView>(
+        'litany',
+        'giveUp',
+        {},
+      );
+}
+
 /// The daily question and its streak.
 /// {@category Endpoint}
 class EndpointQuiz extends _isc.EndpointRef {
@@ -991,6 +1039,7 @@ class Client extends _isc.ServerpodClientShared {
     jwtRefresh = EndpointJwtRefresh(this);
     collection = EndpointCollection(this);
     duel = EndpointDuel(this);
+    litany = EndpointLitany(this);
     quiz = EndpointQuiz(this);
     saint = EndpointSaint(this);
     friends = EndpointFriends(this);
@@ -1020,6 +1069,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointDuel duel;
 
+  late final EndpointLitany litany;
+
   late final EndpointQuiz quiz;
 
   late final EndpointSaint saint;
@@ -1043,6 +1094,7 @@ class Client extends _isc.ServerpodClientShared {
     'jwtRefresh': jwtRefresh,
     'collection': collection,
     'duel': duel,
+    'litany': litany,
     'quiz': quiz,
     'saint': saint,
     'friends': friends,

@@ -45,10 +45,17 @@ class LeaderboardEndpoint extends Endpoint {
       orderBy: (t) => t.duelsWon.desc(),
       limit: _limit,
     );
+    final byLitanyProfiles = await PlayerProfile.db.find(
+      session,
+      where: (t) => t.litanyBest > 0,
+      orderBy: (t) => t.litanyBest.desc(),
+      limit: _limit,
+    );
     final ids = {
       ...cardCounts.keys,
       ...byStreakProfiles.map((p) => p.authUserId),
       ...byDuelsProfiles.map((p) => p.authUserId),
+      ...byLitanyProfiles.map((p) => p.authUserId),
     };
     final profiles = ids.isEmpty
         ? <PlayerProfile>[]
@@ -73,6 +80,9 @@ class LeaderboardEndpoint extends Endpoint {
       ],
       byDuelsWon: [
         for (final p in byDuelsProfiles) entry(p.authUserId, p.duelsWon),
+      ],
+      byLitany: [
+        for (final p in byLitanyProfiles) entry(p.authUserId, p.litanyBest),
       ],
     );
   }

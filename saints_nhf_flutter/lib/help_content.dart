@@ -153,6 +153,10 @@ const helpChapters = <HelpChapter>[
           'Contra un amigo cada uno juega cuando puede: nadie espera a nadie.',
       'Adivinar el puntaje: se tapa una tarjeta y hay que decir en qué '
           'categoría es más fuerte.',
+      'La Letanía: preguntas sobre los santos de tu álbum, una tras otra, con '
+          'tres vidas. Cada tres aciertos seguidos sube el multiplicador, '
+          'hasta ×5, y nunca se repite una pregunta. La mejor corrida queda '
+          'en el ranking.',
     ],
   ),
   HelpChapter(
