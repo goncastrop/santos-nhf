@@ -460,13 +460,9 @@ diario), stack desplegado y sirviendo `santos.nhf.com.ar` y
 `api.santos.nhf.com.ar` con certificados de Let's Encrypt, mails de Brevo
 probados de punta a punta, y los datos migrados desde Serverpod Cloud.
 
-- [ ] Subir las 93 ilustraciones optimizadas. Hasta entonces las tarjetas
-      muestran el monograma.
-- [ ] Borrar el usuario de migración de la base de Cloud:
-      `serverpod cloud db user delete --username <nombre>`, y el archivo con su
-      contraseña en `/root/.neon_pw`.
-- [ ] Avisar a los 7 usuarios existentes que tienen que resetear la contraseña.
-- [ ] SPF en Cloudflare: TXT en la raíz con `v=spf1 include:spf.brevo.com ~all`.
+También hecho: ilustraciones subidas, usuario de migración borrado, usuarios
+avisados del reseteo de contraseña, SPF de Brevo en Cloudflare y el proyecto de
+Serverpod Cloud apagado.
+
 - [ ] Deshabilitar la autenticación por contraseña en `sshd`, ahora que las
       claves funcionan.
-- [ ] Apagar el proyecto de Serverpod Cloud, recién con todo verificado.
