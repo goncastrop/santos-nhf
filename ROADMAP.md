@@ -20,7 +20,8 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
   cuando existe en el catálogo; si no, una aleatoria entre las que faltan. Sin duplicados:
   el objetivo es completar el álbum.
 - **Todo lo social es asincrónico.** Nada requiere que dos personas estén conectadas
-  al mismo tiempo.
+  al mismo tiempo. La única excepción es la trivia en vivo, atada al programa: quien no
+  la ve en el momento se pierde esa carta y nada más, igual que un código que se dice al aire.
 
 ## Fase 1 — Catálogo, colección y administración
 

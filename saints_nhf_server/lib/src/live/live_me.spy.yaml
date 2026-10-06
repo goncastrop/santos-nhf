@@ -1,0 +1,16 @@
+### The viewer's own standing in the live game.
+class: LiveMe
+fields:
+  ### Whether they already answered the current question, which option (in
+  ### the order shown) and, once it closed, how it went.
+  answered: bool
+  chosenIndex: int?
+  correct: bool?
+  lastPoints: int?
+  totalPoints: int
+  ### Position among the players who answered at least once, and how many
+  ### they are. Null before their first answer.
+  rank: int?
+  players: int
+  ### At the end: the card this viewer won, if any.
+  wonSaintId: int?

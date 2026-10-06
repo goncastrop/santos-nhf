@@ -64,6 +64,12 @@ import 'duel/duel_view.dart' as _inhuti79;
 import 'litany/litany_exception.dart' as _ihfep1t2;
 import 'litany/litany_run.dart' as _i0tq7vpz;
 import 'litany/litany_view.dart' as _iyteid9u;
+import 'live/live_exception.dart' as _iv5amj9z;
+import 'live/live_me.dart' as _i0jiuvf7;
+import 'live/live_phase.dart' as _itq2os4y;
+import 'live/live_rank_entry.dart' as _ij4wbs4b;
+import 'live/live_view.dart' as _iiwgvz3h;
+import 'live/live_winner_view.dart' as _i0z8s1jl;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_seen.dart' as _iqz00a3b;
@@ -115,6 +121,12 @@ export 'duel/duel_view.dart';
 export 'litany/litany_exception.dart';
 export 'litany/litany_run.dart';
 export 'litany/litany_view.dart';
+export 'live/live_exception.dart';
+export 'live/live_me.dart';
+export 'live/live_phase.dart';
+export 'live/live_rank_entry.dart';
+export 'live/live_view.dart';
+export 'live/live_winner_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_seen.dart';
@@ -259,6 +271,24 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _iyteid9u.LitanyView) {
       return _iyteid9u.LitanyView.fromJson(data) as T;
+    }
+    if (t == _iv5amj9z.LiveException) {
+      return _iv5amj9z.LiveException.fromJson(data) as T;
+    }
+    if (t == _i0jiuvf7.LiveMe) {
+      return _i0jiuvf7.LiveMe.fromJson(data) as T;
+    }
+    if (t == _itq2os4y.LivePhase) {
+      return _itq2os4y.LivePhase.fromJson(data) as T;
+    }
+    if (t == _ij4wbs4b.LiveRankEntry) {
+      return _ij4wbs4b.LiveRankEntry.fromJson(data) as T;
+    }
+    if (t == _iiwgvz3h.LiveView) {
+      return _iiwgvz3h.LiveView.fromJson(data) as T;
+    }
+    if (t == _i0z8s1jl.LiveWinnerView) {
+      return _i0z8s1jl.LiveWinnerView.fromJson(data) as T;
     }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
@@ -430,6 +460,27 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iyteid9u.LitanyView?>()) {
       return (data != null ? _iyteid9u.LitanyView.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_iv5amj9z.LiveException?>()) {
+      return (data != null ? _iv5amj9z.LiveException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i0jiuvf7.LiveMe?>()) {
+      return (data != null ? _i0jiuvf7.LiveMe.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_itq2os4y.LivePhase?>()) {
+      return (data != null ? _itq2os4y.LivePhase.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ij4wbs4b.LiveRankEntry?>()) {
+      return (data != null ? _ij4wbs4b.LiveRankEntry.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iiwgvz3h.LiveView?>()) {
+      return (data != null ? _iiwgvz3h.LiveView.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i0z8s1jl.LiveWinnerView?>()) {
+      return (data != null ? _i0z8s1jl.LiveWinnerView.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
     }
@@ -544,6 +595,34 @@ class Protocol extends _isc.SerializationManager {
       return (data as List)
               .map((e) => deserialize<_izgr1lt8.DuelRoundView>(e))
               .toList()
+          as T;
+    }
+    if (t == List<_ij4wbs4b.LiveRankEntry>) {
+      return (data as List)
+              .map((e) => deserialize<_ij4wbs4b.LiveRankEntry>(e))
+              .toList()
+          as T;
+    }
+    if (t == _isc.getType<List<_ij4wbs4b.LiveRankEntry>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ij4wbs4b.LiveRankEntry>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i0z8s1jl.LiveWinnerView>) {
+      return (data as List)
+              .map((e) => deserialize<_i0z8s1jl.LiveWinnerView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _isc.getType<List<_i0z8s1jl.LiveWinnerView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i0z8s1jl.LiveWinnerView>(e))
+                    .toList()
+              : null)
           as T;
     }
     if (t == List<_i1mhooeb.ScoreChange>) {
@@ -688,6 +767,12 @@ class Protocol extends _isc.SerializationManager {
       _ihfep1t2.LitanyException => 'LitanyException',
       _i0tq7vpz.LitanyRun => 'LitanyRun',
       _iyteid9u.LitanyView => 'LitanyView',
+      _iv5amj9z.LiveException => 'LiveException',
+      _i0jiuvf7.LiveMe => 'LiveMe',
+      _itq2os4y.LivePhase => 'LivePhase',
+      _ij4wbs4b.LiveRankEntry => 'LiveRankEntry',
+      _iiwgvz3h.LiveView => 'LiveView',
+      _i0z8s1jl.LiveWinnerView => 'LiveWinnerView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _iqz00a3b.QuestionSeen => 'QuestionSeen',
@@ -782,6 +867,18 @@ class Protocol extends _isc.SerializationManager {
         return 'LitanyRun';
       case _iyteid9u.LitanyView():
         return 'LitanyView';
+      case _iv5amj9z.LiveException():
+        return 'LiveException';
+      case _i0jiuvf7.LiveMe():
+        return 'LiveMe';
+      case _itq2os4y.LivePhase():
+        return 'LivePhase';
+      case _ij4wbs4b.LiveRankEntry():
+        return 'LiveRankEntry';
+      case _iiwgvz3h.LiveView():
+        return 'LiveView';
+      case _i0z8s1jl.LiveWinnerView():
+        return 'LiveWinnerView';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -934,6 +1031,24 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'LitanyView') {
       return deserialize<_iyteid9u.LitanyView>(data['data']);
+    }
+    if (dataClassName == 'LiveException') {
+      return deserialize<_iv5amj9z.LiveException>(data['data']);
+    }
+    if (dataClassName == 'LiveMe') {
+      return deserialize<_i0jiuvf7.LiveMe>(data['data']);
+    }
+    if (dataClassName == 'LivePhase') {
+      return deserialize<_itq2os4y.LivePhase>(data['data']);
+    }
+    if (dataClassName == 'LiveRankEntry') {
+      return deserialize<_ij4wbs4b.LiveRankEntry>(data['data']);
+    }
+    if (dataClassName == 'LiveView') {
+      return deserialize<_iiwgvz3h.LiveView>(data['data']);
+    }
+    if (dataClassName == 'LiveWinnerView') {
+      return deserialize<_i0z8s1jl.LiveWinnerView>(data['data']);
     }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);

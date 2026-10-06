@@ -1,0 +1,6 @@
+### Posted on the live channel whenever the game changes, so every open
+### stream sends its viewer a fresh [LiveView].
+class: LiveSignal
+serverOnly: true
+fields:
+  version: int

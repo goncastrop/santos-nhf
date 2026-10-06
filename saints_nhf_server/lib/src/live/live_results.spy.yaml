@@ -1,0 +1,6 @@
+### Who won the prizes of a finished live game. Kept inside the game row.
+class: LiveResults
+serverOnly: true
+fields:
+  fast: List<LiveWinner>
+  raffle: List<LiveWinner>

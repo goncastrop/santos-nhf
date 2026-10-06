@@ -16,7 +16,8 @@ import 'package:serverpod/serverpod.dart' as _is;
 enum CardSource implements _is.SerializableModel {
   starter,
   daily,
-  code;
+  code,
+  live;
 
   static CardSource fromJson(String name) {
     switch (name) {
@@ -26,6 +27,8 @@ enum CardSource implements _is.SerializableModel {
         return CardSource.daily;
       case 'code':
         return CardSource.code;
+      case 'live':
+        return CardSource.live;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "CardSource"',

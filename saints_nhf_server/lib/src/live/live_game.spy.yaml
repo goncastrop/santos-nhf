@@ -1,0 +1,35 @@
+### A live trivia game, played during the show by everyone with the app open.
+###
+### The questions are asked one at a time. Each one is open for
+### [questionSeconds]; a right answer is worth between 500 and 1000 points
+### depending on how fast it came, measured with the server's clock from the
+### moment the question actually opened. At the end the [fastPrizes] best
+### totals win a card, plus [rafflePrizes] drawn among the rest who scored.
+###
+### There is at most one game going on at a time.
+class: LiveGame
+serverOnly: true
+table: live_game
+fields:
+  saint: Saint?, relation(onDelete=Cascade)
+  ### Questions in the order they are asked.
+  questionIds: List<int>
+  phase: LivePhase, default=countdown
+  ### Question being asked, or about to be: 0-based. During the countdown it
+  ### is the one that opens at [countdownTo].
+  currentIndex: int, default=0
+  ### When the next question opens. Set while in [LivePhase.countdown].
+  countdownTo: DateTime?
+  ### When the current question actually opened and when it closes.
+  openedAt: DateTime?
+  closesAt: DateTime?
+  questionSeconds: int, default=20
+  fastPrizes: int
+  rafflePrizes: int
+  results: LiveResults?
+  createdBy: UuidValue
+  createdAt: DateTime, default=now
+  finishedAt: DateTime?
+indexes:
+  live_game_phase_idx:
+    fields: phase

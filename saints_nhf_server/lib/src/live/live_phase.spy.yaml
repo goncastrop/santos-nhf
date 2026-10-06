@@ -1,0 +1,17 @@
+### Where a live game stands, as everyone watching sees it.
+enum: LivePhase
+values:
+  ### No game going on.
+  - idle
+  ### Waiting for the next question to open: the lobby before the first one,
+  ### and the short "get ready" before each of the others.
+  - countdown
+  ### A question is open and answers count.
+  - question
+  ### The question closed: the right answer, the tally and the partial
+  ### ranking stay on screen until the admin moves on.
+  - reveal
+  ### Podium and prizes. Shown for a while after the end, then idle again.
+  - finished
+  ### Called off by the admin.
+  - cancelled

@@ -71,6 +71,14 @@ litany:
   - answer:
   - next:
   - giveUp:
+adminLive:
+  - announce:
+  - advance:
+  - cancel:
+live:
+  - state:
+  - watch:
+  - answer:
 quiz:
   - today:
   - answer:

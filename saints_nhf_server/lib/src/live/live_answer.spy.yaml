@@ -1,0 +1,20 @@
+### One player's answer to one question of a live game.
+class: LiveAnswer
+serverOnly: true
+table: live_answer
+fields:
+  game: LiveGame?, relation(onDelete=Cascade)
+  questionIndex: int
+  authUserId: UuidValue
+  ### Stored index of the option picked, as in [Question.options].
+  chosenIndex: int
+  correct: bool
+  points: int
+  ### Milliseconds from the question opening to the answer reaching the
+  ### server. Breaks ties in the final ranking.
+  elapsedMs: int
+  answeredAt: DateTime, default=now
+indexes:
+  live_answer_unique_idx:
+    fields: gameId, questionIndex, authUserId
+    unique: true

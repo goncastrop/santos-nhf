@@ -1,0 +1,8 @@
+### A prize winner as players see it.
+class: LiveWinnerView
+fields:
+  name: String
+  points: int
+  ### The card they got, or null when they already had the whole album.
+  saintName: String?
+  isMe: bool

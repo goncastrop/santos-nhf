@@ -34,8 +34,16 @@ import 'package:saints_nhf_server/src/generated/duel/duel_summary.dart'
     as _i55m6l7d;
 import 'package:saints_nhf_server/src/generated/duel/duel_view.dart'
     as _idz2oq7y;
+import 'package:saints_nhf_server/src/generated/future_calls.dart' as _ixp409kd;
+import 'package:saints_nhf_server/src/generated/future_calls_generated_models/live_future_call_close_question_model.dart'
+    as _is46k256;
+import 'package:saints_nhf_server/src/generated/future_calls_generated_models/live_future_call_open_question_model.dart'
+    as _ilwmnpvz;
 import 'package:saints_nhf_server/src/generated/litany/litany_view.dart'
     as _i5hnua76;
+import 'package:saints_nhf_server/src/generated/live/live_me.dart' as _ismxl8ti;
+import 'package:saints_nhf_server/src/generated/live/live_view.dart'
+    as _ixyzc3t9;
 import 'package:saints_nhf_server/src/generated/protocol.dart' as _itw3ru38;
 import 'package:saints_nhf_server/src/generated/questions/daily_quiz.dart'
     as _ijyfrtfo;
@@ -197,6 +205,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final futureCalls = _FutureCalls();
+
   late final _AdminAccessEndpoint adminAccess;
 
   late final _AdminBookEndpoint adminBook;
@@ -220,6 +230,10 @@ class TestEndpoints {
   late final _DuelEndpoint duel;
 
   late final _LitanyEndpoint litany;
+
+  late final _AdminLiveEndpoint adminLive;
+
+  late final _LiveEndpoint live;
 
   late final _QuizEndpoint quiz;
 
@@ -285,6 +299,14 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    adminLive = _AdminLiveEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    live = _LiveEndpoint(
+      endpoints,
+      serializationManager,
+    );
     quiz = _QuizEndpoint(
       endpoints,
       serializationManager,
@@ -302,6 +324,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
   }
+}
+
+class _FutureCalls {
+  late final live = _LiveFutureCall();
 }
 
 class _AdminAccessEndpoint {
@@ -2395,6 +2421,231 @@ class _LitanyEndpoint {
   }
 }
 
+class _AdminLiveEndpoint {
+  _AdminLiveEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_ixyzc3t9.LiveView> announce(
+    _ist.TestSessionBuilder sessionBuilder,
+    int saintId,
+    List<int> questionIds,
+    int countdownSeconds,
+    int questionSeconds,
+    int fastPrizes,
+    int rafflePrizes,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminLive',
+            method: 'announce',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminLive',
+          methodName: 'announce',
+          parameters: _ist.testObjectToJson({
+            'saintId': saintId,
+            'questionIds': questionIds,
+            'countdownSeconds': countdownSeconds,
+            'questionSeconds': questionSeconds,
+            'fastPrizes': fastPrizes,
+            'rafflePrizes': rafflePrizes,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixyzc3t9.LiveView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixyzc3t9.LiveView> advance(
+    _ist.TestSessionBuilder sessionBuilder,
+    int gameId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminLive',
+            method: 'advance',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminLive',
+          methodName: 'advance',
+          parameters: _ist.testObjectToJson({'gameId': gameId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixyzc3t9.LiveView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixyzc3t9.LiveView> cancel(
+    _ist.TestSessionBuilder sessionBuilder,
+    int gameId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminLive',
+            method: 'cancel',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminLive',
+          methodName: 'cancel',
+          parameters: _ist.testObjectToJson({'gameId': gameId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixyzc3t9.LiveView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _LiveEndpoint {
+  _LiveEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_ixyzc3t9.LiveView> state(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'live',
+            method: 'state',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'live',
+          methodName: 'state',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixyzc3t9.LiveView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Stream<_ixyzc3t9.LiveView> watch(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager = _ist.TestStreamManager<_ixyzc3t9.LiveView>();
+    _ist.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'live',
+              method: 'watch',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'live',
+              methodName: 'watch',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
+
+  _ida.Future<_ismxl8ti.LiveMe> answer(
+    _ist.TestSessionBuilder sessionBuilder,
+    int gameId,
+    int questionIndex,
+    int chosenIndex,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'live',
+            method: 'answer',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'live',
+          methodName: 'answer',
+          parameters: _ist.testObjectToJson({
+            'gameId': gameId,
+            'questionIndex': questionIndex,
+            'chosenIndex': chosenIndex,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ismxl8ti.LiveMe>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _QuizEndpoint {
   _QuizEndpoint(
     this._endpointDispatch,
@@ -2806,5 +3057,49 @@ class _LeaderboardEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _LiveFutureCall {
+  Future<void> openQuestion(
+    _ist.TestSessionBuilder sessionBuilder,
+    int gameId,
+    int index,
+  ) async {
+    var object = _ilwmnpvz.LiveFutureCallOpenQuestionModel(
+      gameId: gameId,
+      index: index,
+    );
+    var _localUniqueSession =
+        (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild();
+    try {
+      await _ixp409kd.LiveOpenQuestionFutureCall().invoke(
+        _localUniqueSession,
+        object,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
+  }
+
+  Future<void> closeQuestion(
+    _ist.TestSessionBuilder sessionBuilder,
+    int gameId,
+    int index,
+  ) async {
+    var object = _is46k256.LiveFutureCallCloseQuestionModel(
+      gameId: gameId,
+      index: index,
+    );
+    var _localUniqueSession =
+        (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild();
+    try {
+      await _ixp409kd.LiveCloseQuestionFutureCall().invoke(
+        _localUniqueSession,
+        object,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
   }
 }

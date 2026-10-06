@@ -1,0 +1,7 @@
+### A row of the live ranking.
+class: LiveRankEntry
+fields:
+  rank: int
+  name: String
+  points: int
+  isMe: bool

@@ -1,0 +1,33 @@
+### The live game as one viewer sees it. The streams send a whole view on
+### every change instead of diffs, so a reconnect is just one more message.
+class: LiveView
+fields:
+  phase: LivePhase
+  ### The server's clock when this view was built, so the app can correct
+  ### its own before showing countdowns.
+  serverTime: DateTime
+  gameId: int?
+  saint: SaintInfo?
+  ### 1-based number of the current question, and how many there are.
+  questionNumber: int?
+  questionCount: int?
+  countdownTo: DateTime?
+  ### Present from the moment the question opens. The options come in the
+  ### same order for everyone, so the host can say "the B".
+  question: QuizQuestion?
+  closesAt: DateTime?
+  ### How many answered the current question so far.
+  answeredCount: int?
+  ### In the reveal: the right option and how many picked each one, both in
+  ### the order shown.
+  correctIndex: int?
+  tally: List<int>?
+  ### Top of the ranking, in the reveal and at the end.
+  leaderboard: List<LiveRankEntry>?
+  ### At the end.
+  fastWinners: List<LiveWinnerView>?
+  raffleWinners: List<LiveWinnerView>?
+  ### People with the app open right now.
+  watching: int
+  ### Null for viewers without an account.
+  me: LiveMe?

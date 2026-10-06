@@ -1,0 +1,3 @@
+exception: LiveException
+fields:
+  message: String

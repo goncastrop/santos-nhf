@@ -44,6 +44,12 @@ redis:
 
 maxRequestSize: 10485760 # 10 MB, so saint illustrations can be uploaded
 
+# The live trivia opens and closes its questions with future calls, and a
+# 20-second question cannot wait the default 5 seconds for the next scan.
+futureCall:
+  concurrencyLimit: 2
+  scanInterval: 1000 # milliseconds
+
 # Los logs van a stdout del contenedor (`docker compose logs`), con rotación
 # configurada en el daemon de Docker por `deploy/provision.sh`. Los logs
 # persistentes quedan apagados para no llenar el disco del servidor; si se

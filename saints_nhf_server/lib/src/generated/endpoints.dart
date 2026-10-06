@@ -13,6 +13,7 @@
 import 'dart:typed_data' as _idt;
 import 'package:saints_nhf_server/src/generated/books/saint_book.dart'
     as _i3dacp34;
+import 'package:saints_nhf_server/src/generated/future_calls.dart' as _ixp409kd;
 import 'package:saints_nhf_server/src/generated/protocol.dart' as _itw3ru38;
 import 'package:saints_nhf_server/src/generated/questions/question.dart'
     as _i00r6ooi;
@@ -36,10 +37,13 @@ import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../collection/collection_endpoint.dart' as _igyw9xw4;
 import '../duel/duel_endpoint.dart' as _inwr4dl6;
 import '../litany/litany_endpoint.dart' as _ir5yijij;
+import '../live/admin_live_endpoint.dart' as _ida435ef;
+import '../live/live_endpoint.dart' as _i4k4ewet;
 import '../questions/quiz_endpoint.dart' as _i9pu1r99;
 import '../saints/saint_endpoint.dart' as _i0hn8dfu;
 import '../social/friends_endpoint.dart' as _iejqgreb;
 import '../social/leaderboard_endpoint.dart' as _i0n7rhey;
+export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -115,6 +119,18 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'litany',
+          null,
+        ),
+      'adminLive': _ida435ef.AdminLiveEndpoint()
+        ..initialize(
+          server,
+          'adminLive',
+          null,
+        ),
+      'live': _i4k4ewet.LiveEndpoint()
+        ..initialize(
+          server,
+          'live',
           null,
         ),
       'quiz': _i9pu1r99.QuizEndpoint()
@@ -1378,6 +1394,157 @@ class Endpoints extends _is.EndpointDispatch {
         ),
       },
     );
+    connectors['adminLive'] = _is.EndpointConnector(
+      name: 'adminLive',
+      endpoint: endpoints['adminLive']!,
+      methodConnectors: {
+        'announce': _is.MethodConnector(
+          name: 'announce',
+          params: {
+            'saintId': _is.ParameterDescription(
+              name: 'saintId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'questionIds': _is.ParameterDescription(
+              name: 'questionIds',
+              type: _is.getType<List<int>>(),
+              nullable: false,
+            ),
+            'countdownSeconds': _is.ParameterDescription(
+              name: 'countdownSeconds',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'questionSeconds': _is.ParameterDescription(
+              name: 'questionSeconds',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'fastPrizes': _is.ParameterDescription(
+              name: 'fastPrizes',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'rafflePrizes': _is.ParameterDescription(
+              name: 'rafflePrizes',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['adminLive'] as _ida435ef.AdminLiveEndpoint)
+                  .announce(
+                    session,
+                    params['saintId'],
+                    params['questionIds'],
+                    params['countdownSeconds'],
+                    params['questionSeconds'],
+                    params['fastPrizes'],
+                    params['rafflePrizes'],
+                  ),
+        ),
+        'advance': _is.MethodConnector(
+          name: 'advance',
+          params: {
+            'gameId': _is.ParameterDescription(
+              name: 'gameId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['adminLive'] as _ida435ef.AdminLiveEndpoint)
+                  .advance(
+                    session,
+                    params['gameId'],
+                  ),
+        ),
+        'cancel': _is.MethodConnector(
+          name: 'cancel',
+          params: {
+            'gameId': _is.ParameterDescription(
+              name: 'gameId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['adminLive'] as _ida435ef.AdminLiveEndpoint)
+                  .cancel(
+                    session,
+                    params['gameId'],
+                  ),
+        ),
+      },
+    );
+    connectors['live'] = _is.EndpointConnector(
+      name: 'live',
+      endpoint: endpoints['live']!,
+      methodConnectors: {
+        'state': _is.MethodConnector(
+          name: 'state',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['live'] as _i4k4ewet.LiveEndpoint).state(session),
+        ),
+        'answer': _is.MethodConnector(
+          name: 'answer',
+          params: {
+            'gameId': _is.ParameterDescription(
+              name: 'gameId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'questionIndex': _is.ParameterDescription(
+              name: 'questionIndex',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'chosenIndex': _is.ParameterDescription(
+              name: 'chosenIndex',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['live'] as _i4k4ewet.LiveEndpoint).answer(
+                session,
+                params['gameId'],
+                params['questionIndex'],
+                params['chosenIndex'],
+              ),
+        ),
+        'watch': _is.MethodStreamConnector(
+          name: 'watch',
+          params: {},
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['live'] as _i4k4ewet.LiveEndpoint).watch(session),
+        ),
+      },
+    );
     connectors['quiz'] = _is.EndpointConnector(
       name: 'quiz',
       endpoint: endpoints['quiz']!,
@@ -1586,5 +1753,10 @@ class Endpoints extends _is.EndpointDispatch {
       ..initializeEndpoints(server);
     modules['serverpod_auth_core'] = _iacs.Endpoints()
       ..initializeEndpoints(server);
+  }
+
+  @override
+  _is.FutureCallDispatch? get futureCalls {
+    return _ixp409kd.FutureCalls();
   }
 }

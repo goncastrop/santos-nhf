@@ -1,0 +1,10 @@
+### A prize winner of a live game. Server only: the user id never leaves it;
+### players see [LiveWinnerView].
+class: LiveWinner
+serverOnly: true
+fields:
+  authUserId: UuidValue
+  name: String
+  points: int
+  ### Card granted, or null when the player already had the whole album.
+  saintId: int?

@@ -62,9 +62,24 @@ import 'duel/duel_round_view.dart' as _izgr1lt8;
 import 'duel/duel_status.dart' as _iawu1v59;
 import 'duel/duel_summary.dart' as _iqx58u4g;
 import 'duel/duel_view.dart' as _inhuti79;
+import 'future_calls_generated_models/live_future_call_close_question_model.dart'
+    as _iy1bmzm3;
+import 'future_calls_generated_models/live_future_call_open_question_model.dart'
+    as _ithggvt0;
 import 'litany/litany_exception.dart' as _ihfep1t2;
 import 'litany/litany_run.dart' as _i0tq7vpz;
 import 'litany/litany_view.dart' as _iyteid9u;
+import 'live/live_answer.dart' as _is6i5ayg;
+import 'live/live_exception.dart' as _iv5amj9z;
+import 'live/live_game.dart' as _idyo08hd;
+import 'live/live_me.dart' as _i0jiuvf7;
+import 'live/live_phase.dart' as _itq2os4y;
+import 'live/live_rank_entry.dart' as _ij4wbs4b;
+import 'live/live_results.dart' as _i3ku2kox;
+import 'live/live_signal.dart' as _inzp8g3i;
+import 'live/live_view.dart' as _iiwgvz3h;
+import 'live/live_winner.dart' as _ijb4qkzu;
+import 'live/live_winner_view.dart' as _i0z8s1jl;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_seen.dart' as _iqz00a3b;
@@ -116,6 +131,17 @@ export 'duel/duel_view.dart';
 export 'litany/litany_exception.dart';
 export 'litany/litany_run.dart';
 export 'litany/litany_view.dart';
+export 'live/live_answer.dart';
+export 'live/live_exception.dart';
+export 'live/live_game.dart';
+export 'live/live_me.dart';
+export 'live/live_phase.dart';
+export 'live/live_rank_entry.dart';
+export 'live/live_results.dart';
+export 'live/live_signal.dart';
+export 'live/live_view.dart';
+export 'live/live_winner.dart';
+export 'live/live_winner_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_seen.dart';
@@ -689,6 +715,237 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'live_answer',
+      dartName: 'LiveAnswer',
+      schema: 'public',
+      module: 'saints_nhf',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'gameId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'questionIndex',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'chosenIndex',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'correct',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'points',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'elapsedMs',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'answeredAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'live_answer_fk_0',
+          columns: ['gameId'],
+          referenceTable: 'live_game',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'live_answer_unique_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'gameId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'questionIndex',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'live_game',
+      dartName: 'LiveGame',
+      schema: 'public',
+      module: 'saints_nhf',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'saintId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'questionIds',
+          columnType: _isp.ColumnType.json,
+          isNullable: false,
+          dartType: 'List<int>',
+        ),
+        _isp.ColumnDefinition(
+          name: 'phase',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:LivePhase',
+          columnDefault: '\'countdown\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'currentIndex',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'countdownTo',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'closesAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'questionSeconds',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '20',
+        ),
+        _isp.ColumnDefinition(
+          name: 'fastPrizes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'rafflePrizes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'results',
+          columnType: _isp.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:LiveResults?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdBy',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(
+          name: 'finishedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'live_game_fk_0',
+          columns: ['saintId'],
+          referenceTable: 'saint',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'live_game_phase_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'phase',
             ),
           ],
           type: 'btree',
@@ -1818,6 +2075,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _inhuti79.DuelView) {
       return _inhuti79.DuelView.fromJson(data) as T;
     }
+    if (t == _iy1bmzm3.LiveFutureCallCloseQuestionModel) {
+      return _iy1bmzm3.LiveFutureCallCloseQuestionModel.fromJson(data) as T;
+    }
+    if (t == _ithggvt0.LiveFutureCallOpenQuestionModel) {
+      return _ithggvt0.LiveFutureCallOpenQuestionModel.fromJson(data) as T;
+    }
     if (t == _ihfep1t2.LitanyException) {
       return _ihfep1t2.LitanyException.fromJson(data) as T;
     }
@@ -1826,6 +2089,39 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iyteid9u.LitanyView) {
       return _iyteid9u.LitanyView.fromJson(data) as T;
+    }
+    if (t == _is6i5ayg.LiveAnswer) {
+      return _is6i5ayg.LiveAnswer.fromJson(data) as T;
+    }
+    if (t == _iv5amj9z.LiveException) {
+      return _iv5amj9z.LiveException.fromJson(data) as T;
+    }
+    if (t == _idyo08hd.LiveGame) {
+      return _idyo08hd.LiveGame.fromJson(data) as T;
+    }
+    if (t == _i0jiuvf7.LiveMe) {
+      return _i0jiuvf7.LiveMe.fromJson(data) as T;
+    }
+    if (t == _itq2os4y.LivePhase) {
+      return _itq2os4y.LivePhase.fromJson(data) as T;
+    }
+    if (t == _ij4wbs4b.LiveRankEntry) {
+      return _ij4wbs4b.LiveRankEntry.fromJson(data) as T;
+    }
+    if (t == _i3ku2kox.LiveResults) {
+      return _i3ku2kox.LiveResults.fromJson(data) as T;
+    }
+    if (t == _inzp8g3i.LiveSignal) {
+      return _inzp8g3i.LiveSignal.fromJson(data) as T;
+    }
+    if (t == _iiwgvz3h.LiveView) {
+      return _iiwgvz3h.LiveView.fromJson(data) as T;
+    }
+    if (t == _ijb4qkzu.LiveWinner) {
+      return _ijb4qkzu.LiveWinner.fromJson(data) as T;
+    }
+    if (t == _i0z8s1jl.LiveWinnerView) {
+      return _i0z8s1jl.LiveWinnerView.fromJson(data) as T;
     }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
@@ -1987,6 +2283,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_inhuti79.DuelView?>()) {
       return (data != null ? _inhuti79.DuelView.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_iy1bmzm3.LiveFutureCallCloseQuestionModel?>()) {
+      return (data != null
+              ? _iy1bmzm3.LiveFutureCallCloseQuestionModel.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ithggvt0.LiveFutureCallOpenQuestionModel?>()) {
+      return (data != null
+              ? _ithggvt0.LiveFutureCallOpenQuestionModel.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _is.getType<_ihfep1t2.LitanyException?>()) {
       return (data != null ? _ihfep1t2.LitanyException.fromJson(data) : null)
           as T;
@@ -1996,6 +2304,42 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iyteid9u.LitanyView?>()) {
       return (data != null ? _iyteid9u.LitanyView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_is6i5ayg.LiveAnswer?>()) {
+      return (data != null ? _is6i5ayg.LiveAnswer.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iv5amj9z.LiveException?>()) {
+      return (data != null ? _iv5amj9z.LiveException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_idyo08hd.LiveGame?>()) {
+      return (data != null ? _idyo08hd.LiveGame.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i0jiuvf7.LiveMe?>()) {
+      return (data != null ? _i0jiuvf7.LiveMe.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_itq2os4y.LivePhase?>()) {
+      return (data != null ? _itq2os4y.LivePhase.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ij4wbs4b.LiveRankEntry?>()) {
+      return (data != null ? _ij4wbs4b.LiveRankEntry.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i3ku2kox.LiveResults?>()) {
+      return (data != null ? _i3ku2kox.LiveResults.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_inzp8g3i.LiveSignal?>()) {
+      return (data != null ? _inzp8g3i.LiveSignal.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iiwgvz3h.LiveView?>()) {
+      return (data != null ? _iiwgvz3h.LiveView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ijb4qkzu.LiveWinner?>()) {
+      return (data != null ? _ijb4qkzu.LiveWinner.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i0z8s1jl.LiveWinnerView?>()) {
+      return (data != null ? _i0z8s1jl.LiveWinnerView.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
@@ -2111,6 +2455,40 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data as List)
               .map((e) => deserialize<_izgr1lt8.DuelRoundView>(e))
               .toList()
+          as T;
+    }
+    if (t == List<_ijb4qkzu.LiveWinner>) {
+      return (data as List)
+              .map((e) => deserialize<_ijb4qkzu.LiveWinner>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ij4wbs4b.LiveRankEntry>) {
+      return (data as List)
+              .map((e) => deserialize<_ij4wbs4b.LiveRankEntry>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ij4wbs4b.LiveRankEntry>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ij4wbs4b.LiveRankEntry>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i0z8s1jl.LiveWinnerView>) {
+      return (data as List)
+              .map((e) => deserialize<_i0z8s1jl.LiveWinnerView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i0z8s1jl.LiveWinnerView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i0z8s1jl.LiveWinnerView>(e))
+                    .toList()
+              : null)
           as T;
     }
     if (t == List<_i1mhooeb.ScoreChange>) {
@@ -2255,9 +2633,24 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iawu1v59.DuelStatus => 'DuelStatus',
       _iqx58u4g.DuelSummary => 'DuelSummary',
       _inhuti79.DuelView => 'DuelView',
+      _iy1bmzm3.LiveFutureCallCloseQuestionModel =>
+        'LiveFutureCallCloseQuestionModel',
+      _ithggvt0.LiveFutureCallOpenQuestionModel =>
+        'LiveFutureCallOpenQuestionModel',
       _ihfep1t2.LitanyException => 'LitanyException',
       _i0tq7vpz.LitanyRun => 'LitanyRun',
       _iyteid9u.LitanyView => 'LitanyView',
+      _is6i5ayg.LiveAnswer => 'LiveAnswer',
+      _iv5amj9z.LiveException => 'LiveException',
+      _idyo08hd.LiveGame => 'LiveGame',
+      _i0jiuvf7.LiveMe => 'LiveMe',
+      _itq2os4y.LivePhase => 'LivePhase',
+      _ij4wbs4b.LiveRankEntry => 'LiveRankEntry',
+      _i3ku2kox.LiveResults => 'LiveResults',
+      _inzp8g3i.LiveSignal => 'LiveSignal',
+      _iiwgvz3h.LiveView => 'LiveView',
+      _ijb4qkzu.LiveWinner => 'LiveWinner',
+      _i0z8s1jl.LiveWinnerView => 'LiveWinnerView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _iqz00a3b.QuestionSeen => 'QuestionSeen',
@@ -2346,12 +2739,38 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'DuelSummary';
       case _inhuti79.DuelView():
         return 'DuelView';
+      case _iy1bmzm3.LiveFutureCallCloseQuestionModel():
+        return 'LiveFutureCallCloseQuestionModel';
+      case _ithggvt0.LiveFutureCallOpenQuestionModel():
+        return 'LiveFutureCallOpenQuestionModel';
       case _ihfep1t2.LitanyException():
         return 'LitanyException';
       case _i0tq7vpz.LitanyRun():
         return 'LitanyRun';
       case _iyteid9u.LitanyView():
         return 'LitanyView';
+      case _is6i5ayg.LiveAnswer():
+        return 'LiveAnswer';
+      case _iv5amj9z.LiveException():
+        return 'LiveException';
+      case _idyo08hd.LiveGame():
+        return 'LiveGame';
+      case _i0jiuvf7.LiveMe():
+        return 'LiveMe';
+      case _itq2os4y.LivePhase():
+        return 'LivePhase';
+      case _ij4wbs4b.LiveRankEntry():
+        return 'LiveRankEntry';
+      case _i3ku2kox.LiveResults():
+        return 'LiveResults';
+      case _inzp8g3i.LiveSignal():
+        return 'LiveSignal';
+      case _iiwgvz3h.LiveView():
+        return 'LiveView';
+      case _ijb4qkzu.LiveWinner():
+        return 'LiveWinner';
+      case _i0z8s1jl.LiveWinnerView():
+        return 'LiveWinnerView';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -2500,6 +2919,16 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'DuelView') {
       return deserialize<_inhuti79.DuelView>(data['data']);
     }
+    if (dataClassName == 'LiveFutureCallCloseQuestionModel') {
+      return deserialize<_iy1bmzm3.LiveFutureCallCloseQuestionModel>(
+        data['data'],
+      );
+    }
+    if (dataClassName == 'LiveFutureCallOpenQuestionModel') {
+      return deserialize<_ithggvt0.LiveFutureCallOpenQuestionModel>(
+        data['data'],
+      );
+    }
     if (dataClassName == 'LitanyException') {
       return deserialize<_ihfep1t2.LitanyException>(data['data']);
     }
@@ -2508,6 +2937,39 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'LitanyView') {
       return deserialize<_iyteid9u.LitanyView>(data['data']);
+    }
+    if (dataClassName == 'LiveAnswer') {
+      return deserialize<_is6i5ayg.LiveAnswer>(data['data']);
+    }
+    if (dataClassName == 'LiveException') {
+      return deserialize<_iv5amj9z.LiveException>(data['data']);
+    }
+    if (dataClassName == 'LiveGame') {
+      return deserialize<_idyo08hd.LiveGame>(data['data']);
+    }
+    if (dataClassName == 'LiveMe') {
+      return deserialize<_i0jiuvf7.LiveMe>(data['data']);
+    }
+    if (dataClassName == 'LivePhase') {
+      return deserialize<_itq2os4y.LivePhase>(data['data']);
+    }
+    if (dataClassName == 'LiveRankEntry') {
+      return deserialize<_ij4wbs4b.LiveRankEntry>(data['data']);
+    }
+    if (dataClassName == 'LiveResults') {
+      return deserialize<_i3ku2kox.LiveResults>(data['data']);
+    }
+    if (dataClassName == 'LiveSignal') {
+      return deserialize<_inzp8g3i.LiveSignal>(data['data']);
+    }
+    if (dataClassName == 'LiveView') {
+      return deserialize<_iiwgvz3h.LiveView>(data['data']);
+    }
+    if (dataClassName == 'LiveWinner') {
+      return deserialize<_ijb4qkzu.LiveWinner>(data['data']);
+    }
+    if (dataClassName == 'LiveWinnerView') {
+      return deserialize<_i0z8s1jl.LiveWinnerView>(data['data']);
     }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);
@@ -2634,6 +3096,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ih8y80e4.DuelRound.t;
       case _i0tq7vpz.LitanyRun:
         return _i0tq7vpz.LitanyRun.t;
+      case _is6i5ayg.LiveAnswer:
+        return _is6i5ayg.LiveAnswer.t;
+      case _idyo08hd.LiveGame:
+        return _idyo08hd.LiveGame.t;
       case _ihstiddh.Question:
         return _ihstiddh.Question.t;
       case _iqz00a3b.QuestionSeen:

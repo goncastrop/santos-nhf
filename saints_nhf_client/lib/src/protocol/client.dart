@@ -35,6 +35,9 @@ import 'package:saints_nhf_client/src/protocol/duel/duel_view.dart'
     as _i0xdwvjk;
 import 'package:saints_nhf_client/src/protocol/litany/litany_view.dart'
     as _inkd0p69;
+import 'package:saints_nhf_client/src/protocol/live/live_me.dart' as _iisflcg2;
+import 'package:saints_nhf_client/src/protocol/live/live_view.dart'
+    as _i5gbr5f8;
 import 'package:saints_nhf_client/src/protocol/questions/daily_quiz.dart'
     as _iw94znon;
 import 'package:saints_nhf_client/src/protocol/questions/question.dart'
@@ -857,6 +860,101 @@ class EndpointLitany extends _isc.EndpointRef {
       );
 }
 
+/// Runs the live trivia from the admin panel.
+/// {@category Endpoint}
+class EndpointAdminLive extends _isc.EndpointRef {
+  EndpointAdminLive(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'adminLive';
+
+  /// Opens the lobby now; the first question opens after [countdownSeconds].
+  _ida.Future<_i5gbr5f8.LiveView> announce(
+    int saintId,
+    List<int> questionIds,
+    int countdownSeconds,
+    int questionSeconds,
+    int fastPrizes,
+    int rafflePrizes,
+  ) => caller.callServerEndpoint<_i5gbr5f8.LiveView>(
+    'adminLive',
+    'announce',
+    {
+      'saintId': saintId,
+      'questionIds': questionIds,
+      'countdownSeconds': countdownSeconds,
+      'questionSeconds': questionSeconds,
+      'fastPrizes': fastPrizes,
+      'rafflePrizes': rafflePrizes,
+    },
+  );
+
+  /// Skips the countdown, closes the open question, goes to the next one or
+  /// ends the game, depending on where it is.
+  _ida.Future<_i5gbr5f8.LiveView> advance(int gameId) =>
+      caller.callServerEndpoint<_i5gbr5f8.LiveView>(
+        'adminLive',
+        'advance',
+        {'gameId': gameId},
+      );
+
+  _ida.Future<_i5gbr5f8.LiveView> cancel(int gameId) =>
+      caller.callServerEndpoint<_i5gbr5f8.LiveView>(
+        'adminLive',
+        'cancel',
+        {'gameId': gameId},
+      );
+}
+
+/// The live trivia, for everyone. Watching needs no account, so whoever
+/// opens the app because the show told them to sees the game at once;
+/// answering does, because the prize goes to an album.
+/// {@category Endpoint}
+class EndpointLive extends _isc.EndpointRef {
+  EndpointLive(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'live';
+
+  /// The game as it stands now.
+  _ida.Future<_i5gbr5f8.LiveView> state() =>
+      caller.callServerEndpoint<_i5gbr5f8.LiveView>(
+        'live',
+        'state',
+        {},
+      );
+
+  /// A view now and another one after every change. The app keeps it open
+  /// while it is in the foreground, which is how the banner shows up on any
+  /// tab when the host announces a game.
+  _ida.Stream<_i5gbr5f8.LiveView> watch() =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<_i5gbr5f8.LiveView>,
+        _i5gbr5f8.LiveView
+      >(
+        'live',
+        'watch',
+        {},
+        {},
+      );
+
+  /// Answers question [questionIndex] (0-based) with the option at
+  /// [chosenIndex], in the order shown.
+  _ida.Future<_iisflcg2.LiveMe> answer(
+    int gameId,
+    int questionIndex,
+    int chosenIndex,
+  ) => caller.callServerEndpoint<_iisflcg2.LiveMe>(
+    'live',
+    'answer',
+    {
+      'gameId': gameId,
+      'questionIndex': questionIndex,
+      'chosenIndex': chosenIndex,
+    },
+  );
+}
+
 /// The daily question and its streak.
 /// {@category Endpoint}
 class EndpointQuiz extends _isc.EndpointRef {
@@ -1040,6 +1138,8 @@ class Client extends _isc.ServerpodClientShared {
     collection = EndpointCollection(this);
     duel = EndpointDuel(this);
     litany = EndpointLitany(this);
+    adminLive = EndpointAdminLive(this);
+    live = EndpointLive(this);
     quiz = EndpointQuiz(this);
     saint = EndpointSaint(this);
     friends = EndpointFriends(this);
@@ -1071,6 +1171,10 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointLitany litany;
 
+  late final EndpointAdminLive adminLive;
+
+  late final EndpointLive live;
+
   late final EndpointQuiz quiz;
 
   late final EndpointSaint saint;
@@ -1095,6 +1199,8 @@ class Client extends _isc.ServerpodClientShared {
     'collection': collection,
     'duel': duel,
     'litany': litany,
+    'adminLive': adminLive,
+    'live': live,
     'quiz': quiz,
     'saint': saint,
     'friends': friends,
