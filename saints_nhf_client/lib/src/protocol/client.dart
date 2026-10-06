@@ -775,6 +775,31 @@ class EndpointDuel extends _isc.EndpointRef {
         {'duelId': duelId},
       );
 
+  /// The board now and again after every move, from either player.
+  _ida.Stream<_i0xdwvjk.DuelView> watch(int duelId) =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<_i0xdwvjk.DuelView>,
+        _i0xdwvjk.DuelView
+      >(
+        'duel',
+        'watch',
+        {'duelId': duelId},
+        {},
+      );
+
+  /// The player's duels now and again whenever one of them changes, for the
+  /// count of turns waiting.
+  _ida.Stream<List<_ihyypura.DuelSummary>> watchMine() =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<List<_ihyypura.DuelSummary>>,
+        List<_ihyypura.DuelSummary>
+      >(
+        'duel',
+        'watchMine',
+        {},
+        {},
+      );
+
   _ida.Future<_i0xdwvjk.DuelView> attack(
     int duelId,
     _iu9hbu29.ScoreCategory category,

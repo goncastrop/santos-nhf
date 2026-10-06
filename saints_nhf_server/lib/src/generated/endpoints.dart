@@ -1326,6 +1326,41 @@ class Endpoints extends _is.EndpointDispatch {
                 params['chosenIndex'],
               ),
         ),
+        'watch': _is.MethodStreamConnector(
+          name: 'watch',
+          params: {
+            'duelId': _is.ParameterDescription(
+              name: 'duelId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['duel'] as _inwr4dl6.DuelEndpoint).watch(
+                session,
+                params['duelId'],
+              ),
+        ),
+        'watchMine': _is.MethodStreamConnector(
+          name: 'watchMine',
+          params: {},
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['duel'] as _inwr4dl6.DuelEndpoint).watchMine(
+                session,
+              ),
+        ),
       },
     );
     connectors['litany'] = _is.EndpointConnector(

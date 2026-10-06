@@ -59,6 +59,7 @@ import 'duel/duel_exception.dart' as _iz847zbs;
 import 'duel/duel_phase.dart' as _igih3ea9;
 import 'duel/duel_round.dart' as _ih8y80e4;
 import 'duel/duel_round_view.dart' as _izgr1lt8;
+import 'duel/duel_signal.dart' as _it5t06fg;
 import 'duel/duel_status.dart' as _iawu1v59;
 import 'duel/duel_summary.dart' as _iqx58u4g;
 import 'duel/duel_view.dart' as _inhuti79;
@@ -125,6 +126,7 @@ export 'duel/duel_exception.dart';
 export 'duel/duel_phase.dart';
 export 'duel/duel_round.dart';
 export 'duel/duel_round_view.dart';
+export 'duel/duel_signal.dart';
 export 'duel/duel_status.dart';
 export 'duel/duel_summary.dart';
 export 'duel/duel_view.dart';
@@ -2066,6 +2068,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _izgr1lt8.DuelRoundView) {
       return _izgr1lt8.DuelRoundView.fromJson(data) as T;
     }
+    if (t == _it5t06fg.DuelSignal) {
+      return _it5t06fg.DuelSignal.fromJson(data) as T;
+    }
     if (t == _iawu1v59.DuelStatus) {
       return _iawu1v59.DuelStatus.fromJson(data) as T;
     }
@@ -2273,6 +2278,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_izgr1lt8.DuelRoundView?>()) {
       return (data != null ? _izgr1lt8.DuelRoundView.fromJson(data) : null)
           as T;
+    }
+    if (t == _is.getType<_it5t06fg.DuelSignal?>()) {
+      return (data != null ? _it5t06fg.DuelSignal.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iawu1v59.DuelStatus?>()) {
       return (data != null ? _iawu1v59.DuelStatus.fromJson(data) : null) as T;
@@ -2630,6 +2638,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _igih3ea9.DuelPhase => 'DuelPhase',
       _ih8y80e4.DuelRound => 'DuelRound',
       _izgr1lt8.DuelRoundView => 'DuelRoundView',
+      _it5t06fg.DuelSignal => 'DuelSignal',
       _iawu1v59.DuelStatus => 'DuelStatus',
       _iqx58u4g.DuelSummary => 'DuelSummary',
       _inhuti79.DuelView => 'DuelView',
@@ -2733,6 +2742,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'DuelRound';
       case _izgr1lt8.DuelRoundView():
         return 'DuelRoundView';
+      case _it5t06fg.DuelSignal():
+        return 'DuelSignal';
       case _iawu1v59.DuelStatus():
         return 'DuelStatus';
       case _iqx58u4g.DuelSummary():
@@ -2815,6 +2826,9 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MyProfile';
       case _ikp908ax.SocialException():
         return 'SocialException';
+    }
+    if (data is List<_i55m6l7d.DuelSummary>) {
+      return 'List<DuelSummary>';
     }
     className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -2909,6 +2923,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'DuelRoundView') {
       return deserialize<_izgr1lt8.DuelRoundView>(data['data']);
+    }
+    if (dataClassName == 'DuelSignal') {
+      return deserialize<_it5t06fg.DuelSignal>(data['data']);
     }
     if (dataClassName == 'DuelStatus') {
       return deserialize<_iawu1v59.DuelStatus>(data['data']);
@@ -3048,6 +3065,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _isp.Protocol().deserializeByClassName(data);
+    }
+    if (dataClassName == 'List<DuelSummary>') {
+      return deserialize<List<_i55m6l7d.DuelSummary>>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

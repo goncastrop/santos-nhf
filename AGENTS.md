@@ -39,6 +39,17 @@ Build for multiple users, use Serverpod's built-in authentication, which is alre
 - `duel/`: motor del duelo (`DuelService`) con tablas `duel`, `duel_deck` y `duel_round`,
   `DuelEndpoint`, y la máquina "El Sacristán" (id fijo `11111111-1111-4111-8111-111111111111`,
   juega dentro de la misma transacción tras cada jugada humana). Reglas en `ROADMAP.md`.
+- `live/`: la trivia en vivo estilo Kahoot (`LiveGame`, `LiveAnswer`, `LiveService`,
+  `LiveEndpoint` público y `AdminLiveEndpoint`). Las preguntas se abren y cierran con
+  `LiveFutureCall` (por eso `futureCall.scanInterval` es de 1 segundo en la config) y el stream
+  `live.watch` manda la vista entera en cada cambio. Las vistas salen de una sola foto en
+  memoria por cambio y los avisos van por `session.messages` con alcance local: anda porque
+  producción es un solo servidor; con dos haría falta Redis. Reglas en `ROADMAP.md`.
+- `duel/duel_events.dart`: cada jugada avisa por el canal del duelo y por el de cada jugador,
+  y los streams `duel.watch` y `duel.watchMine` mandan el tablero y la lista actualizados.
+  Los tests de streams que reaccionan a otra llamada en curso van en un grupo con
+  `rollbackDatabase: RollbackDatabase.disabled` (ver `duel_stream_test.dart`): el proxy de
+  rollback no permite dos consultas a la vez.
 - `litany/`: "La Letanía", el juego individual (`LitanyRun` en la tabla `litany_run`,
   `LitanyService`, `LitanyEndpoint`, DTO `LitanyView`). Una corrida de preguntas sobre los
   santos del álbum con 3 vidas: acertar suma `basePoints` por el multiplicador, que sube un
@@ -126,9 +137,10 @@ por los endpoints admin. El catálogo público nunca los incluye.
   marcadores que se pisan se agrupan por celda de pantalla, y el grupo que ningún zoom
   separaría abre una lista en vez de acercar),
   `saint_detail_screen`, `album_screen`, `profile_screen` (cerrar
-  sesión, acceso admin), `screens/play/` (hub, selector de mazo, tablero del duelo con
-  sondeo cada 8 s en duelos entre amigos, adivinar el puntaje, `litany_screen` con La
-  Letanía), `screens/friends/`
+  sesión, acceso admin), `screens/play/` (hub, selector de mazo, tablero del duelo que
+  sigue `duel.watch` en duelos entre amigos, con un sondeo cada 30 s de respaldo, adivinar el
+  puntaje, `litany_screen` con La Letanía), `screens/live/` (la trivia en vivo, ver
+  `state/live_state.dart`), `screens/friends/`
   (código, amigos, desafiar, rankings, álbum de un amigo) y `screens/admin/` (santos,
   edición, historial, preguntas, libros, códigos, admins).
 - `utils/scores.dart`: extensión sobre el enum compartido `ScoreCategory` (label,

@@ -62,6 +62,8 @@ duel:
   - decline:
   - myDuels:
   - view:
+  - watch:
+  - watchMine:
   - attack:
   - defend:
   - answer:

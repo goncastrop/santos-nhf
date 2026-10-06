@@ -63,7 +63,40 @@ class AppState extends ChangeNotifier {
   @override
   void dispose() {
     _dayTimer?.cancel();
+    stopDuelStream();
     super.dispose();
+  }
+
+  StreamSubscription<List<DuelSummary>>? _duelStream;
+  Timer? _duelRetry;
+
+  /// Keeps [duels] current while the app is open, so the count of turns
+  /// waiting moves as soon as a friend plays. Safe to call more than once.
+  void startDuelStream() {
+    if (!signedIn || _duelStream != null) return;
+    _duelRetry?.cancel();
+    _duelStream = client.duel.watchMine().listen(
+      (list) {
+        duels = list;
+        notifyListeners();
+      },
+      onError: (_) => _retryDuelStream(),
+      onDone: _retryDuelStream,
+      cancelOnError: true,
+    );
+  }
+
+  void stopDuelStream() {
+    _duelRetry?.cancel();
+    _duelRetry = null;
+    unawaited(_duelStream?.cancel());
+    _duelStream = null;
+  }
+
+  void _retryDuelStream() {
+    _duelStream = null;
+    _duelRetry?.cancel();
+    _duelRetry = Timer(const Duration(seconds: 10), startDuelStream);
   }
 
   /// Starter cards granted on the last load, until the UI shows them.
@@ -159,6 +192,7 @@ class AppState extends ChangeNotifier {
     if (offline) return;
     // Secondary data: failures here must not block the app.
     if (signedIn) {
+      startDuelStream();
       await Future.wait([refreshQuiz(), refreshPatchNotes(), refreshDuels()]);
     } else {
       await refreshPatchNotes();
@@ -254,6 +288,7 @@ class AppState extends ChangeNotifier {
   }
 
   void reset() {
+    stopDuelStream();
     unawaited(_cache.clear());
     offline = false;
     cachedAt = null;

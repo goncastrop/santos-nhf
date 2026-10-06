@@ -70,9 +70,8 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
     la carta**, antes de saber si ganó la comparación. Así cada ronda son solo dos pasos.
   - El de la carta más alta suma el punto si respondió bien; si no, lo suma el rival si
     respondió bien. Gana el primero en llegar a 3 o el que más puntos tenga al terminar.
-- [ ] Notificaciones push cuando es tu turno (requiere configurar Firebase; por ahora la
-  pestaña Jugar muestra un contador de turnos pendientes y la pantalla del duelo consulta
-  cada 8 segundos mientras espera).
+- [ ] Notificaciones push cuando es tu turno (requiere configurar Firebase). Con la app
+  abierta ya no hacen falta: el contador de turnos y el tablero se actualizan en vivo.
 - [x] Rankings globales de álbum, mejor racha y duelos ganados, con marca de amigos.
 - [x] Códigos de desbloqueo: se crean desde el panel admin (carta fija o al azar, usos
   máximos, vencimiento) y se canjean desde la pestaña Hoy. Un canje por persona por código.

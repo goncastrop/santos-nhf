@@ -101,9 +101,12 @@ class _AuthGateState extends State<_AuthGate> with WidgetsBindingObserver {
     // rollover is also checked whenever the app comes back.
     if (state == AppLifecycleState.resumed) {
       AppState.of(context).checkDayChange();
+      AppState.of(context).startDuelStream();
       LiveState.of(context).start();
     } else if (state == AppLifecycleState.paused) {
-      // In the background nobody sees the banner: no point keeping a socket.
+      // In the background nobody sees the banner or the turn count: no point
+      // keeping the sockets open.
+      AppState.of(context).stopDuelStream();
       LiveState.of(context).stop();
     }
   }

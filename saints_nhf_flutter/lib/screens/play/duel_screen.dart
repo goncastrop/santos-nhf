@@ -83,6 +83,8 @@ class _DuelScreenState extends State<DuelScreen> {
   /// when it goes from "answered" to resolved.
   String? _dismissedResult;
   Timer? _poll;
+  StreamSubscription<DuelView>? _live;
+  Timer? _liveRetry;
 
   int? _duelId;
 
@@ -96,8 +98,9 @@ class _DuelScreenState extends State<DuelScreen> {
     } else {
       _load();
     }
-    // Friend duels are asynchronous: poll while waiting for the other side.
-    _poll = Timer.periodic(const Duration(seconds: 8), (_) {
+    // The stream brings the other player's moves at once; this slow poll is
+    // only the safety net for when it drops.
+    _poll = Timer.periodic(const Duration(seconds: 30), (_) {
       final v = _view;
       if (v != null &&
           !v.isVsMachine &&
@@ -111,7 +114,50 @@ class _DuelScreenState extends State<DuelScreen> {
   @override
   void dispose() {
     _poll?.cancel();
+    _liveRetry?.cancel();
+    _live?.cancel();
     super.dispose();
+  }
+
+  /// Follows the duel live. Against the machine there is nothing to wait
+  /// for: it plays inside the same request.
+  void _watch() {
+    final id = _duelId;
+    if (id == null || _live != null || _view?.isVsMachine == true) return;
+    _live = client.duel
+        .watch(id)
+        .listen(
+          (v) {
+            if (mounted) setState(() => _applyRemote(v));
+          },
+          onError: (_) => _rewatch(),
+          onDone: _rewatch,
+          cancelOnError: true,
+        );
+  }
+
+  void _rewatch() {
+    _live = null;
+    _liveRetry?.cancel();
+    _liveRetry = Timer(const Duration(seconds: 5), () {
+      if (mounted) _watch();
+    });
+  }
+
+  /// A view pushed by the server. It also echoes the player's own moves, so
+  /// while one is on its way it is skipped, and when the board did not move
+  /// on the half-made pick stays.
+  void _applyRemote(DuelView v) {
+    if (_busy) return;
+    final current = _view;
+    if (current != null &&
+        current.phase == v.phase &&
+        current.rounds.length == v.rounds.length &&
+        current.rounds.lastOrNull?.resolved == v.rounds.lastOrNull?.resolved) {
+      _view = v;
+      return;
+    }
+    _apply(v);
   }
 
   Future<void> _create() async {
@@ -122,6 +168,7 @@ class _DuelScreenState extends State<DuelScreen> {
         _duelId = v.duelId;
         _apply(v);
       });
+      _watch();
       unawaited(AppState.of(context).refreshDuels());
     } catch (e) {
       if (mounted) setState(() => _error = e);
@@ -133,7 +180,9 @@ class _DuelScreenState extends State<DuelScreen> {
     if (id == null) return;
     try {
       final v = await client.duel.view(id);
-      if (mounted) setState(() => _apply(v));
+      if (!mounted) return;
+      setState(() => _apply(v));
+      _watch();
     } catch (e) {
       if (mounted && !silent) setState(() => _error = e);
     }

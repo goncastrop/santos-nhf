@@ -924,6 +924,9 @@ class Protocol extends _isc.SerializationManager {
       case _ikp908ax.SocialException():
         return 'SocialException';
     }
+    if (data is List<_ihyypura.DuelSummary>) {
+      return 'List<DuelSummary>';
+    }
     className = _iaic.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
@@ -1123,6 +1126,9 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
       return _iacc.Protocol().deserializeByClassName(data);
+    }
+    if (dataClassName == 'List<DuelSummary>') {
+      return deserialize<List<_ihyypura.DuelSummary>>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

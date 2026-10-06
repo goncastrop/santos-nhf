@@ -1,0 +1,6 @@
+### Posted when a duel changes, so the open streams of both players send a
+### fresh view instead of waiting for the next poll.
+class: DuelSignal
+serverOnly: true
+fields:
+  duelId: int

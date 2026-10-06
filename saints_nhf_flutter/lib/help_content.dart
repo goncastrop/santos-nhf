@@ -157,6 +157,11 @@ const helpChapters = <HelpChapter>[
           'tres vidas. Cada tres aciertos seguidos sube el multiplicador, '
           'hasta ×5, y nunca se repite una pregunta. La mejor corrida queda '
           'en el ranking.',
+      'Trivia en vivo: durante el programa, el equipo lanza unas preguntas '
+          'sobre el santo del día y te aparece un aviso arriba en la app. '
+          'Acertar vale entre 500 y 1000 puntos, más cuanto más rápido. Los '
+          'mejores puntajes y algunos sorteados entre los que sumaron se '
+          'llevan la carta del santo, o una que les falte si ya la tenían.',
     ],
   ),
   HelpChapter(
@@ -185,9 +190,9 @@ const faqs = <Faq>[
   ),
   Faq(
     '¿Cómo se consiguen las tarjetas?',
-    'De tres maneras: las 5 que se reparten al crear la cuenta, una por día '
-        'en la pestaña Hoy, y los códigos que a veces da el programa. No se '
-        'compran.',
+    'De cuatro maneras: las 5 que se reparten al crear la cuenta, una por '
+        'día en la pestaña Hoy, los códigos que a veces da el programa y la '
+        'trivia en vivo durante el programa. No se compran.',
   ),
   Faq(
     '¿Se pueden repetir?',
@@ -214,9 +219,15 @@ const faqs = <Faq>[
   ),
   Faq(
     '¿Puedo usarla sin cuenta?',
-    'Sí, para mirar el catálogo, la línea de tiempo, el mapa y las fichas de '
-        'todos los santos. Para coleccionar, jugar y tener amigos hace falta '
-        'una cuenta.',
+    'Sí, para mirar el catálogo, la línea de tiempo, el mapa, las fichas de '
+        'todos los santos y la trivia en vivo. Para coleccionar, jugar, '
+        'responder la trivia y tener amigos hace falta una cuenta.',
+  ),
+  Faq(
+    '¿Cuándo es la trivia en vivo?',
+    'Durante el programa, cuando el equipo la lanza. Si tenés la app abierta '
+        'te aparece un aviso arriba con la cuenta regresiva; si lo cerrás, '
+        'queda un punto rojo de "EN VIVO" en la barra para volver.',
   ),
   Faq(
     '¿Anda sin internet?',
