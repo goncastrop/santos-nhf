@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
 import 'client.dart';
+import 'credits.dart';
 import 'screens/home_shell.dart';
 import 'state/app_state.dart';
 import 'theme.dart';
@@ -74,6 +75,9 @@ class _AuthGateState extends State<_AuthGate> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AppState.of(context).watchDayChange();
+      // El logo va en el dorso de todas las cartas: cargado de antemano, no
+      // aparece tarde en la primera animación de carta nueva.
+      precacheImage(const AssetImage(programLogoAsset), context);
     });
   }
 

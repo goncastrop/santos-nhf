@@ -64,8 +64,8 @@ class SignInScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                     ],
-                    const Eyebrow('No Hacemos Fotocopias'),
-                    const SizedBox(height: 6),
+                    const ProgramLogo(height: 52),
+                    const SizedBox(height: 10),
                     Text(
                       'SANTOS',
                       style: textTheme.displaySmall?.copyWith(

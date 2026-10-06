@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../utils/feast.dart';
 import '../utils/scores.dart';
 import '../utils/titles.dart';
+import 'common.dart';
 import 'saint_illustration.dart';
 
 /// Width-to-height ratio of a card.
@@ -457,7 +458,7 @@ class _ScoreGrid extends StatelessWidget {
   );
 }
 
-/// The back of a card: ink field with a gilded rosette and the NHF mark.
+/// The back of a card: ink field with a gilded rosette and the program logo.
 class SaintCardBack extends StatelessWidget {
   const SaintCardBack({super.key, required this.width, this.dimmed = false});
 
@@ -494,13 +495,10 @@ class SaintCardBack extends StatelessWidget {
             child: CustomPaint(
               painter: _CardBackPainter(dimmed: dimmed),
               child: Center(
-                child: Text(
-                  'NHF',
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    fontSize: 34 * s,
-                    letterSpacing: 6 * s,
-                    color: dimmed ? Palette.parchmentDim : Palette.goldLight,
-                  ),
+                // Ancho justo para que entre holgado en el anillo.
+                child: Opacity(
+                  opacity: dimmed ? 0.45 : 1,
+                  child: ProgramLogo(width: 120 * s),
                 ),
               ),
             ),

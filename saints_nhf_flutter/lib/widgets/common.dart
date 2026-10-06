@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:saints_nhf_client/saints_nhf_client.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../credits.dart';
 import '../theme.dart';
 
 /// Small uppercase label used as a section eyebrow.
@@ -20,6 +21,27 @@ class Eyebrow extends StatelessWidget {
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
         color: color ?? Palette.gold,
       ),
+    );
+  }
+}
+
+/// El logo de No Hacemos Fotocopias, al alto o al ancho pedido. Para los
+/// lectores de pantalla se lee como el nombre del programa.
+class ProgramLogo extends StatelessWidget {
+  const ProgramLogo({super.key, this.height, this.width})
+    : assert(height != null || width != null);
+
+  final double? height;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      programLogoAsset,
+      height: height,
+      width: width,
+      semanticLabel: programName,
+      filterQuality: FilterQuality.medium,
     );
   }
 }

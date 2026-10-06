@@ -73,10 +73,7 @@ class ShareCardImage extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
               ],
-              Text(
-                programName,
-                style: textTheme.headlineSmall?.copyWith(fontSize: 34),
-              ),
+              const ProgramLogo(height: 120),
             ],
           ),
         ),
@@ -107,6 +104,11 @@ Future<Uint8List> captureShareCard(
       // Sin ilustración la tarjeta cae en el monograma, que también se
       // comparte bien.
     }
+  }
+  // El logo es un asset y también se decodifica de forma asíncrona: sin
+  // precargarlo, la foto puede salir sin él.
+  if (context.mounted) {
+    await precacheImage(const AssetImage(programLogoAsset), context);
   }
   if (!context.mounted) {
     throw StateError('La pantalla se cerró antes de armar la imagen.');

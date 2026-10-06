@@ -35,16 +35,7 @@ class CreditsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Center(
-            child: Text(
-              programName.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: textTheme.headlineSmall?.copyWith(
-                color: Palette.gold,
-                letterSpacing: 3,
-              ),
-            ),
-          ),
+          const Center(child: ProgramLogo(height: 72)),
           const SizedBox(height: 12),
           const Center(child: Ornament()),
           const SizedBox(height: 16),

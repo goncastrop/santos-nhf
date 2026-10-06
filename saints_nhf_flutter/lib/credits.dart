@@ -20,6 +20,10 @@ class Credit {
 
 const programName = 'No Hacemos Fotocopias';
 
+/// El logo del programa: letras blancas con sombra negra sobre fondo
+/// transparente, pensado para ir sobre el fondo oscuro de la app.
+const programLogoAsset = 'assets/nhf_logo.png';
+
 const credits = <Credit>[
   Credit(
     role: 'El programa',
