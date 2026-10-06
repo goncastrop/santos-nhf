@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../widgets/common.dart';
 import 'admin/admin_catalog_screen.dart';
 import 'admin/admin_codes_screen.dart';
+import 'admin/admin_live_screen.dart';
 import 'admin/admin_saints_screen.dart';
 import 'credits_screen.dart';
 import 'guide_screen.dart';
@@ -125,6 +126,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const AdminCatalogScreen(),
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.podcasts_rounded,
+                      color: Palette.gold,
+                    ),
+                    title: const Text('Trivia en vivo'),
+                    subtitle: const Text(
+                      'Lanzar y conducir la trivia durante el programa',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const AdminLiveScreen(),
                       ),
                     ),
                   ),

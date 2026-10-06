@@ -198,8 +198,11 @@ void main() {
       expect(options[view.correctIndex!], 'A');
       expect(view.tally![options.indexOf('A')], 1);
       expect(view.tally![options.indexOf('B')], 1);
-      expect(view.leaderboard!.first.points, greaterThan(0));
-      expect(view.leaderboard!.last.points, 0);
+      // Only who scored is in the top; the one who missed still has a rank.
+      expect(view.leaderboard, hasLength(1));
+      expect(view.leaderboard!.single.points, greaterThan(0));
+      final missed = await endpoints.live.state(wrong);
+      expect(missed.me!.rank, 2);
     });
 
     test('when the admin moves on then the next question gets a short '

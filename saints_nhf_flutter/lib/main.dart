@@ -6,6 +6,7 @@ import 'client.dart';
 import 'credits.dart';
 import 'screens/home_shell.dart';
 import 'state/app_state.dart';
+import 'state/live_state.dart';
 import 'theme.dart';
 
 void main() async {
@@ -23,10 +24,12 @@ class SantosApp extends StatefulWidget {
 
 class _SantosAppState extends State<SantosApp> {
   final _state = AppState();
+  final _live = LiveState();
 
   @override
   void dispose() {
     _state.dispose();
+    _live.dispose();
     super.dispose();
   }
 
@@ -34,21 +37,24 @@ class _SantosAppState extends State<SantosApp> {
   Widget build(BuildContext context) {
     return AppStateScope(
       state: _state,
-      child: MaterialApp(
-        title: 'Santos NHF',
-        debugShowCheckedModeBanner: false,
-        theme: buildTheme(),
-        // Let the mouse drag lists too, so pull-to-refresh works on web and
-        // desktop, not only on touch screens.
-        scrollBehavior: const MaterialScrollBehavior().copyWith(
-          dragDevices: {
-            PointerDeviceKind.touch,
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.trackpad,
-            PointerDeviceKind.stylus,
-          },
+      child: LiveStateScope(
+        state: _live,
+        child: MaterialApp(
+          title: 'Santos NHF',
+          debugShowCheckedModeBanner: false,
+          theme: buildTheme(),
+          // Let the mouse drag lists too, so pull-to-refresh works on web and
+          // desktop, not only on touch screens.
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.stylus,
+            },
+          ),
+          home: const _AuthGate(),
         ),
-        home: const _AuthGate(),
       ),
     );
   }
@@ -75,6 +81,7 @@ class _AuthGateState extends State<_AuthGate> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AppState.of(context).watchDayChange();
+      LiveState.of(context).start();
       // El logo va en el dorso de todas las cartas: cargado de antemano, no
       // aparece tarde en la primera animación de carta nueva.
       precacheImage(const AssetImage(programLogoAsset), context);
@@ -94,6 +101,10 @@ class _AuthGateState extends State<_AuthGate> with WidgetsBindingObserver {
     // rollover is also checked whenever the app comes back.
     if (state == AppLifecycleState.resumed) {
       AppState.of(context).checkDayChange();
+      LiveState.of(context).start();
+    } else if (state == AppLifecycleState.paused) {
+      // In the background nobody sees the banner: no point keeping a socket.
+      LiveState.of(context).stop();
     }
   }
 
@@ -102,6 +113,7 @@ class _AuthGateState extends State<_AuthGate> with WidgetsBindingObserver {
     if (signedIn == _wasSignedIn) return;
     _wasSignedIn = signedIn;
     final state = AppState.of(context);
+    LiveState.of(context).restart();
     if (signedIn) {
       state.loadAll();
     } else {

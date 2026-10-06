@@ -31,6 +31,9 @@ abstract class LiveView
     this.questionNumber,
     this.questionCount,
     this.countdownTo,
+    this.questionSeconds,
+    this.fastPrizes,
+    this.rafflePrizes,
     this.question,
     this.closesAt,
     this.answeredCount,
@@ -51,6 +54,9 @@ abstract class LiveView
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    int? questionSeconds,
+    int? fastPrizes,
+    int? rafflePrizes,
     _i2z4qq3v.QuizQuestion? question,
     DateTime? closesAt,
     int? answeredCount,
@@ -84,6 +90,9 @@ abstract class LiveView
           : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['countdownTo'],
             ),
+      questionSeconds: jsonSerialization['questionSeconds'] as int?,
+      fastPrizes: jsonSerialization['fastPrizes'] as int?,
+      rafflePrizes: jsonSerialization['rafflePrizes'] as int?,
       question: jsonSerialization['question'] == null
           ? null
           : _ipd1p8hh.Protocol().deserialize<_i2z4qq3v.QuizQuestion>(
@@ -140,6 +149,14 @@ abstract class LiveView
 
   DateTime? countdownTo;
 
+  /// The rules of the game, for the lobby: seconds per question and how many
+  /// win by points and by raffle.
+  int? questionSeconds;
+
+  int? fastPrizes;
+
+  int? rafflePrizes;
+
   /// Present from the moment the question opens. The options come in the
   /// same order for everyone, so the host can say "the B".
   _i2z4qq3v.QuizQuestion? question;
@@ -180,6 +197,9 @@ abstract class LiveView
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    int? questionSeconds,
+    int? fastPrizes,
+    int? rafflePrizes,
     _i2z4qq3v.QuizQuestion? question,
     DateTime? closesAt,
     int? answeredCount,
@@ -202,6 +222,9 @@ abstract class LiveView
       if (questionNumber != null) 'questionNumber': questionNumber,
       if (questionCount != null) 'questionCount': questionCount,
       if (countdownTo != null) 'countdownTo': countdownTo?.toJson(),
+      if (questionSeconds != null) 'questionSeconds': questionSeconds,
+      if (fastPrizes != null) 'fastPrizes': fastPrizes,
+      if (rafflePrizes != null) 'rafflePrizes': rafflePrizes,
       if (question != null) 'question': question?.toJson(),
       if (closesAt != null) 'closesAt': closesAt?.toJson(),
       if (answeredCount != null) 'answeredCount': answeredCount,
@@ -229,6 +252,9 @@ abstract class LiveView
       if (questionNumber != null) 'questionNumber': questionNumber,
       if (questionCount != null) 'questionCount': questionCount,
       if (countdownTo != null) 'countdownTo': countdownTo?.toJson(),
+      if (questionSeconds != null) 'questionSeconds': questionSeconds,
+      if (fastPrizes != null) 'fastPrizes': fastPrizes,
+      if (rafflePrizes != null) 'rafflePrizes': rafflePrizes,
       if (question != null) 'question': question?.toJsonForProtocol(),
       if (closesAt != null) 'closesAt': closesAt?.toJson(),
       if (answeredCount != null) 'answeredCount': answeredCount,
@@ -268,6 +294,9 @@ class _LiveViewImpl extends LiveView {
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    int? questionSeconds,
+    int? fastPrizes,
+    int? rafflePrizes,
     _i2z4qq3v.QuizQuestion? question,
     DateTime? closesAt,
     int? answeredCount,
@@ -286,6 +315,9 @@ class _LiveViewImpl extends LiveView {
          questionNumber: questionNumber,
          questionCount: questionCount,
          countdownTo: countdownTo,
+         questionSeconds: questionSeconds,
+         fastPrizes: fastPrizes,
+         rafflePrizes: rafflePrizes,
          question: question,
          closesAt: closesAt,
          answeredCount: answeredCount,
@@ -310,6 +342,9 @@ class _LiveViewImpl extends LiveView {
     Object? questionNumber = _Undefined,
     Object? questionCount = _Undefined,
     Object? countdownTo = _Undefined,
+    Object? questionSeconds = _Undefined,
+    Object? fastPrizes = _Undefined,
+    Object? rafflePrizes = _Undefined,
     Object? question = _Undefined,
     Object? closesAt = _Undefined,
     Object? answeredCount = _Undefined,
@@ -331,6 +366,11 @@ class _LiveViewImpl extends LiveView {
           : this.questionNumber,
       questionCount: questionCount is int? ? questionCount : this.questionCount,
       countdownTo: countdownTo is DateTime? ? countdownTo : this.countdownTo,
+      questionSeconds: questionSeconds is int?
+          ? questionSeconds
+          : this.questionSeconds,
+      fastPrizes: fastPrizes is int? ? fastPrizes : this.fastPrizes,
+      rafflePrizes: rafflePrizes is int? ? rafflePrizes : this.rafflePrizes,
       question: question is _i2z4qq3v.QuizQuestion?
           ? question
           : this.question?.copyWith(),

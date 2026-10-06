@@ -9,6 +9,7 @@ import '../widgets/common.dart';
 import 'album_screen.dart';
 import 'explore_screen.dart';
 import 'guide_screen.dart';
+import 'live/live_widgets.dart';
 import 'friends/friends_screen.dart';
 import 'play/play_screen.dart';
 import 'profile_screen.dart';
@@ -64,6 +65,7 @@ class _HomeShellState extends State<HomeShell> {
       appBar: AppBar(
         title: Text(_titles[_index].toUpperCase()),
         actions: [
+          const LiveAppBarButton(),
           IconButton(
             tooltip: 'Cómo funciona',
             icon: const Icon(Icons.help_outline_rounded, color: Palette.gold),
@@ -99,6 +101,7 @@ class _HomeShellState extends State<HomeShell> {
         ),
         _ => Column(
           children: [
+            const LiveBanner(),
             if (state.offline) _OfflineBanner(state: state),
             Expanded(
               child: IndexedStack(

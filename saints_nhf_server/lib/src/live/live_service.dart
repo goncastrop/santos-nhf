@@ -732,6 +732,9 @@ class _Snapshot {
       questionNumber: index + 1,
       questionCount: game.questionIds.length,
       countdownTo: phase == LivePhase.countdown ? game.countdownTo : null,
+      questionSeconds: game.questionSeconds,
+      fastPrizes: game.fastPrizes,
+      rafflePrizes: game.rafflePrizes,
       question: question == null
           ? null
           : QuizQuestion(
@@ -748,7 +751,11 @@ class _Snapshot {
       tally: tally,
       leaderboard: showRanking
           ? [
-              for (final s in standings.take(LiveService.leaderboardSize))
+              // Only those who scored: a top of zeros reads as nonsense.
+              for (final s
+                  in standings
+                      .where((s) => s.points > 0)
+                      .take(LiveService.leaderboardSize))
                 LiveRankEntry(
                   rank: _rank[s.authUserId]!,
                   name: names[s.authUserId] ?? 'Peregrino',

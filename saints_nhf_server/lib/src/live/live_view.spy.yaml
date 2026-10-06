@@ -12,6 +12,11 @@ fields:
   questionNumber: int?
   questionCount: int?
   countdownTo: DateTime?
+  ### The rules of the game, for the lobby: seconds per question and how many
+  ### win by points and by raffle.
+  questionSeconds: int?
+  fastPrizes: int?
+  rafflePrizes: int?
   ### Present from the moment the question opens. The options come in the
   ### same order for everyone, so the host can say "the B".
   question: QuizQuestion?
