@@ -237,14 +237,20 @@ reload del servidor ("Endpoint not found", 404) y las tarjetas mostraban el mono
 vuelve a registrar y ya no hace falta `hot_restart` para eso.
 
 **Versiones**: todos los paquetes `serverpod*` de los tres pubspecs están fijados a la misma
-versión exacta (hoy 4.0.1) y se suben juntos. El CLI que corre `serverpod start` lo administra App
-Studio (`toolchain/manifest.json`), no `serverpod upgrade`: el CLI puede quedar una patch atrás del
-proyecto sin problema, porque solo sugiere actualizar y no exige coincidencia.
+versión exacta (hoy 4.0.3) y se suben juntos. El CLI que corre `serverpod start` lo instala App
+Studio con `dart install` en `~/Library/Application Support/Dart/install/bin/serverpod` (hoy 4.0.3).
+Esa carpeta no está en el PATH de la terminal: para usarlo a mano, llamarlo con la ruta completa. El CLI tiene que ser de la misma versión que los paquetes: aunque solo sugiere actualizar
+y no exige que coincidan, el código que genera puede usar parámetros que el paquete viejo no tiene.
+Al subir uno, subir el otro, y también el `VERSION` de `.github/workflows/tests.yml`. Lo mismo con
+Flutter: el `flutter-version` de los cuatro workflows y la imagen `dart:` del
+`saints_nhf_server/Dockerfile` siguen a la versión de fvm.
 
-**Toolchain**: el SDK que usa el proyecto es el de App Studio
-(`/Users/gon/Library/Application Support/App Studio/bin/{dart,flutter}`), Dart 3.13. El
-`dart` del PATH (fvm, 3.9) no resuelve las dependencias, usar el de App Studio para
-`analyze`, `format` y `test`.
+**Toolchain**: App Studio ya no trae un SDK propio y usa el del sistema. Flutter y Dart son los de
+fvm: la versión global (`~/fvm/default`, hoy 3.47.6 con Dart 3.13.5) está en el PATH, así que
+`dart` y `flutter` sirven directo para `analyze`, `format` y `test`. App Studio pide Flutter 3.47.0
+o más nuevo del canal stable. Para cambiar de versión, usar `fvm install <versión> --setup` y
+`fvm global <versión>`, nunca `flutter upgrade` dentro de una carpeta de `~/fvm/versions`, porque
+cambia esa versión en el lugar y rompe los proyectos que la tienen fijada en su `.fvmrc`.
 
 ## Flujo de trabajo
 
