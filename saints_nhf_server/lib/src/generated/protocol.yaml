@@ -1,3 +1,5 @@
+account:
+  - deleteMyAccount:
 adminAccess:
   - myAccess:
   - requestAccess:

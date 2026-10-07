@@ -25,6 +25,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import '../account/account_endpoint.dart' as _it9bm8zx;
 import '../admin/admin_access_endpoint.dart' as _ii14t626;
 import '../admin/admin_book_endpoint.dart' as _iv0rqla0;
 import '../admin/admin_catalog_endpoint.dart' as _i3lzez2m;
@@ -49,6 +50,12 @@ class Endpoints extends _is.EndpointDispatch {
   @override
   void initializeEndpoints(_is.Server server) {
     var endpoints = <String, _is.Endpoint>{
+      'account': _it9bm8zx.AccountEndpoint()
+        ..initialize(
+          server,
+          'account',
+          null,
+        ),
       'adminAccess': _ii14t626.AdminAccessEndpoint()
         ..initialize(
           server,
@@ -158,6 +165,31 @@ class Endpoints extends _is.EndpointDispatch {
           null,
         ),
     };
+    connectors['account'] = _is.EndpointConnector(
+      name: 'account',
+      endpoint: endpoints['account']!,
+      methodConnectors: {
+        'deleteMyAccount': _is.MethodConnector(
+          name: 'deleteMyAccount',
+          params: {
+            'confirmation': _is.ParameterDescription(
+              name: 'confirmation',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['account'] as _it9bm8zx.AccountEndpoint)
+                  .deleteMyAccount(
+                    session,
+                    params['confirmation'],
+                  ),
+        ),
+      },
+    );
     connectors['adminAccess'] = _is.EndpointConnector(
       name: 'adminAccess',
       endpoint: endpoints['adminAccess']!,

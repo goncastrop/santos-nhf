@@ -68,6 +68,24 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'protocol.dart' as _il2as5qe;
 
+/// The signed-in player's own account.
+/// {@category Endpoint}
+class EndpointAccount extends _isc.EndpointRef {
+  EndpointAccount(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'account';
+
+  /// Deletes the account for good. [confirmation] has to be
+  /// [AccountService.confirmationWord], typed by the player.
+  _ida.Future<void> deleteMyAccount(String confirmation) =>
+      caller.callServerEndpoint<void>(
+        'account',
+        'deleteMyAccount',
+        {'confirmation': confirmation},
+      );
+}
+
 /// Lets a signed-in user check and request admin access.
 /// {@category Endpoint}
 class EndpointAdminAccess extends _isc.EndpointRef {
@@ -1151,6 +1169,7 @@ class Client extends _isc.ServerpodClientShared {
              disconnectStreamsOnLostInternetConnection,
          httpClientOverride: httpClientOverride,
        ) {
+    account = EndpointAccount(this);
     adminAccess = EndpointAdminAccess(this);
     adminBook = EndpointAdminBook(this);
     adminCatalog = EndpointAdminCatalog(this);
@@ -1171,6 +1190,8 @@ class Client extends _isc.ServerpodClientShared {
     leaderboard = EndpointLeaderboard(this);
     modules = Modules(this);
   }
+
+  late final EndpointAccount account;
 
   late final EndpointAdminAccess adminAccess;
 
@@ -1212,6 +1233,7 @@ class Client extends _isc.ServerpodClientShared {
 
   @override
   Map<String, _isc.EndpointRef> get endpointRefLookup => {
+    'account': account,
     'adminAccess': adminAccess,
     'adminBook': adminBook,
     'adminCatalog': adminCatalog,

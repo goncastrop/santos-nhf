@@ -144,6 +144,7 @@ String friendlyError(Object error) => switch (error) {
   CollectionException e => e.message,
   AdminException e => e.message,
   LiveException e => e.message,
+  AccountException e => e.message,
   ServerpodClientUnauthorized() => 'Tu sesión expiró. Volvé a iniciar sesión.',
   ServerpodClientForbidden() => 'No tenés permisos para hacer esto.',
   _ => 'No pudimos conectarnos con el servidor. Probá de nuevo.',

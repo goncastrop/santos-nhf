@@ -230,6 +230,12 @@ const faqs = <Faq>[
         'queda un punto rojo de "EN VIVO" en la barra para volver.',
   ),
   Faq(
+    '¿Puedo borrar mi cuenta?',
+    'Sí, desde Perfil → Borrar mi cuenta. Para confirmar hay que escribir '
+        'BORRAR. Se pierden el álbum, los récords, los amigos y los duelos, '
+        'y no se puede deshacer.',
+  ),
+  Faq(
     '¿Anda sin internet?',
     'La app guarda en el dispositivo lo último que cargó, así que el álbum, '
         'los santos y sus oraciones se ven igual. Para reclamar la carta del '

@@ -5,6 +5,7 @@ import '../client.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import 'delete_account_screen.dart';
 import 'admin/admin_catalog_screen.dart';
 import 'admin/admin_codes_screen.dart';
 import 'admin/admin_live_screen.dart';
@@ -258,6 +259,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.logout_rounded),
             label: const Text('Cerrar sesión'),
           ),
+          if (state.signedIn) ...[
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => DeleteAccountScreen.open(context),
+              style: TextButton.styleFrom(
+                foregroundColor: Palette.crimsonLight,
+              ),
+              child: const Text('Borrar mi cuenta'),
+            ),
+          ],
         ],
       ),
     );

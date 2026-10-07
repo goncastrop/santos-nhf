@@ -36,6 +36,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'account/account_exception.dart' as _iq1w2r6r;
 import 'admin/admin_access.dart' as _ihuj30ec;
 import 'admin/admin_exception.dart' as _i6y36sdk;
 import 'admin/admin_user.dart' as _iq8787bd;
@@ -103,6 +104,7 @@ import 'social/leaderboard.dart' as _ijc0657k;
 import 'social/leaderboard_entry.dart' as _i12nr32a;
 import 'social/my_profile.dart' as _i9fi806u;
 import 'social/social_exception.dart' as _ikp908ax;
+export 'account/account_exception.dart';
 export 'admin/admin_access.dart';
 export 'admin/admin_exception.dart';
 export 'admin/admin_user.dart';
@@ -1999,6 +2001,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       }
     }
 
+    if (t == _iq1w2r6r.AccountException) {
+      return _iq1w2r6r.AccountException.fromJson(data) as T;
+    }
     if (t == _ihuj30ec.AdminAccess) {
       return _ihuj30ec.AdminAccess.fromJson(data) as T;
     }
@@ -2193,6 +2198,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ikp908ax.SocialException) {
       return _ikp908ax.SocialException.fromJson(data) as T;
+    }
+    if (t == _is.getType<_iq1w2r6r.AccountException?>()) {
+      return (data != null ? _iq1w2r6r.AccountException.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_ihuj30ec.AdminAccess?>()) {
       return (data != null ? _ihuj30ec.AdminAccess.fromJson(data) : null) as T;
@@ -2615,6 +2624,7 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
+      _iq1w2r6r.AccountException => 'AccountException',
       _ihuj30ec.AdminAccess => 'AdminAccess',
       _i6y36sdk.AdminException => 'AdminException',
       _iq8787bd.AdminUser => 'AdminUser',
@@ -2696,6 +2706,8 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
 
     switch (data) {
+      case _iq1w2r6r.AccountException():
+        return 'AccountException';
       case _ihuj30ec.AdminAccess():
         return 'AdminAccess';
       case _i6y36sdk.AdminException():
@@ -2854,6 +2866,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     var dataClassName = data['className'];
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
+    }
+    if (dataClassName == 'AccountException') {
+      return deserialize<_iq1w2r6r.AccountException>(data['data']);
     }
     if (dataClassName == 'AdminAccess') {
       return deserialize<_ihuj30ec.AdminAccess>(data['data']);
