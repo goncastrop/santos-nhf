@@ -241,7 +241,9 @@ agrega `?v=<updatedAt>` a la URL, así que no hay que purgar ninguna caché.
 
 **Páginas legales**: la política de privacidad y los términos se escriben en `docs/legal/*.md` y
 `python3 tools/legal_a_html.py` genera `saints_nhf_server/web/pages/{privacidad,terminos}.html`,
-que el servidor sirve en `/privacidad` y `/terminos` (antes de la ruta de la app de Flutter). Lo
+que el servidor sirve en `/privacidad` y `/terminos` (antes de la ruta de la app de Flutter), y lo
+mismo con `docs/legal/acerca.md` en `/acerca`, la página principal que figura en la pantalla de
+consentimiento de Google: sus revisores no ejecutan la app de Flutter. Lo
 que afirman tiene que ser verdad en el código, igual que la ayuda: si cambia qué datos se guardan
 o con quién se comparten, cambian estos textos. La app las abre desde Perfil y desde la casilla de
 aceptación del registro (`privacyUrl` y `termsUrl` en `credits.dart`).

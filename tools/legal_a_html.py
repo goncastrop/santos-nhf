@@ -5,7 +5,9 @@
 
 Los Markdown son la fuente: se editan ahí y se vuelve a correr esto. Las
 páginas quedan en saints_nhf_server/web/pages/ y el servidor las sirve en
-/privacidad y /terminos (ver lib/server.dart).
+/privacidad, /terminos y /acerca (ver lib/server.dart). /acerca es la página
+principal que figura en la pantalla de consentimiento de Google: tiene que
+verse sin JavaScript, cosa que la app de Flutter no puede.
 
 Entiende solo lo que usan esos documentos: títulos con # y ##, párrafos,
 listas con guion (con sublistas de dos espacios), **negrita**, *cursiva* y
@@ -20,6 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCES = {
     'politica-de-privacidad.md': 'privacidad.html',
     'terminos-y-condiciones.md': 'terminos.html',
+    'acerca.md': 'acerca.html',
 }
 
 PAGE = """<!doctype html>
@@ -52,7 +55,7 @@ PAGE = """<!doctype html>
 <main>
 <a class="back" href="/">← Volver a Santos NHF</a>
 {body}
-<footer>Santos NHF · <a href="/privacidad">Privacidad</a> · <a href="/terminos">Términos</a></footer>
+<footer>Santos NHF · <a href="/acerca">Acerca</a> · <a href="/privacidad">Privacidad</a> · <a href="/terminos">Términos</a></footer>
 </main>
 </body>
 </html>

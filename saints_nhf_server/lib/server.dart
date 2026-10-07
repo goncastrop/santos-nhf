@@ -58,12 +58,14 @@ void run(List<String> args) async {
     '/assets/assets/config.json',
   );
 
-  // The privacy policy and the terms, as plain pages: Google's consent screen
-  // links them, and they have to open without loading the whole app. They
-  // are generated from docs/legal/ by tools/legal_a_html.py.
+  // The privacy policy, the terms and the "about" page, as plain pages:
+  // Google's consent screen links them, and its reviewers have to read them
+  // without running the Flutter app. They are generated from docs/legal/ by
+  // tools/legal_a_html.py.
   for (final (path, file) in [
     ('/privacidad', 'privacidad.html'),
     ('/terminos', 'terminos.html'),
+    ('/acerca', 'acerca.html'),
   ]) {
     pod.webServer.addRoute(
       StaticRoute.file(File(Uri(path: 'web/pages/$file').toFilePath())),
