@@ -47,31 +47,26 @@
 </head>
 <body>
   <!--
-    Lo que ve quien todavía no cargó la app, y lo único que ven los
-    verificadores que no ejecutan JavaScript, como el de la marca en Google
-    Cloud: qué es la app y dónde están la política y los términos. La app lo
-    saca apenas dibuja su primer cuadro.
+    Solo para quien no ejecuta JavaScript, como los buscadores y los
+    verificadores: qué es la app y dónde están la política y los términos.
+    Quien abre la app no lo ve nunca. Para Google la página principal es
+    /acerca, que se lee entera sin la app.
   -->
-  <main id="landing">
-    <h1>Santos NHF</h1>
-    <p>La app de "El santo del día", la sección del programa católico
-      <em>No Hacemos Fotocopias</em>. Coleccioná las tarjetas de los santos,
-      leé su vida y su oración, y jugá con ellas: la pregunta del día, duelos
-      con amigos y la trivia en vivo durante el programa.</p>
-    <p class="small">Cargando la app…</p>
-    <noscript><p>Para usar la app hace falta activar JavaScript.</p></noscript>
-    <p class="small">
-      <a href="/acerca">Qué es Santos NHF</a> ·
-      <a href="/privacidad">Política de privacidad</a> ·
-      <a href="/terminos">Términos y condiciones</a>
-    </p>
-  </main>
-  <script>
-    window.addEventListener('flutter-first-frame', function () {
-      var landing = document.getElementById('landing');
-      if (landing) landing.remove();
-    });
-  </script>
+  <noscript>
+    <main id="landing">
+      <h1>Santos NHF</h1>
+      <p>La app de "El santo del día", la sección del programa católico
+        <em>No Hacemos Fotocopias</em>. Coleccioná las tarjetas de los santos,
+        leé su vida y su oración, y jugá con ellas: la pregunta del día, duelos
+        con amigos y la trivia en vivo durante el programa.</p>
+      <p>Para usar la app hace falta activar JavaScript.</p>
+      <p class="small">
+        <a href="/acerca">Qué es Santos NHF</a> ·
+        <a href="/privacidad">Política de privacidad</a> ·
+        <a href="/terminos">Términos y condiciones</a>
+      </p>
+    </main>
+  </noscript>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
