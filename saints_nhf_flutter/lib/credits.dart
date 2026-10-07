@@ -20,6 +20,11 @@ class Credit {
 
 const programName = 'No Hacemos Fotocopias';
 
+/// Where the web app lives. The legal pages hang from it.
+const siteUrl = 'https://santos.nhf.com.ar';
+const privacyUrl = '$siteUrl/privacidad';
+const termsUrl = '$siteUrl/terminos';
+
 /// El logo del programa: letras blancas con sombra negra sobre fondo
 /// transparente, pensado para ir sobre el fondo oscuro de la app.
 const programLogoAsset = 'assets/nhf_logo.png';

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
 import '../client.dart';
+import '../credits.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
-import 'delete_account_screen.dart';
 import 'admin/admin_catalog_screen.dart';
 import 'admin/admin_codes_screen.dart';
 import 'admin/admin_live_screen.dart';
 import 'admin/admin_saints_screen.dart';
 import 'credits_screen.dart';
+import 'delete_account_screen.dart';
 import 'guide_screen.dart';
 import 'welcome_screen.dart';
 import 'admin/admin_users_screen.dart';
@@ -240,17 +241,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 16),
           Card(
-            child: ListTile(
-              leading: const Icon(
-                Icons.favorite_border_rounded,
-                color: Palette.gold,
-              ),
-              title: const Text('Créditos'),
-              subtitle: const Text('El programa, el ilustrador y el equipo'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CreditsScreen()),
-              ),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.favorite_border_rounded,
+                    color: Palette.gold,
+                  ),
+                  title: const Text('Créditos'),
+                  subtitle: const Text(
+                    'El programa, el ilustrador y el equipo',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const CreditsScreen()),
+                  ),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(
+                    Icons.privacy_tip_outlined,
+                    color: Palette.gold,
+                  ),
+                  title: const Text('Privacidad'),
+                  subtitle: const Text('Qué datos guardamos y para qué'),
+                  trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+                  onTap: () => openLink(
+                    context,
+                    privacyUrl,
+                    what: 'la política de privacidad',
+                  ),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(
+                    Icons.gavel_rounded,
+                    color: Palette.gold,
+                  ),
+                  title: const Text('Términos y condiciones'),
+                  subtitle: const Text('Las reglas para usar la app'),
+                  trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+                  onTap: () =>
+                      openLink(context, termsUrl, what: 'los términos'),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),

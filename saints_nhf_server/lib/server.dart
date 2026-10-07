@@ -58,6 +58,19 @@ void run(List<String> args) async {
     '/assets/assets/config.json',
   );
 
+  // The privacy policy and the terms, as plain pages: Google's consent screen
+  // links them, and they have to open without loading the whole app. They
+  // are generated from docs/legal/ by tools/legal_a_html.py.
+  for (final (path, file) in [
+    ('/privacidad', 'privacidad.html'),
+    ('/terminos', 'terminos.html'),
+  ]) {
+    pod.webServer.addRoute(
+      StaticRoute.file(File(Uri(path: 'web/pages/$file').toFilePath())),
+      path,
+    );
+  }
+
   // Checks if the flutter web app has been built and serves it if it has.
   final appDir = Directory(Uri(path: 'web/app').toFilePath());
   if (appDir.existsSync()) {

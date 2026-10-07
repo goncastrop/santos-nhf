@@ -1,10 +1,10 @@
 # Términos y condiciones de Santos NHF
 
-*Última actualización: [FECHA]*
+*Última actualización: 7 de octubre de 2026*
 
 Estos términos son las reglas para usar Santos NHF, la app de la sección "El santo del día"
-del programa *No Hacemos Fotocopias*. La app la ofrece [NOMBRE O RAZÓN SOCIAL DEL
-RESPONSABLE] ("nosotros"). Si creás una cuenta o usás la app, aceptás estos términos.
+del programa *No Hacemos Fotocopias*. La app la ofrece Gonzalo Castro Peña
+("nosotros"). Si creás una cuenta o usás la app, aceptás estos términos.
 
 ## La app
 
@@ -24,7 +24,8 @@ falta una cuenta.
   tu cuenta es tu responsabilidad.
 - Una persona, una cuenta. No se permite crear cuentas para juntar más cartas ni para ganar
   más premios en la trivia.
-- [DECIDIR: edad mínima o autorización de los padres, en línea con la política de privacidad.]
+- No hay edad mínima. Si sos menor, te recomendamos usar la app con el conocimiento de tu
+  madre, padre o tutor.
 - Si sospechás que alguien entró a tu cuenta, cambiá la contraseña y avisanos.
 
 ## Las cartas, los puntos y los premios
@@ -64,9 +65,9 @@ o premios, o suspender o cerrar su cuenta.
 ## El contenido
 
 - **Las ilustraciones** de los santos son obra de Laucha (@cebandosantosmomentos) y se usan con
-  su permiso. [CONFIRMAR: que el acuerdo con Laucha sea este.]
+  su permiso: él mismo es quien las aporta a la app.
 - **Los textos, los puntajes y las tarjetas** son del equipo de *No Hacemos Fotocopias*.
-- **El código y el diseño de la app** son de [RESPONSABLE].
+- **El código y el diseño de la app** son de Gonzalo Castro Peña.
 - **Lo que podés hacer:** podés compartir la imagen de tus tarjetas con el botón de compartir.
 - **Lo que no podés hacer:** copiar, reproducir o usar el contenido para otros fines sin
   permiso.
@@ -91,7 +92,7 @@ Cómo tratamos tus datos está explicado en la [Política de privacidad](/privac
 ## Dar de baja la cuenta
 
 Podés borrar tu cuenta cuando quieras desde la app, en Perfil → Borrar mi cuenta, o pedírnoslo
-escribiendo a [EMAIL DE CONTACTO] desde el email de tu cuenta. Al borrarla se pierden tu álbum,
+escribiendo a goncastrop@gmail.com desde el email de tu cuenta. Al borrarla se pierden tu álbum,
 tus puntos, tus amigos y tus duelos, y no se pueden recuperar.
 
 ## Cambios a estos términos
@@ -102,10 +103,9 @@ usando la app después de eso significa que aceptás los términos nuevos.
 ## Ley aplicable
 
 Estos términos se rigen por las leyes de la República Argentina. Ante cualquier conflicto,
-intervienen los tribunales ordinarios de [JURISDICCIÓN, por ejemplo "la Ciudad Autónoma de
-Buenos Aires"], sin perjuicio de los derechos que te da la Ley 24.240 de Defensa del
+intervienen los tribunales ordinarios de la Ciudad Autónoma de Buenos Aires, sin perjuicio de los derechos que te da la Ley 24.240 de Defensa del
 Consumidor.
 
 ## Contacto
 
-Para cualquier consulta sobre estos términos: [EMAIL DE CONTACTO].
+Para cualquier consulta sobre estos términos: goncastrop@gmail.com.

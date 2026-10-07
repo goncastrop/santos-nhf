@@ -1,6 +1,6 @@
 # Política de privacidad de Santos NHF
 
-*Última actualización: [FECHA]*
+*Última actualización: 7 de octubre de 2026*
 
 Santos NHF es la app de la sección "El santo del día" del programa *No Hacemos Fotocopias*.
 Acá contamos qué datos guarda la app, para qué los usa y qué podés hacer con ellos. La
@@ -8,8 +8,8 @@ escribimos para que se entienda sin ser abogado.
 
 ## Quién es responsable de tus datos
 
-El responsable de la base de datos es [NOMBRE O RAZÓN SOCIAL DEL RESPONSABLE], con domicilio
-en [DOMICILIO]. Para cualquier consulta sobre tus datos, escribinos a [EMAIL DE CONTACTO].
+El responsable de la base de datos es Gonzalo Castro Peña, con domicilio
+en la Ciudad Autónoma de Buenos Aires, Argentina. Para cualquier consulta sobre tus datos, escribinos a goncastrop@gmail.com.
 
 ## Qué datos guardamos
 
@@ -117,7 +117,7 @@ Según la Ley 25.326 de Protección de Datos Personales, tenés derecho a pedirn
 - **Supresión:** borrarlos, incluida tu cuenta entera.
 
 Algunas cosas las podés hacer vos mismo desde la app: cambiar tu nombre público o borrar tu
-cuenta entera. Para todo lo demás, escribinos a [EMAIL DE CONTACTO] desde el email de tu cuenta. Respondemos los pedidos
+cuenta entera. Para todo lo demás, escribinos a goncastrop@gmail.com desde el email de tu cuenta. Respondemos los pedidos
 de acceso dentro de los 10 días corridos y los de rectificación o supresión dentro de los 5
 días hábiles, como manda la ley.
 
@@ -128,8 +128,13 @@ protección de datos personales.
 
 ## Menores de edad
 
-[DECIDIR: por ejemplo, "Si tenés menos de 13 años, necesitás que tu madre, padre o tutor esté
-de acuerdo antes de crear una cuenta, y que lea esta política con vos."]
+La app no tiene edad mínima y no te pedimos la edad. Si sos menor, te recomendamos usarla con
+el conocimiento de tu madre, padre o tutor, y que lean juntos esta política. Para ingresar con
+Google hace falta tener una cuenta de Google, y Google tiene su propia edad mínima. Si no la
+tenés, podés crear la cuenta con un email.
+
+Si sos madre, padre o tutor y querés que borremos la cuenta de un menor a tu cargo,
+escribinos a goncastrop@gmail.com.
 
 ## Seguridad
 

@@ -130,7 +130,10 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
   4. Compilar la app con `--dart-define=GOOGLE_WEB_CLIENT_ID=<id del cliente web>` (y en
      producción `GOOGLE_REDIRECT_URI`). En iOS, agregar `GIDClientID`, `GIDServerClientID` y el
      URL scheme en `Info.plist`.
-  Las tablas de Google ya están en las migraciones.
+  Las tablas de Google ya están en las migraciones. En la pantalla de consentimiento: logo
+  `docs/logo-google-oauth-120.png`, política `https://santos.nhf.com.ar/privacidad` y términos
+  `https://santos.nhf.com.ar/terminos`. Serverpod no une cuentas por email: sin trabajo extra,
+  quien ya tiene cuenta con su Gmail y entra con Google queda con una cuenta nueva y vacía.
 - [ ] **Primer administrador en producción.** La imagen no incluye `config/passwords.yaml`, así
   que la lista `adminEmails` va como `ADMIN_EMAILS` en `/srv/santos-nhf/.env` del servidor.
   Luego se crea la cuenta en la app con ese email y se usa Perfil → Solicitar acceso. Desde ahí,

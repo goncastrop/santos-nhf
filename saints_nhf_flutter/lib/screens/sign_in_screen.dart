@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
 import '../client.dart';
+import '../credits.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/saint_card.dart';
@@ -118,6 +119,17 @@ class SignInScreen extends StatelessWidget {
                               emailSignInWidget: EmailSignInWidget(
                                 client: client,
                                 passwordRequirements: passwordRequirements,
+                                // With these, signing up asks to accept them.
+                                onTermsAndConditionsPressed: () => openLink(
+                                  context,
+                                  termsUrl,
+                                  what: 'los términos',
+                                ),
+                                onPrivacyPolicyPressed: () => openLink(
+                                  context,
+                                  privacyUrl,
+                                  what: 'la política de privacidad',
+                                ),
                                 onAuthenticated: () => _close(context),
                                 onError: (error) => _showError(context, error),
                               ),

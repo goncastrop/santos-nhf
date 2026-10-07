@@ -239,6 +239,13 @@ que agrega un tercio, y el `maxRequestSize` es de 10 MB. Cada archivo se guarda 
 público reenvía desde el metadata; el reemplazo de una imagen se nota porque `SaintMapper` le
 agrega `?v=<updatedAt>` a la URL, así que no hay que purgar ninguna caché.
 
+**Páginas legales**: la política de privacidad y los términos se escriben en `docs/legal/*.md` y
+`python3 tools/legal_a_html.py` genera `saints_nhf_server/web/pages/{privacidad,terminos}.html`,
+que el servidor sirve en `/privacidad` y `/terminos` (antes de la ruta de la app de Flutter). Lo
+que afirman tiene que ser verdad en el código, igual que la ayuda: si cambia qué datos se guardan
+o con quién se comparten, cambian estos textos. La app las abre desde Perfil y desde la casilla de
+aceptación del registro (`privacyUrl` y `termsUrl` en `credits.dart`).
+
 **Optimizar ilustraciones**: `tools/optimizar_ilustraciones.sh <carpeta>` pasa un lote a WebP con
 transparencia, limita el lado mayor a 1200 px (alcanza para la tarjeta compartible de 1080 × 1350)
 y saca los metadatos. Con la colección original: 109 MB a 10 MB. Necesita ImageMagick.
