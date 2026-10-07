@@ -39,19 +39,22 @@ class LiveState extends ChangeNotifier {
 
   DateTime get serverNow => DateTime.now().toUtc().add(_offset);
 
-  /// How long the podium stays on the banner. The server stops sending it
-  /// after the same time, but only to new viewers.
+  /// How long the podium stays on the banner, counted from the moment the
+  /// game ended on the server, so it goes away for everyone at once. The
+  /// server stops sending it after the same time.
   static const resultsShownFor = Duration(minutes: 10);
 
-  DateTime? _finishedSeenAt;
   Timer? _finishedTimer;
+
+  bool get _resultsExpired {
+    final end = view?.finishedAt;
+    return end != null && !serverNow.isBefore(end.add(resultsShownFor));
+  }
 
   /// Whether a game is on, from the lobby to the podium.
   bool get isOn => switch (view?.phase) {
     LivePhase.countdown || LivePhase.question || LivePhase.reveal => true,
-    LivePhase.finished =>
-      _finishedSeenAt == null ||
-          DateTime.now().difference(_finishedSeenAt!) < resultsShownFor,
+    LivePhase.finished => !_resultsExpired,
     _ => false,
   };
 
@@ -129,16 +132,13 @@ class LiveState extends ChangeNotifier {
     );
   }
 
+  /// Rebuilds the banner when the results expire, since no view arrives then.
   void _trackFinish(LiveView v) {
-    if (v.phase != LivePhase.finished) {
-      _finishedSeenAt = null;
-      _finishedTimer?.cancel();
-      return;
-    }
-    if (_finishedSeenAt != null) return;
-    _finishedSeenAt = DateTime.now();
     _finishedTimer?.cancel();
-    _finishedTimer = Timer(resultsShownFor, notifyListeners);
+    final end = v.finishedAt;
+    if (v.phase != LivePhase.finished || end == null) return;
+    final left = end.add(resultsShownFor).difference(serverNow);
+    if (left > Duration.zero) _finishedTimer = Timer(left, notifyListeners);
   }
 
   /// Tries again after a pause that grows with each failure, up to half a

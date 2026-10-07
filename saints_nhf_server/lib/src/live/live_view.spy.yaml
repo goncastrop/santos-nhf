@@ -12,6 +12,9 @@ fields:
   questionNumber: int?
   questionCount: int?
   countdownTo: DateTime?
+  ### When the game ended or was cancelled. The app hides the results this
+  ### long after it, the same moment for everyone.
+  finishedAt: DateTime?
   ### The rules of the game, for the lobby: seconds per question and how many
   ### win by points and by raffle.
   questionSeconds: int?

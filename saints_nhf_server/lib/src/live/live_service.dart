@@ -521,9 +521,7 @@ class LiveService {
     final now = _now();
     final shown =
         latest != null &&
-        (_active.contains(latest.phase) ||
-            (latest.finishedAt != null &&
-                now.difference(latest.finishedAt!) < resultsShownFor));
+        (_active.contains(latest.phase) || !_expired(latest.finishedAt, now));
     if (!shown) return _Snapshot.idle(version);
 
     final game = latest;
@@ -566,7 +564,14 @@ class LiveService {
 
   // ---------------------------------------------------------------- helpers
 
-  static DateTime _now() => DateTime.now().toUtc();
+  static DateTime _now() => (clock?.call() ?? DateTime.now()).toUtc();
+
+  /// Replaces the clock in tests, to see a finished game expire.
+  static DateTime Function()? clock;
+
+  /// Whether a game that ended at [finishedAt] is no longer shown.
+  static bool _expired(DateTime? finishedAt, DateTime now) =>
+      finishedAt != null && now.difference(finishedAt) >= resultsShownFor;
 
   /// One identifier per game for its pending future call, so moving on
   /// cancels whatever was scheduled for the step before.
@@ -698,7 +703,11 @@ class _Snapshot {
   LiveView viewFor(UuidValue? userId, {required int watching}) {
     final now = LiveService._now();
     final game = this.game;
-    if (game == null) {
+    // The snapshot is only rebuilt when something changes, and nothing does
+    // after a game ends: without this check the podium stayed up for good.
+    if (game == null ||
+        (!LiveService._active.contains(game.phase) &&
+            LiveService._expired(game.finishedAt, now))) {
       return LiveView(
         phase: LivePhase.idle,
         serverTime: now,
@@ -732,6 +741,7 @@ class _Snapshot {
       questionNumber: index + 1,
       questionCount: game.questionIds.length,
       countdownTo: phase == LivePhase.countdown ? game.countdownTo : null,
+      finishedAt: game.finishedAt,
       questionSeconds: game.questionSeconds,
       fastPrizes: game.fastPrizes,
       rafflePrizes: game.rafflePrizes,

@@ -290,6 +290,24 @@ void main() {
       expect(view.me!.wonSaintId, other.id);
     });
 
+    test('when the results have been up long enough then everyone sees '
+        'nothing, even with the snapshot already built', () async {
+      final gameId = await announce(count: 1);
+      await LiveService.openQuestion(session, gameId, 0);
+      await LiveService.closeQuestion(session, gameId, 0);
+      await LiveService.finish(session, gameId);
+      final finished = await endpoints.live.state(sessionBuilder);
+      expect(finished.phase, LivePhase.finished);
+      expect(finished.finishedAt, isNotNull);
+
+      LiveService.clock = () => DateTime.now().add(
+        LiveService.resultsShownFor + const Duration(seconds: 1),
+      );
+      addTearDown(() => LiveService.clock = null);
+      final later = await endpoints.live.state(sessionBuilder);
+      expect(later.phase, LivePhase.idle);
+    });
+
     test('when cancelled then the game is over and a new one can be '
         'announced', () async {
       final gameId = await announce();

@@ -31,6 +31,7 @@ abstract class LiveView
     this.questionNumber,
     this.questionCount,
     this.countdownTo,
+    this.finishedAt,
     this.questionSeconds,
     this.fastPrizes,
     this.rafflePrizes,
@@ -54,6 +55,7 @@ abstract class LiveView
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    DateTime? finishedAt,
     int? questionSeconds,
     int? fastPrizes,
     int? rafflePrizes,
@@ -90,6 +92,9 @@ abstract class LiveView
           : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['countdownTo'],
             ),
+      finishedAt: jsonSerialization['finishedAt'] == null
+          ? null
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['finishedAt']),
       questionSeconds: jsonSerialization['questionSeconds'] as int?,
       fastPrizes: jsonSerialization['fastPrizes'] as int?,
       rafflePrizes: jsonSerialization['rafflePrizes'] as int?,
@@ -149,6 +154,10 @@ abstract class LiveView
 
   DateTime? countdownTo;
 
+  /// When the game ended or was cancelled. The app hides the results this
+  /// long after it, the same moment for everyone.
+  DateTime? finishedAt;
+
   /// The rules of the game, for the lobby: seconds per question and how many
   /// win by points and by raffle.
   int? questionSeconds;
@@ -197,6 +206,7 @@ abstract class LiveView
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    DateTime? finishedAt,
     int? questionSeconds,
     int? fastPrizes,
     int? rafflePrizes,
@@ -222,6 +232,7 @@ abstract class LiveView
       if (questionNumber != null) 'questionNumber': questionNumber,
       if (questionCount != null) 'questionCount': questionCount,
       if (countdownTo != null) 'countdownTo': countdownTo?.toJson(),
+      if (finishedAt != null) 'finishedAt': finishedAt?.toJson(),
       if (questionSeconds != null) 'questionSeconds': questionSeconds,
       if (fastPrizes != null) 'fastPrizes': fastPrizes,
       if (rafflePrizes != null) 'rafflePrizes': rafflePrizes,
@@ -252,6 +263,7 @@ abstract class LiveView
       if (questionNumber != null) 'questionNumber': questionNumber,
       if (questionCount != null) 'questionCount': questionCount,
       if (countdownTo != null) 'countdownTo': countdownTo?.toJson(),
+      if (finishedAt != null) 'finishedAt': finishedAt?.toJson(),
       if (questionSeconds != null) 'questionSeconds': questionSeconds,
       if (fastPrizes != null) 'fastPrizes': fastPrizes,
       if (rafflePrizes != null) 'rafflePrizes': rafflePrizes,
@@ -294,6 +306,7 @@ class _LiveViewImpl extends LiveView {
     int? questionNumber,
     int? questionCount,
     DateTime? countdownTo,
+    DateTime? finishedAt,
     int? questionSeconds,
     int? fastPrizes,
     int? rafflePrizes,
@@ -315,6 +328,7 @@ class _LiveViewImpl extends LiveView {
          questionNumber: questionNumber,
          questionCount: questionCount,
          countdownTo: countdownTo,
+         finishedAt: finishedAt,
          questionSeconds: questionSeconds,
          fastPrizes: fastPrizes,
          rafflePrizes: rafflePrizes,
@@ -342,6 +356,7 @@ class _LiveViewImpl extends LiveView {
     Object? questionNumber = _Undefined,
     Object? questionCount = _Undefined,
     Object? countdownTo = _Undefined,
+    Object? finishedAt = _Undefined,
     Object? questionSeconds = _Undefined,
     Object? fastPrizes = _Undefined,
     Object? rafflePrizes = _Undefined,
@@ -366,6 +381,7 @@ class _LiveViewImpl extends LiveView {
           : this.questionNumber,
       questionCount: questionCount is int? ? questionCount : this.questionCount,
       countdownTo: countdownTo is DateTime? ? countdownTo : this.countdownTo,
+      finishedAt: finishedAt is DateTime? ? finishedAt : this.finishedAt,
       questionSeconds: questionSeconds is int?
           ? questionSeconds
           : this.questionSeconds,
