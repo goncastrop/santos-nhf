@@ -644,6 +644,60 @@ class EndpointEmailIdp extends _iaic.EndpointEmailIdpBase {
   );
 }
 
+/// Sign-in with Google. Its existence is what makes the sign-in widget show
+/// the Google button; the provider itself only runs when `server.dart` finds
+/// `googleClientSecret` in the passwords.
+///
+/// Serverpod keys a Google account by Google's own user id and, the first
+/// time it sees one, creates a brand new user for it, even when someone
+/// already plays with that same address by email and password. Here that
+/// person would land in an empty album, so before Serverpod looks, the Google
+/// account is linked to the existing user. See [GoogleAccountLinking].
+/// {@category Endpoint}
+class EndpointGoogleIdp extends _iaic.EndpointGoogleIdpBase {
+  EndpointGoogleIdp(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'googleIdp';
+
+  @override
+  _ida.Future<_iacc.AuthSuccess> login({
+    required String idToken,
+    required String? accessToken,
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
+    'googleIdp',
+    'login',
+    {
+      'idToken': idToken,
+      'accessToken': accessToken,
+    },
+  );
+
+  /// The web flow. The code can be exchanged only once, so it is exchanged
+  /// here and the tokens go through [login], which does the linking.
+  @override
+  _ida.Future<_iacc.AuthSuccess> loginWithCode({
+    required String code,
+    required String codeVerifier,
+    required String redirectUri,
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
+    'googleIdp',
+    'loginWithCode',
+    {
+      'code': code,
+      'codeVerifier': codeVerifier,
+      'redirectUri': redirectUri,
+    },
+  );
+
+  @override
+  _ida.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
+    'googleIdp',
+    'hasAccount',
+    {},
+  );
+}
+
 /// By extending [RefreshJwtTokensEndpoint], the JWT token refresh endpoint
 /// is made available on the server and enables automatic token refresh on the client.
 /// {@category Endpoint}
@@ -1178,6 +1232,7 @@ class Client extends _isc.ServerpodClientShared {
     adminSaint = EndpointAdminSaint(this);
     adminUsers = EndpointAdminUsers(this);
     emailIdp = EndpointEmailIdp(this);
+    googleIdp = EndpointGoogleIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     collection = EndpointCollection(this);
     duel = EndpointDuel(this);
@@ -1208,6 +1263,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointAdminUsers adminUsers;
 
   late final EndpointEmailIdp emailIdp;
+
+  late final EndpointGoogleIdp googleIdp;
 
   late final EndpointJwtRefresh jwtRefresh;
 
@@ -1242,6 +1299,7 @@ class Client extends _isc.ServerpodClientShared {
     'adminSaint': adminSaint,
     'adminUsers': adminUsers,
     'emailIdp': emailIdp,
+    'googleIdp': googleIdp,
     'jwtRefresh': jwtRefresh,
     'collection': collection,
     'duel': duel,

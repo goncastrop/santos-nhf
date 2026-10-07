@@ -115,25 +115,18 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
 - [x] Pantalla de ingreso traducida (títulos cortos para que el formulario de Serverpod, de
   alto fijo, no desborde). El botón "Didn't receive? Send a new code" está fijo en la
   librería y no se puede traducir sin un formulario propio.
-- [ ] **Ingreso con Google.** El código está preparado y se activa con credenciales:
-  1. En Google Cloud Console, habilitar Google Auth Platform y crear tres clientes OAuth:
-     Web (da client id y secret; orígenes `http://localhost:8082` y la URL de producción;
-     redirect `http://localhost:8082/auth/callback` y la de producción), iOS (bundle id) y
-     Android (package name y SHA-1 de `./gradlew signingReport`).
-  2. Pegar el JSON del cliente web en `config/passwords.yaml` bajo `googleClientSecret`
-     (sección `development` y luego `production`). El servidor activa el proveedor solo si
-     esa clave existe.
-  3. Crear `saints_nhf_server/lib/src/auth/google_idp_endpoint.dart` con
-     `class GoogleIdpEndpoint extends GoogleIdpBaseEndpoint {}` (import
-     `package:serverpod_auth_idp_server/providers/google.dart`). El widget de ingreso muestra
-     el botón de Google en cuanto existe ese endpoint.
-  4. Compilar la app con `--dart-define=GOOGLE_WEB_CLIENT_ID=<id del cliente web>` (y en
-     producción `GOOGLE_REDIRECT_URI`). En iOS, agregar `GIDClientID`, `GIDServerClientID` y el
-     URL scheme en `Info.plist`.
-  Las tablas de Google ya están en las migraciones. En la pantalla de consentimiento: logo
-  `docs/logo-google-oauth-120.png`, política `https://santos.nhf.com.ar/privacidad` y términos
-  `https://santos.nhf.com.ar/terminos`. Serverpod no une cuentas por email: sin trabajo extra,
-  quien ya tiene cuenta con su Gmail y entra con Google queda con una cuenta nueva y vacía.
+- [x] **Ingreso con Google**, en la web. `auth/google_idp_endpoint.dart` une la cuenta de Google
+  con la cuenta por email que ya tenga ese mismo email verificado (`GoogleAccountLinking`): sin
+  eso, Serverpod crea un usuario nuevo y vacío. El servidor activa el proveedor si
+  `googleClientSecret` tiene algo (en producción, `GOOGLE_CLIENT_SECRET_JSON` en el `.env`), y la
+  app web se compila con el client id y la redirección en `deploy.yml`. El JSON tiene que traer
+  `redirect_uris`; Google Cloud las tiene que tener registradas:
+  `https://santos.nhf.com.ar/auth/callback` y `http://localhost:8082/auth/callback`. En desarrollo
+  el botón solo aparece compilando con `--dart-define=GOOGLE_WEB_CLIENT_ID=…` y sirviendo la app
+  desde el 8082: la ventana de Google vuelve a `/auth/callback` del servidor web, que no es el
+  origen de la app del 9998. Faltan iOS y Android (clientes OAuth propios y `Info.plist`). En la
+  pantalla de consentimiento: logo `docs/logo-google-oauth-120.png`, página principal
+  `https://santos.nhf.com.ar/acerca`, política `/privacidad` y términos `/terminos`.
 - [ ] **Primer administrador en producción.** La imagen no incluye `config/passwords.yaml`, así
   que la lista `adminEmails` va como `ADMIN_EMAILS` en `/srv/santos-nhf/.env` del servidor.
   Luego se crea la cuenta en la app con ese email y se usa Perfil → Solicitar acceso. Desde ahí,

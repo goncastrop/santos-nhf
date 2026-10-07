@@ -23,7 +23,10 @@ void run(List<String> args) async {
   // and the identity providers will be the authentication options available for users.
   // Google sign-in is enabled when `googleClientSecret` is present in
   // config/passwords.yaml (see ROADMAP.md, "Ingreso con Google").
-  final googleEnabled = pod.getPassword('googleClientSecret') != null;
+  // Production passes it through the environment, where a missing value
+  // arrives as an empty string: that counts as off too.
+  final googleEnabled =
+      pod.getPassword('googleClientSecret')?.trim().isNotEmpty ?? false;
 
   pod.initializeAuthServices(
     tokenManagerBuilders: [

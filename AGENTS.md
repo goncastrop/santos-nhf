@@ -188,10 +188,12 @@ carta del día y en los duelos mientras estén cargados.
 `auth_test_helper.dart` inicializa `AuthServices` y crea usuarios reales de auth, porque
 `player_profile` tiene FK a la tabla de usuarios.
 
-**Ingreso con Google**: preparado pero apagado hasta tener credenciales. `server.dart` agrega
-`GoogleIdpConfigFromPasswords()` solo si existe `googleClientSecret` en passwords.yaml;
-`client.dart` inicializa Google solo si se compila con `GOOGLE_WEB_CLIENT_ID`. Pasos completos
-en `ROADMAP.md`, sección "Cuentas e ingreso".
+**Ingreso con Google**: `server.dart` agrega `GoogleIdpConfigFromPasswords()` solo si
+`googleClientSecret` tiene algo (en producción llega por `GOOGLE_CLIENT_SECRET_JSON` del `.env`, y
+vacío lo deja apagado); `client.dart` inicializa Google solo si se compila con
+`GOOGLE_WEB_CLIENT_ID`, que `deploy.yml` pasa. `auth/google_idp_endpoint.dart` une la cuenta de
+Google con la de email que tenga el mismo email verificado, porque Serverpod por su cuenta crearía
+un usuario nuevo. Detalles en `ROADMAP.md`, sección "Cuentas e ingreso".
 
 **Despliegue (DonWeb)**: en migración desde Serverpod Cloud hacia un Cloud Server de DonWeb.
 Toda la infra vive en `deploy/` (`docker-compose.yml` con Caddy + Postgres 16 + el servidor,

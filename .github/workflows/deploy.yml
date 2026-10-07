@@ -48,7 +48,12 @@ jobs:
       # gitignoreada: hay que construirla acá antes del docker build.
       - name: Compilar la app web
         working-directory: saints_nhf_flutter
-        run: flutter build web --base-href / --output ../saints_nhf_server/web/app
+        # El client id de Google no es secreto: viaja dentro de la app web. El
+        # secreto queda en el servidor (GOOGLE_CLIENT_SECRET_JSON en el .env).
+        run: >-
+          flutter build web --base-href / --output ../saints_nhf_server/web/app
+          --dart-define=GOOGLE_WEB_CLIENT_ID=1037917215842-6nf0t101ncfmvv78651t3ubdod1rejvq.apps.googleusercontent.com
+          --dart-define=GOOGLE_REDIRECT_URI=https://santos.nhf.com.ar/auth/callback
 
       - uses: docker/setup-buildx-action@v3
 
