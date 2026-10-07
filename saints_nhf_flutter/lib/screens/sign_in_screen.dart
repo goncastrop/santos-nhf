@@ -110,6 +110,7 @@ class SignInScreen extends StatelessWidget {
                           child: SignInLocalizationProvider(
                             basic: _basicTexts,
                             email: _emailTexts,
+                            google: _googleTexts,
                             passwordRequirementTexts: _passwordTexts,
                             child: SignInWidget(
                               client: client,
@@ -154,15 +155,20 @@ const _basicTexts = BasicSignInTexts(
   orContinueWith: 'o continuá con',
 );
 
+const _googleTexts = GoogleSignInTexts(signInButton: 'Continuar con Google');
+
 const _emailTexts = EmailSignInTexts(
   title: 'Ingresá con tu email',
   forgotPassword: '¿Olvidaste la contraseña?',
   signIn: 'Ingresar',
-  dontHaveAnAccount: '¿No tenés cuenta?',
+  // The widget puts the link right after these, in the same row, with no
+  // gap: the non-breaking space is the gap, and unlike a plain one it is not
+  // dropped at the end of the text.
+  dontHaveAnAccount: '¿No tenés cuenta?\u00A0',
   signUp: 'Crear cuenta',
   signUpTitle: 'Creá tu cuenta',
   continueAction: 'Continuar',
-  alreadyHaveAnAccount: '¿Ya tenés cuenta?',
+  alreadyHaveAnAccount: '¿Ya tenés cuenta?\u00A0',
   verifyAccountTitle: 'Tu código',
   verifyResetCodeTitle: 'Tu código',
   verificationMessage:
