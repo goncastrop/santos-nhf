@@ -250,9 +250,17 @@ que afirman tiene que ser verdad en el código, igual que la ayuda: si cambia qu
 o con quién se comparten, cambian estos textos. La app las abre desde Perfil y desde la casilla de
 aceptación del registro (`privacyUrl` y `termsUrl` en `credits.dart`).
 
-**Optimizar ilustraciones**: `tools/optimizar_ilustraciones.sh <carpeta>` pasa un lote a WebP con
-transparencia, limita el lado mayor a 1200 px (alcanza para la tarjeta compartible de 1080 × 1350)
-y saca los metadatos. Con la colección original: 109 MB a 10 MB. Necesita ImageMagick.
+**Optimizar ilustraciones**: cada imagen que se sube desde el panel admin la convierte el servidor
+(`admin/illustration_optimizer.dart`) a WebP con transparencia, con el lado mayor en 1200 px como
+máximo (alcanza para la tarjeta compartible de 1080 × 1350) y sin metadatos, así que se pueden
+subir los originales tal como los entrega el ilustrador. Usa ImageMagick: `magick` (la imagen de
+Docker lo instala con `apk`, y en macOS viene de Homebrew) o `convert` (versión 6, Ubuntu). Sin
+ImageMagick, o si la conversión falla, se guarda el archivo original y queda un warning en el log;
+el test que convierte una imagen real se saltea si no hay uno con soporte WebP. La extensión se
+valida antes de convertir, porque ImageMagick también convertiría un PDF. El límite de subida
+sigue siendo de 6 MB, y la app ya achica a 1600 px antes de mandar. Para un lote fuera de la app,
+`tools/optimizar_ilustraciones.sh <carpeta>` hace lo mismo: con la colección original, de 109 MB
+a 10 MB.
 
 **Imágenes en desarrollo**: las ilustraciones se sirven desde el endpoint
 `serverpod_cloud_storage` del puerto 8080. En Serverpod 4.0.0 ese endpoint se perdía tras cada hot

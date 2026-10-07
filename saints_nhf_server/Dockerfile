@@ -29,6 +29,11 @@ RUN mkdir -p config web migrations
 FROM alpine:latest
 WORKDIR /app
 
+# ImageMagick turns the uploaded illustrations into WebP of at most 1200 px
+# (see lib/src/admin/illustration_optimizer.dart). PNG comes built in; the
+# WebP and JPEG coders are separate packages.
+RUN apk add --no-cache imagemagick imagemagick-webp imagemagick-jpeg
+
 # Environment variables
 ENV runmode=production
 ENV serverid=default

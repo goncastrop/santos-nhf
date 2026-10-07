@@ -7,6 +7,7 @@ import '../generated/protocol.dart';
 import '../saints/saint_mapper.dart';
 import '../saints/saint_revisions.dart';
 import 'admin_scope.dart';
+import 'illustration_optimizer.dart';
 
 /// Admin CRUD of the saints catalog, with a revision history.
 class AdminSaintEndpoint extends Endpoint {
@@ -133,7 +134,9 @@ class AdminSaintEndpoint extends Endpoint {
     String extension,
     ByteData bytes,
   ) async {
-    final path = await _illustrationPath(session, saintId, extension);
+    // Checked before converting: ImageMagick would happily turn a PDF into
+    // a WebP too.
+    _checkExtension(extension);
     if (bytes.lengthInBytes == 0) {
       throw AdminException(message: 'El archivo está vacío.');
     }
@@ -145,10 +148,21 @@ class AdminSaintEndpoint extends Endpoint {
       );
     }
     final saint = await get(session, saintId);
+    // The originals come straight from the illustrator, at print size. Only
+    // when the conversion is not possible does the original stay.
+    final optimized = await IllustrationOptimizer.optimize(
+      session,
+      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+    );
+    final path = await _illustrationPath(
+      session,
+      saintId,
+      optimized == null ? extension : 'webp',
+    );
     await session.storage.storeFile(
       storageId: SaintMapper.storageId,
       path: path,
-      byteData: bytes,
+      byteData: optimized == null ? bytes : ByteData.sublistView(optimized),
       options: StoreFileOptions(
         metadata: FileMetadata(
           contentType: _contentTypeOf(path),
@@ -189,14 +203,21 @@ class AdminSaintEndpoint extends Endpoint {
     int saintId,
     String extension,
   ) async {
+    final ext = _checkExtension(extension);
+    await get(session, saintId);
+    return 'saints/$saintId/illustration.$ext';
+  }
+
+  /// The extension, normalized, or an error when it is not an image format
+  /// the app takes.
+  static String _checkExtension(String extension) {
     final ext = extension.toLowerCase().replaceFirst('.', '');
     if (!_allowedExtensions.contains(ext)) {
       throw AdminException(
         message: 'Formato de imagen no permitido. Usá PNG, JPG o WEBP.',
       );
     }
-    await get(session, saintId);
-    return 'saints/$saintId/illustration.$ext';
+    return ext;
   }
 
   Future<void> _ensureSlugFree(
