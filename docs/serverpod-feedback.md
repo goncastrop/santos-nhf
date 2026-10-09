@@ -85,6 +85,32 @@ Our app is fully in Spanish, and these are the only two English strings left.
   the data every user had to reset their password. It is the right security default, but it
   should be stated where migrating off Cloud is documented, before anyone starts.
 
+## 9. Google sign-in creates a second user for someone who already has one
+
+`GoogleIdpUtils.authenticate` looks the Google account up by Google's user id only. The first
+time someone signs in with Google, it creates a new `AuthUser`, even when the same verified
+address already has an email account. For an app with existing users, that player lands in an
+empty account and thinks their data is gone. `onAfterGoogleAccountCreated` runs after the user
+was created, so it is too late to help.
+
+We overrode `login` and `loginWithCode` in our `GoogleIdpEndpoint`. When Google says the email is
+verified and an `EmailAccount` has it, we link the Google account to that user first. The web
+flow's code is single-use, so we had to exchange it ourselves too.
+
+**Suggestion.** Add an opt-in "link by verified email" option to `GoogleIdpConfig`, or a hook
+that runs before a new user is created. This is a common need for any app that adds Google
+next to email sign-in.
+
+## 10. The Google client JSON from the console has no `redirect_uris`
+
+A web client created without redirect URIs downloads a JSON with only `javascript_origins`.
+`GoogleClientSecret.fromJson` requires `redirect_uris`, so the server fails at startup with
+`FormatException: Missing "redirect_uris"`. The web sign-in needs them anyway: Serverpod's flow
+comes back to `/auth/callback`.
+
+**Suggestion.** The setup docs could say to register `https://<web host>/auth/callback` before
+downloading the JSON. The error could also say which URI is expected.
+
 ## What worked very well
 
 - Streams combined with `session.messages`: the live, multi-user game, server and app,

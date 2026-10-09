@@ -33,15 +33,15 @@ Serverpod is the whole backend. There is no other service, and none of it is moc
 
 | Feature | Where |
 |---|---|
-| **Endpoints and the generated client.** 18 endpoints; the Flutter app talks to them only through the generated client. | `saints_nhf_server/lib/src/**/*_endpoint.dart` |
-| **Authentication.** Email sign-in with verification codes, sent through Brevo SMTP. JWT sessions. An `admin` scope guards the admin endpoints. | `lib/server.dart`, `src/email/`, `src/admin/` |
+| **Endpoints and the generated client.** 20 endpoints; the Flutter app talks to them only through the generated client. | `saints_nhf_server/lib/src/**/*_endpoint.dart` |
+| **Authentication.** Sign in with Google, or by email with verification codes sent through Brevo SMTP. JWT sessions. An `admin` scope guards the admin endpoints. A Google sign-in links to the existing email account with the same verified address, so players keep their album. Players can delete their account from the app. | `lib/server.dart`, `src/auth/`, `src/account/`, `src/email/` |
 | **ORM and migrations.** 16 tables, with row locks where races matter: two taps must not grant two starter packs. | `src/**/*.spy.yaml`, `migrations/` |
-| **File storage.** Saint illustrations are uploaded through an endpoint and served with immutable cache headers. | `src/admin/admin_saint_endpoint.dart` |
+| **File storage.** Saint illustrations are uploaded through an endpoint. The server turns each one into a WebP of at most 1200 px, so the illustrator uploads his originals: a 6.5 MB PNG is stored as 144 KB. They are served with immutable cache headers. | `src/admin/admin_saint_endpoint.dart`, `src/admin/illustration_optimizer.dart` |
 | **Streams.** The live trivia sends every viewer a fresh view on each change. Friend duels update the board and the turn counter live. | `src/live/live_endpoint.dart`, `src/duel/duel_endpoint.dart` |
 | **Server events.** Moves and answers post signals through `session.messages`. One shared snapshot per change, so a hundred viewers cost one round of queries. | `src/live/live_service.dart`, `src/duel/duel_events.dart` |
 | **Future calls.** They open each trivia question when its countdown ends and close it when time is up, and they survive a restart. | `src/live/live_future_call.dart` |
 | **Web server.** It serves the compiled Flutter web app and its runtime config. | `lib/server.dart` |
-| **Testing.** 74 integration tests with `withServerpod` against a real embedded PostgreSQL, including the streams. | `saints_nhf_server/test/integration/` |
+| **Testing.** 82 integration tests with `withServerpod` against a real embedded PostgreSQL, including the streams. | `saints_nhf_server/test/integration/` |
 
 The live trivia is the part that would be hardest without Serverpod. It is a stream that
 pushes state to every open app, a server-side clock that grades each answer by the
@@ -65,7 +65,8 @@ See `deploy/README.md`.
 
 1. Open [santos.nhf.com.ar](https://santos.nhf.com.ar) and browse the saints, the timeline
    and the map. No account needed.
-2. Create an account with your email. You get five cards and can claim one more each day.
+2. Sign in with Google, or create an account with your email. You get five cards and can
+   claim one more each day.
 3. Go to *Jugar* to play the daily question, *La Letanía*, or a duel against *El Sacristán*,
    the machine.
 4. The live trivia happens during the show. The host launches it from the admin panel.
