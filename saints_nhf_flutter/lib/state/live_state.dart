@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:saints_nhf_client/saints_nhf_client.dart';
 
 import '../client.dart';
+import 'local_cache.dart';
 
 /// The live trivia as the server streams it.
 ///
@@ -66,13 +67,18 @@ class LiveState extends ChangeNotifier {
 
   bool get bannerDismissed => view?.gameId == dismissedGameId;
 
+  final _cache = LocalCache();
+
+  /// Hides the banner of this game, also after a reload.
   void dismissBanner() {
     dismissedGameId = view?.gameId;
+    unawaited(_cache.markLiveGameDismissed(dismissedGameId));
     notifyListeners();
   }
 
   void showBanner() {
     dismissedGameId = null;
+    unawaited(_cache.markLiveGameDismissed(null));
     notifyListeners();
   }
 
@@ -95,8 +101,18 @@ class LiveState extends ChangeNotifier {
   void start() {
     if (_running) return;
     _running = true;
+    if (!_dismissedLoaded) {
+      _dismissedLoaded = true;
+      _cache.dismissedLiveGame().then((id) {
+        // A choice made while this was loading wins.
+        dismissedGameId ??= id;
+        notifyListeners();
+      });
+    }
     _listen();
   }
+
+  bool _dismissedLoaded = false;
 
   /// Stops listening, when the app goes to the background.
   void stop() {

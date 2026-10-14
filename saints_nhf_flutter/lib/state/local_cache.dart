@@ -28,6 +28,33 @@ class LocalCache {
     }
   }
 
+  static const _liveDismissedKey = 'santos_nhf.live_dismissed.v1';
+
+  /// La trivia cuyo cartel se cerró en este dispositivo, así recargar la
+  /// página no lo trae de vuelta.
+  Future<int?> dismissedLiveGame() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getInt(_liveDismissedKey);
+    } catch (e) {
+      debugPrint('LocalCache.dismissedLiveGame failed: $e');
+      return null;
+    }
+  }
+
+  Future<void> markLiveGameDismissed(int? gameId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (gameId == null) {
+        await prefs.remove(_liveDismissedKey);
+      } else {
+        await prefs.setInt(_liveDismissedKey, gameId);
+      }
+    } catch (e) {
+      debugPrint('LocalCache.markLiveGameDismissed failed: $e');
+    }
+  }
+
   Future<void> markWelcomeSeen() async {
     try {
       final prefs = await SharedPreferences.getInstance();

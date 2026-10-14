@@ -300,7 +300,11 @@ class LiveBanner extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 6, 4, 6),
           child: Row(
             children: [
-              const LiveDot(),
+              LiveDot(
+                label: view.phase == LivePhase.finished
+                    ? 'RESULTADOS'
+                    : 'EN VIVO',
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Ticking(
@@ -371,7 +375,11 @@ class LiveAppBarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final live = LiveState.of(context);
-    if (!live.isOn || !live.bannerDismissed) return const SizedBox.shrink();
+    // Only while the game is being played: after the end there is nothing
+    // live to come back to, and closing the results banner is final.
+    if (!live.isPlaying || !live.bannerDismissed) {
+      return const SizedBox.shrink();
+    }
     return Tooltip(
       message: 'Trivia en vivo',
       child: InkWell(
