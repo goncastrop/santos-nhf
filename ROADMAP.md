@@ -23,6 +23,84 @@ La app sirve para aprender de los santos, rezar con ellos y jugar con sus tarjet
   al mismo tiempo. La única excepción es la trivia en vivo, atada al programa: quien no
   la ve en el momento se pierde esa carta y nada más, igual que un código que se dice al aire.
 
+## Juego en vivo y tiempo real
+
+### Trivia en vivo
+
+Una partida estilo Kahoot durante "El santo del día". El admin la anuncia y en todas las
+pestañas aparece un cartel con cuenta regresiva; quien toca "Sumarme" espera en una pantalla
+propia. Después van de 3 a 5 preguntas sobre el santo, de 20 segundos cada una: acertar vale
+entre 1000 y 500 puntos según lo rápido que llegó la respuesta, medido con el reloj del
+servidor. Entre pregunta y pregunta se ve la correcta, el recuento, tu resultado y el top 5;
+la siguiente la abre el admin con "Siguiente", con 3 segundos de preparación. Al final, podio,
+premios y la animación de carta nueva para quien ganó. Sin cuenta se ve todo, pero en lugar
+de las opciones aparece "Ingresá para participar". La ✕ del cartel lo esconde por esa
+partida y deja un punto rojo de "EN VIVO" en la barra de arriba.
+
+Servidor (`lib/src/live/`), hecho:
+- [x] Modelos `LiveGame` (fase, preguntas, pregunta actual, horarios, premios y resultados) y
+  `LiveAnswer` (una por jugador y pregunta, con puntos y milisegundos), con su migración.
+  `CardSource.live` para las cartas que salen de acá.
+- [x] `LiveService`: anunciar (una partida a la vez), abrir y cerrar preguntas, avanzar,
+  cancelar, contestar y terminar (ranking, ganadores y cartas en una sola transacción).
+  Cada paso bloquea la fila de la partida y es idempotente, así el botón del admin y la
+  future call no pisan el mismo paso.
+- [x] `LiveFutureCall` abre cada pregunta al terminar su cuenta regresiva y la cierra a los
+  20 segundos; sobrevive a un reinicio. Las future calls se revisan cada segundo
+  (`futureCall.scanInterval` en la config), no cada 5.
+- [x] `LiveEndpoint.watch()`: stream con la vista entera en cada cambio, alimentado por
+  `session.messages`. Las vistas salen de una sola foto en memoria por cambio, así cien
+  espectadores cuestan una ronda de consultas. Las respuestas y los espectadores que entran y
+  salen se avisan como mucho una vez por segundo. Funciona porque hay un solo servidor; con
+  dos haría falta Redis.
+- [x] `AdminLiveEndpoint`: anunciar, avanzar (un solo botón que hace lo que toca) y cancelar.
+- [x] 14 tests de integración, incluido el stream.
+
+App:
+- [x] Cartel global en `home_shell` y punto rojo en la barra, escuchando el stream mientras
+  la app está en primer plano. Se reinicia al ingresar o salir de la cuenta, para que el
+  stream sepa quién mira.
+- [x] Pantallas de la partida: espera con cuenta regresiva, pregunta con reloj, revelación
+  con barras y tu resultado ("¡Bien! +842 · vas 12.º de 128"), podio con premios y
+  `CardReveal` si ganaste. El reloj se corrige con `serverTime`.
+- [x] Reconexión del stream si se corta, con espera creciente hasta 30 segundos.
+- [x] Pantalla admin "En vivo" (Perfil → Trivia en vivo): santo (por defecto el de la fiesta de hoy), preguntas y su
+  orden, cuenta regresiva, cantidad de premios rápidos y por sorteo; después, el botón
+  "Siguiente" y "Cancelar".
+- [x] Los WebSockets pasan por Caddy en producción: el stream conecta en ~150 ms.
+- [x] Partida completa en local: un visitante sin cuenta en el navegador y un admin que juega
+  desde un script. Cartel, espera, preguntas que se abren y cierran solas, revelación, podio y
+  carta entregada.
+- [x] Partida completa en producción, con el panel admin y dos jugadores.
+
+Reglas de los premios: ganan los primeros N en acertar, por la hora en que el servidor
+recibió la respuesta, más 2 por sorteo entre los demás que acertaron (las dos cantidades se
+eligen al lanzar la ronda). Si aciertan N + 2 o menos, ganan todos. Quien ya tiene la carta se
+lleva una al azar entre las que le faltan; con el álbum completo figura entre los ganadores sin
+carta. Al cierre se muestran las dos listas por separado. Mirar no requiere cuenta; contestar sí.
+
+### Duelos en tiempo real
+
+
+- [x] `DuelEndpoint.watch(duelId)`: el tablero en vivo. Cada jugada avisa por el canal del
+  duelo y por el de cada jugador (`DuelEvents`), desde el endpoint, después de que la
+  transacción confirmó.
+- [x] `DuelEndpoint.watchMine()`: la lista de duelos en vivo, que mueve el contador de turnos
+  de la pestaña Jugar. `AppState` la escucha mientras la app está abierta.
+- [x] `duel_screen` se suscribe y el sondeo queda cada 30 s como respaldo por si el stream se
+  cae. Los ecos de las jugadas propias no borran una elección a medio hacer.
+
+### Pendientes
+
+- [ ] Recorrer en `santos.nhf.com.ar` el flujo completo: crear cuenta, mazo inicial, carta
+  del día, pregunta del día, Letanía, duelo contra el Sacristán, duelo entre amigos.
+- [ ] Vencimiento de duelos abandonados y mail del santo del día (con opt-in).
+- No se puede traducir desde la app lo que quedó en inglés en el ingreso: en
+  `serverpod_auth_idp_flutter` 4.0.3 el formulario de ingreso arma el campo de contraseña sin
+  pasarle `EmailSignInTexts.passwordLabel` (sale "Password") y "Didn't receive? Send a new code"
+  es una constante del botón de reenviar. Está anotado en `docs/serverpod-feedback.md`, junto
+  con el resto de lo que encontramos de Serverpod.
+
 ## Fase 1 — Catálogo, colección y administración
 
 - [x] Modelo de datos: santos con puntajes, estado (borrador/publicado), ilustración,

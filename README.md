@@ -69,7 +69,7 @@ See `deploy/README.md`.
    claim one more each day.
 3. Go to *Jugar* to play the daily question, *La Letanía*, or a duel against *El Sacristán*,
    the machine.
-4. The live trivia happens during the show. The host launches it from the admin panel.
+4. The live trivia happens during the show: the host launches it from the admin panel.
 
 ## Run it locally
 
