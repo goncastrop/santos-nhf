@@ -268,8 +268,8 @@ reload del servidor ("Endpoint not found", 404) y las tarjetas mostraban el mono
 vuelve a registrar y ya no hace falta `hot_restart` para eso.
 
 **Versiones**: todos los paquetes `serverpod*` de los tres pubspecs están fijados a la misma
-versión exacta (hoy 4.0.3) y se suben juntos. El CLI que corre `serverpod start` lo instala App
-Studio con `dart install` en `~/Library/Application Support/Dart/install/bin/serverpod` (hoy 4.0.3).
+versión exacta (hoy 4.0.4) y se suben juntos. El CLI que corre `serverpod start` lo instala App
+Studio con `dart install` en `~/Library/Application Support/Dart/install/bin/serverpod` (hoy 4.0.4).
 Esa carpeta no está en el PATH de la terminal: para usarlo a mano, llamarlo con la ruta completa. El CLI tiene que ser de la misma versión que los paquetes: aunque solo sugiere actualizar
 y no exige que coincidan, el código que genera puede usar parámetros que el paquete viejo no tiene.
 Al subir uno, subir el otro, y también el `VERSION` de `.github/workflows/tests.yml`. Lo mismo con

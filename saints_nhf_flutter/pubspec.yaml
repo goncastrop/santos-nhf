@@ -36,8 +36,8 @@ dependencies:
   google_fonts: ^8.1.0
   saints_nhf_client:
     path: ../saints_nhf_client
-  serverpod_auth_idp_flutter: 4.0.3
-  serverpod_flutter: 4.0.3
+  serverpod_auth_idp_flutter: 4.0.4
+  serverpod_flutter: 4.0.4
   shared_preferences: ^2.5.3
   url_launcher: ^6.3.2
   share_plus: ^13.3.0

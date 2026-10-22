@@ -10,15 +10,15 @@ resolution: workspace
 
 dependencies:
   csv: ^6.0.0
-  serverpod: 4.0.3
-  serverpod_auth_idp_server: 4.0.3
-  serverpod_cloud_storage: 4.0.3
+  serverpod: 4.0.4
+  serverpod_auth_idp_server: 4.0.4
+  serverpod_cloud_storage: 4.0.4
   # SMTP client for the verification and password reset emails.
   mailer: ^7.2.0
 
 dev_dependencies:
   lints: '>=3.0.0 <7.0.0'
-  serverpod_test: 4.0.3
+  serverpod_test: 4.0.4
   test: ^1.25.5
 
 serverpod:

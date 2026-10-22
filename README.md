@@ -1,7 +1,7 @@
 # Santos NHF
 
 **A collectible card game about the saints, built for the audience of a live Catholic show.**
-Live at **[santos.nhf.com.ar](https://santos.nhf.com.ar)** · Flutter + Serverpod 4.0.3
+Live at **[santos.nhf.com.ar](https://santos.nhf.com.ar)** · Flutter + Serverpod 4.0.4
 
 *No Hacemos Fotocopias* ("We don't make photocopies") is an Argentine Catholic streaming show.
 Every episode has a segment called *El santo del día*, "the saint of the day": the hosts tell
@@ -73,7 +73,7 @@ See `deploy/README.md`.
 
 ## Run it locally
 
-You need Flutter 3.47 or newer and the Serverpod CLI 4.0.3. Serverpod starts and manages its
+You need Flutter 3.47 or newer and the Serverpod CLI 4.0.4. Serverpod starts and manages its
 own PostgreSQL in development.
 
 ```bash

@@ -96,10 +96,10 @@ carta. Al cierre se muestran las dos listas por separado. Mirar no requiere cuen
   del día, pregunta del día, Letanía, duelo contra el Sacristán, duelo entre amigos.
 - [ ] Vencimiento de duelos abandonados y mail del santo del día (con opt-in).
 - No se puede traducir desde la app lo que quedó en inglés en el ingreso: en
-  `serverpod_auth_idp_flutter` 4.0.3 el formulario de ingreso arma el campo de contraseña sin
-  pasarle `EmailSignInTexts.passwordLabel` (sale "Password") y "Didn't receive? Send a new code"
-  es una constante del botón de reenviar. Está anotado en `docs/serverpod-feedback.md`, junto
-  con el resto de lo que encontramos de Serverpod.
+  `serverpod_auth_idp_flutter` 4.0.4 (igual que en 4.0.3) el formulario de ingreso arma el
+  campo de contraseña sin pasarle `EmailSignInTexts.passwordLabel` (sale "Password") y "Didn't
+  receive? Send a new code" es una constante del botón de reenviar. Está anotado en
+  `docs/serverpod-feedback.md`, junto con el resto de lo que encontramos de Serverpod.
 
 ## Fase 1 — Catálogo, colección y administración
 

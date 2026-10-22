@@ -65,7 +65,7 @@ run up to 5 seconds late. We fixed it with `scanInterval: 1000`, after which our
 landed within a second. One line in the scheduling docs about precision would save the
 detour.
 
-## 7. `serverpod_auth_idp_flutter` 4.0.3: two strings cannot be translated
+## 7. `serverpod_auth_idp_flutter` 4.0.3 and 4.0.4: two strings cannot be translated
 
 - The email login form builds its `PasswordField` without passing
   `EmailSignInTexts.passwordLabel`, so it always says "Password". The registration form does

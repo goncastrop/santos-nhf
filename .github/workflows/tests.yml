@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Misma versión exacta que los paquetes serverpod* de los pubspecs.
-      VERSION: '4.0.3'
+      VERSION: '4.0.4'
       # `config/passwords.yaml` no está en el repo, así que en CI las claves
       # vienen por entorno. Son de test y no protegen nada: la base embebida se
       # crea de cero en cada corrida y los peppers no firman nada que sobreviva.
