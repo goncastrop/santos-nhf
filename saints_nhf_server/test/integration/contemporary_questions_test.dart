@@ -1,3 +1,4 @@
+import 'package:saints_nhf_server/src/admin/csv_catalog.dart';
 import 'package:saints_nhf_server/src/generated/protocol.dart';
 import 'package:saints_nhf_server/src/questions/contemporary_questions.dart';
 import 'package:serverpod/serverpod.dart';
@@ -7,9 +8,11 @@ import 'package:test/test.dart';
 import 'auth_test_helper.dart';
 import 'test_tools/serverpod_test_tools.dart';
 
+// The slug goes through the same slugify as the CSV: the names carry accents
+// ("Guzmán"), and `adminSaint.save` refuses a slug that is not plain ASCII.
 Saint _saint(String name, int birth, int death) => Saint(
   name: name,
-  slug: name.toLowerCase().replaceAll(' ', '-'),
+  slug: CsvCatalog.slugify(name),
   bio: 'Bio',
   status: SaintStatus.published,
   birthYear: birth,
