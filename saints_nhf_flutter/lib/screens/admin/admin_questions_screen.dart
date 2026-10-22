@@ -56,6 +56,14 @@ class _AdminQuestionsScreenState extends State<AdminQuestionsScreen> {
     }
   }
 
+  /// The questions an admin typed, without the generated one.
+  List<Question> get _typed =>
+      _questions!.where((q) => q.kind == QuestionKind.manual).toList();
+
+  static const _generatedNote =
+      ' Además hay una automática de contemporáneos, que sale de los años '
+      'del catálogo.';
+
   Future<void> _delete(Question q) async {
     try {
       await client.adminQuestion.delete(q.id!);
@@ -87,8 +95,9 @@ class _AdminQuestionsScreenState extends State<AdminQuestionsScreen> {
                 Text(widget.saint.name, style: textTheme.headlineSmall),
                 const SizedBox(height: 4),
                 Text(
-                  '${_questions!.length} preguntas. Se recomiendan entre 5 y 10 '
-                  'por santo para que el duelo no se repita.',
+                  '${_typed.length} preguntas cargadas. Se recomiendan entre 5 '
+                  'y 10 por santo para que el duelo no se repita.'
+                  '${_typed.length < _questions!.length ? _generatedNote : ''}',
                   style: textTheme.bodySmall?.copyWith(
                     color: Palette.parchmentDim,
                   ),
@@ -102,6 +111,10 @@ class _AdminQuestionsScreenState extends State<AdminQuestionsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (q.kind != QuestionKind.manual) ...[
+                            const Eyebrow('Automática'),
+                            const SizedBox(height: 6),
+                          ],
                           Text(q.prompt, style: textTheme.titleMedium),
                           const SizedBox(height: 8),
                           for (var i = 0; i < q.options.length; i++)
@@ -132,22 +145,35 @@ class _AdminQuestionsScreenState extends State<AdminQuestionsScreen> {
                                 ],
                               ),
                             ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                onPressed: () => _edit(q),
-                                child: const Text('Editar'),
-                              ),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  foregroundColor: Palette.crimsonLight,
+                          if (q.kind != QuestionKind.manual)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                'Se arma sola con los años de los santos y se '
+                                'rehace cuando cambian. Para corregirla, '
+                                'corregí los años en la ficha.',
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: Palette.parchmentDim,
                                 ),
-                                onPressed: () => _delete(q),
-                                child: const Text('Borrar'),
                               ),
-                            ],
-                          ),
+                            )
+                          else
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () => _edit(q),
+                                  child: const Text('Editar'),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Palette.crimsonLight,
+                                  ),
+                                  onPressed: () => _delete(q),
+                                  child: const Text('Borrar'),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ),

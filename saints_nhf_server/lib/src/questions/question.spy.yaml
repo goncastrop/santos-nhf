@@ -7,6 +7,10 @@ fields:
   ### Exactly four options.
   options: List<String>
   correctIndex: int
+  kind: QuestionKind, default=manual
+  ### For the generated ones, the saint behind each option, in the order of
+  ### [options]. Null for the ones an admin typed.
+  optionSaintIds: List<int>?
   createdAt: DateTime, default=now
 indexes:
   question_saint_idx:

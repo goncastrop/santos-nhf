@@ -5,3 +5,7 @@ fields:
   saintId: int
   prompt: String
   options: List<String>
+  ### When every option is a saint of the catalog (the contemporaries
+  ### question), their ids in the order the options are shown, so the app can
+  ### show each one's years once the answer is in. Null otherwise.
+  optionSaintIds: List<int>?

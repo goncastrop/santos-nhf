@@ -21,6 +21,7 @@ abstract class QuizQuestion
     required this.saintId,
     required this.prompt,
     required this.options,
+    this.optionSaintIds,
   });
 
   factory QuizQuestion({
@@ -28,6 +29,7 @@ abstract class QuizQuestion
     required int saintId,
     required String prompt,
     required List<String> options,
+    List<int>? optionSaintIds,
   }) = _QuizQuestionImpl;
 
   factory QuizQuestion.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +40,11 @@ abstract class QuizQuestion
       options: _ipd1p8hh.Protocol().deserialize<List<String>>(
         jsonSerialization['options'],
       ),
+      optionSaintIds: jsonSerialization['optionSaintIds'] == null
+          ? null
+          : _ipd1p8hh.Protocol().deserialize<List<int>>(
+              jsonSerialization['optionSaintIds'],
+            ),
     );
   }
 
@@ -49,6 +56,11 @@ abstract class QuizQuestion
 
   List<String> options;
 
+  /// When every option is a saint of the catalog (the contemporaries
+  /// question), their ids in the order the options are shown, so the app can
+  /// show each one's years once the answer is in. Null otherwise.
+  List<int>? optionSaintIds;
+
   /// Returns a shallow copy of this [QuizQuestion]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -57,6 +69,7 @@ abstract class QuizQuestion
     int? saintId,
     String? prompt,
     List<String>? options,
+    List<int>? optionSaintIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -66,6 +79,7 @@ abstract class QuizQuestion
       'saintId': saintId,
       'prompt': prompt,
       'options': options.toJson(),
+      if (optionSaintIds != null) 'optionSaintIds': optionSaintIds?.toJson(),
     };
   }
 
@@ -77,6 +91,7 @@ abstract class QuizQuestion
       'saintId': saintId,
       'prompt': prompt,
       'options': options.toJson(),
+      if (optionSaintIds != null) 'optionSaintIds': optionSaintIds?.toJson(),
     };
   }
 
@@ -86,17 +101,21 @@ abstract class QuizQuestion
   }
 }
 
+class _Undefined {}
+
 class _QuizQuestionImpl extends QuizQuestion {
   _QuizQuestionImpl({
     required int id,
     required int saintId,
     required String prompt,
     required List<String> options,
+    List<int>? optionSaintIds,
   }) : super._(
          id: id,
          saintId: saintId,
          prompt: prompt,
          options: options,
+         optionSaintIds: optionSaintIds,
        );
 
   /// Returns a shallow copy of this [QuizQuestion]
@@ -108,12 +127,16 @@ class _QuizQuestionImpl extends QuizQuestion {
     int? saintId,
     String? prompt,
     List<String>? options,
+    Object? optionSaintIds = _Undefined,
   }) {
     return QuizQuestion(
       id: id ?? this.id,
       saintId: saintId ?? this.saintId,
       prompt: prompt ?? this.prompt,
       options: options ?? this.options.map((e0) => e0).toList(),
+      optionSaintIds: optionSaintIds is List<int>?
+          ? optionSaintIds
+          : this.optionSaintIds?.map((e0) => e0).toList(),
     );
   }
 }

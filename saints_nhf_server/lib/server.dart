@@ -8,6 +8,7 @@ import 'src/cache_busting.dart';
 import 'src/email/verification_emails.dart';
 import 'src/generated/serverpod.dart';
 import 'src/books/seed_books.dart';
+import 'src/questions/contemporary_questions.dart';
 import 'src/questions/seed_questions.dart';
 import 'src/saints/seed_saints.dart';
 import 'src/web/routes/app_config_route.dart';
@@ -141,5 +142,14 @@ void run(List<String> args) async {
     } finally {
       await session.close();
     }
+  }
+
+  // In every mode: the questions built from the years follow the catalog,
+  // which may have changed under a deploy or a manual edit of the database.
+  final session = await pod.createSession();
+  try {
+    await ContemporaryQuestions.refresh(session);
+  } finally {
+    await session.close();
   }
 }

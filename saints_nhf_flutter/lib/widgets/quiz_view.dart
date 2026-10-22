@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:saints_nhf_client/saints_nhf_client.dart';
 
+import '../state/app_state.dart';
 import '../theme.dart';
+import '../utils/years.dart';
 
 /// A multiple-choice question with four options. Shows the result once
 /// [chosenIndex] and [correctIndex] are known.
@@ -32,9 +34,35 @@ class QuizView extends StatelessWidget {
   /// An option was picked but the result has not arrived yet.
   bool get pending => !answered && chosenIndex != null;
 
+  /// For a question whose options are saints (who was a contemporary of
+  /// whom), the catalog by id once the answer is in: the years side by side
+  /// are what makes the answer stick. Null for any other question, before
+  /// answering, or when the catalog is not loaded.
+  Map<int, SaintInfo>? _saintsToDate(BuildContext context) {
+    final ids = question.optionSaintIds;
+    if (!answered || ids == null || ids.length != question.options.length) {
+      return null;
+    }
+    final catalog = context
+        .dependOnInheritedWidgetOfExactType<AppStateScope>()
+        ?.notifier
+        ?.catalog;
+    if (catalog == null) return null;
+    return {for (final s in catalog) s.id: s};
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final saints = _saintsToDate(context);
+    final subject = saints?[question.saintId];
+    final subjectYears = subject == null ? null : lifespanLabel(subject);
+    String? yearsOf(int i) {
+      if (saints == null) return null;
+      final saint = saints[question.optionSaintIds![i]];
+      return saint == null ? null : lifespanLabel(saint);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -45,11 +73,19 @@ class QuizView extends StatelessWidget {
             height: 1.4,
           ),
         ),
+        if (subjectYears != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            '${subject!.name}: $subjectYears',
+            style: textTheme.bodySmall?.copyWith(color: Palette.gold),
+          ),
+        ],
         const SizedBox(height: 14),
         for (var i = 0; i < question.options.length; i++) ...[
           _Option(
             label: String.fromCharCode(65 + i),
             text: question.options[i],
+            detail: yearsOf(i),
             state: answered
                 ? (i == correctIndex
                       ? _OptionState.correct
@@ -102,12 +138,17 @@ class _Option extends StatelessWidget {
     required this.text,
     required this.state,
     required this.onTap,
+    this.detail,
   });
 
   final String label;
   final String text;
   final _OptionState state;
   final VoidCallback? onTap;
+
+  /// A second line under the option, such as the years of the saint it
+  /// names.
+  final String? detail;
 
   @override
   Widget build(BuildContext context) {
@@ -171,9 +212,21 @@ class _Option extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  text,
-                  style: textTheme.bodyMedium?.copyWith(color: fg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: textTheme.bodyMedium?.copyWith(color: fg),
+                    ),
+                    if (detail != null)
+                      Text(
+                        detail!,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: Palette.parchmentDim,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               if (state == _OptionState.chosen)

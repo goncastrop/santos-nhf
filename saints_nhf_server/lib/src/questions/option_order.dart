@@ -28,10 +28,9 @@ class OptionOrder {
     return OptionOrder._(order);
   }
 
-  /// [options] as the player sees them.
-  List<String> apply(List<String> options) => [
-    for (final i in _stored) options[i],
-  ];
+  /// [options] as the player sees them. Anything listed per option (their
+  /// saint ids, for one) goes through the same order.
+  List<T> apply<T>(List<T> options) => [for (final i in _stored) options[i]];
 
   /// The stored index of the option shown at [shownIndex], or -1 when the
   /// client sends a position that does not exist.

@@ -157,6 +157,12 @@ const helpChapters = <HelpChapter>[
           'tres vidas. Cada tres aciertos seguidos sube el multiplicador, '
           'hasta ×5, y nunca se repite una pregunta. La mejor corrida queda '
           'en el ranking.',
+      'Entre las preguntas sale cada tanto una de la línea de tiempo: de '
+          'quién fue contemporáneo un santo, con cuatro santos del catálogo '
+          'de los que solo uno vivió en su misma época. Nadie la carga: se '
+          'arma con los años de nacimiento y muerte. Cuando la respuesta '
+          'queda en pantalla, como en la Letanía, se ven los años de cada '
+          'uno.',
       'Trivia en vivo: durante el programa, el equipo lanza unas preguntas '
           'sobre el santo del día y te aparece un aviso arriba en la app. '
           'Acertar vale entre 500 y 1000 puntos, más cuanto más rápido. Los '

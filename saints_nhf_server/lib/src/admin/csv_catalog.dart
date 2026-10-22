@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../books/book_service.dart';
 import '../generated/protocol.dart';
+import '../questions/contemporary_questions.dart';
 import '../saints/saint_revisions.dart';
 import '../saints/score_category_x.dart';
 
@@ -12,7 +13,8 @@ import '../saints/score_category_x.dart';
 ///
 /// Saints are matched by `slug`; questions by `id`, or by saint + prompt when
 /// the id is empty; books by `id`, or by saint + title. Rows never delete
-/// anything.
+/// anything. The questions built from the years ([QuestionKind.contemporary])
+/// are neither exported nor imported: they come from the saints file.
 class CsvCatalog {
   static const saintHeaders = [
     'slug',
@@ -113,7 +115,11 @@ class CsvCatalog {
   static Future<String> exportQuestions(Session session) async {
     final saints = await Saint.db.find(session);
     final slugById = {for (final s in saints) s.id!: s.slug};
-    final questions = await Question.db.find(session, orderBy: (t) => t.id);
+    final questions = await Question.db.find(
+      session,
+      where: (t) => t.kind.equals(QuestionKind.manual),
+      orderBy: (t) => t.id,
+    );
     const letters = ['A', 'B', 'C', 'D'];
     return _converter.convert([
       questionHeaders,
@@ -292,6 +298,7 @@ class CsvCatalog {
           );
         }
       });
+      await ContemporaryQuestions.refresh(session);
     }
     return ImportReport(
       applied: apply && errors.isEmpty,
@@ -327,7 +334,8 @@ class CsvCatalog {
     final byId = {for (final q in questions) q.id!: q};
     final byKey = {
       for (final q in questions)
-        '${q.saintId}|${q.prompt.trim().toLowerCase()}': q,
+        if (q.kind == QuestionKind.manual)
+          '${q.saintId}|${q.prompt.trim().toLowerCase()}': q,
     };
 
     final errors = <String>[];
@@ -356,6 +364,10 @@ class CsvCatalog {
           final id = int.tryParse(idText);
           previous = id == null ? null : byId[id];
           if (previous == null) throw 'no existe la pregunta con id $idText';
+          if (previous.kind != QuestionKind.manual) {
+            throw 'la pregunta $idText se arma sola con los años de los '
+                'santos y no se importa';
+          }
           if (previous.saintId != saint.id) {
             throw 'la pregunta $idText pertenece a otro santo';
           }

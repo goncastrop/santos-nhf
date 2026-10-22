@@ -126,6 +126,10 @@ carta. Al cierre se muestran las dos listas por separado. Mirar no requiere cuen
   (la racha cuenta días consecutivos con respuesta correcta).
 - [x] Banco de preguntas por santo, editable desde el panel admin (botón "Preguntas" en
   la ficha de cada santo). Un santo necesita al menos una pregunta para entrar en un mazo.
+- [x] Preguntas de contemporáneos: "¿De quién fue contemporáneo…?" con cuatro santos del
+  catálogo, de los que solo uno vivió en su época. Se arman solas con los años de nacimiento y
+  muerte, una por santo, y se mezclan con las cargadas en todos los juegos. Al responder, la
+  Letanía y la trivia muestran los años de cada opción.
 - [ ] Borradores de preguntas generados a partir de la transcripción del fragmento
   (pendiente de tener los links reales).
 - [x] "Adivinar el puntaje": tarjeta con puntajes tapados, hay que adivinar la categoría

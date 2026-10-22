@@ -20,6 +20,9 @@ class QuestionService {
     saintId: q.saintId,
     prompt: q.prompt,
     options: order.apply(q.options),
+    optionSaintIds: q.optionSaintIds == null
+        ? null
+        : order.apply(q.optionSaintIds!),
   );
 
   /// A question about one of [saintIds] that [me] has not been asked yet, or

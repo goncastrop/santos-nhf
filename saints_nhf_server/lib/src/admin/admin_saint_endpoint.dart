@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import '../questions/contemporary_questions.dart';
 import '../saints/saint_mapper.dart';
 import '../saints/saint_revisions.dart';
 import 'admin_scope.dart';
@@ -52,12 +53,14 @@ class AdminSaintEndpoint extends Endpoint {
     final now = DateTime.now().toUtc();
     if (saint.id == null) {
       await _ensureSlugFree(session, saint.slug, null);
-      return Saint.db.insertRow(
+      final created = await Saint.db.insertRow(
         session,
         saint.copyWith(createdAt: now, updatedAt: now),
       );
+      await ContemporaryQuestions.refresh(session);
+      return created;
     }
-    return session.db.transaction((tx) async {
+    final updated = await session.db.transaction((tx) async {
       final previous = await Saint.db.findById(
         session,
         saint.id!,
@@ -79,12 +82,18 @@ class AdminSaintEndpoint extends Endpoint {
         transaction: tx,
       );
     });
+    // After the commit: the questions are built from what is stored.
+    await ContemporaryQuestions.refresh(session);
+    return updated;
   }
 
   /// Deletes a saint and, by cascade, its revisions and collected cards.
   Future<void> delete(Session session, int saintId) async {
     final saint = await get(session, saintId);
     await Saint.db.deleteRow(session, saint);
+    // Its own questions go by cascade; the ones that offered it as an option
+    // have to be rebuilt.
+    await ContemporaryQuestions.refresh(session);
   }
 
   /// Revision history of a saint, newest first.

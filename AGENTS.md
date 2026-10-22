@@ -36,6 +36,21 @@ Build for multiple users, use Serverpod's built-in authentication, which is alre
   agota el pozo vuelve a las vistas hace más tiempo, al azar dentro de la mitad más vieja.
   El Sacristán no se registra ahí (no tiene usuario) y sigue usando `randomFor`. En el duelo
   además se excluyen las preguntas ya jugadas en ese mismo duelo (`_usedQuestionIds`).
+- `questions/contemporary_questions.dart`: la pregunta "¿De quién fue contemporáneo…?", que
+  nadie carga. Sale de los años de nacimiento y muerte: una por santo publicado que tenga con
+  quién emparejarse (hoy 54 de 61), con una sola opción contemporánea y tres que seguro no lo
+  fueron, tomadas entre los no contemporáneos más cercanos. Las fechas "c." se leen con 5 años
+  de margen hacia el lado que haga dudosa la respuesta, contemporáneos son los que vivieron a la
+  vez al menos 10 años (o la mitad de la vida más corta), y una opción equivocada tiene que
+  quedar a 30 años o más; lo que cae en el medio no se ofrece nunca. Se guardan como filas
+  comunes de `question` con `kind: contemporary` y `optionSaintIds`, así que la pregunta del
+  día, el duelo, la Letanía y la trivia las usan sin saberlo. `sync` las pone al día y corre al
+  arrancar el servidor (en todos los modos) y después de cada escritura de santos (editor,
+  borrado, importación CSV, `seed_demo_saints`); una que sigue siendo verdad se conserva, y una
+  que dejó de serlo se reescribe en el lugar, con el mismo id. El panel admin no las deja
+  editar ni borrar y el CSV de preguntas no las exporta ni las importa. `QuizQuestion` lleva los
+  `optionSaintIds` en el orden en que se ven, y `QuizView` muestra los años de cada opción
+  cuando la respuesta queda en pantalla.
 - `duel/`: motor del duelo (`DuelService`) con tablas `duel`, `duel_deck` y `duel_round`,
   `DuelEndpoint`, y la máquina "El Sacristán" (id fijo `11111111-1111-4111-8111-111111111111`,
   juega dentro de la misma transacción tras cada jugada humana). Reglas en `ROADMAP.md`.

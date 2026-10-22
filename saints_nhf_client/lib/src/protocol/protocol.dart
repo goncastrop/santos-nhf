@@ -73,6 +73,7 @@ import 'live/live_view.dart' as _iiwgvz3h;
 import 'live/live_winner_view.dart' as _i0z8s1jl;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
+import 'questions/question_kind.dart' as _ii8rg02g;
 import 'questions/question_seen.dart' as _iqz00a3b;
 import 'questions/quiz_exception.dart' as _ilkzvlf7;
 import 'questions/quiz_question.dart' as _icdqdbld;
@@ -131,6 +132,7 @@ export 'live/live_view.dart';
 export 'live/live_winner_view.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
+export 'questions/question_kind.dart';
 export 'questions/question_seen.dart';
 export 'questions/quiz_exception.dart';
 export 'questions/quiz_question.dart';
@@ -300,6 +302,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ihstiddh.Question) {
       return _ihstiddh.Question.fromJson(data) as T;
+    }
+    if (t == _ii8rg02g.QuestionKind) {
+      return _ii8rg02g.QuestionKind.fromJson(data) as T;
     }
     if (t == _iqz00a3b.QuestionSeen) {
       return _iqz00a3b.QuestionSeen.fromJson(data) as T;
@@ -495,6 +500,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_ihstiddh.Question?>()) {
       return (data != null ? _ihstiddh.Question.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ii8rg02g.QuestionKind?>()) {
+      return (data != null ? _ii8rg02g.QuestionKind.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iqz00a3b.QuestionSeen?>()) {
       return (data != null ? _iqz00a3b.QuestionSeen.fromJson(data) : null) as T;
@@ -785,6 +793,7 @@ class Protocol extends _isc.SerializationManager {
       _i0z8s1jl.LiveWinnerView => 'LiveWinnerView',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
+      _ii8rg02g.QuestionKind => 'QuestionKind',
       _iqz00a3b.QuestionSeen => 'QuestionSeen',
       _ilkzvlf7.QuizException => 'QuizException',
       _icdqdbld.QuizQuestion => 'QuizQuestion',
@@ -895,6 +904,8 @@ class Protocol extends _isc.SerializationManager {
         return 'DailyQuiz';
       case _ihstiddh.Question():
         return 'Question';
+      case _ii8rg02g.QuestionKind():
+        return 'QuestionKind';
       case _iqz00a3b.QuestionSeen():
         return 'QuestionSeen';
       case _ilkzvlf7.QuizException():
@@ -1073,6 +1084,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Question') {
       return deserialize<_ihstiddh.Question>(data['data']);
+    }
+    if (dataClassName == 'QuestionKind') {
+      return deserialize<_ii8rg02g.QuestionKind>(data['data']);
     }
     if (dataClassName == 'QuestionSeen') {
       return deserialize<_iqz00a3b.QuestionSeen>(data['data']);

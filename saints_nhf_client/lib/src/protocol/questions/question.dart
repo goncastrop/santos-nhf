@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:saints_nhf_client/src/protocol/protocol.dart' as _ipd1p8hh;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../questions/question_kind.dart' as _isgn4499;
 
 /// A multiple-choice question about a saint. Only admins see [correctIndex].
 abstract class Question
@@ -22,8 +23,11 @@ abstract class Question
     required this.prompt,
     required this.options,
     required this.correctIndex,
+    _isgn4499.QuestionKind? kind,
+    this.optionSaintIds,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : kind = kind ?? _isgn4499.QuestionKind.manual,
+       createdAt = createdAt ?? DateTime.now();
 
   factory Question({
     int? id,
@@ -31,6 +35,8 @@ abstract class Question
     required String prompt,
     required List<String> options,
     required int correctIndex,
+    _isgn4499.QuestionKind? kind,
+    List<int>? optionSaintIds,
     DateTime? createdAt,
   }) = _QuestionImpl;
 
@@ -43,6 +49,16 @@ abstract class Question
         jsonSerialization['options'],
       ),
       correctIndex: jsonSerialization['correctIndex'] as int,
+      kind: jsonSerialization['kind'] == null
+          ? null
+          : _isgn4499.QuestionKind.fromJson(
+              (jsonSerialization['kind'] as String),
+            ),
+      optionSaintIds: jsonSerialization['optionSaintIds'] == null
+          ? null
+          : _ipd1p8hh.Protocol().deserialize<List<int>>(
+              jsonSerialization['optionSaintIds'],
+            ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -63,6 +79,12 @@ abstract class Question
 
   int correctIndex;
 
+  _isgn4499.QuestionKind kind;
+
+  /// For the generated ones, the saint behind each option, in the order of
+  /// [options]. Null for the ones an admin typed.
+  List<int>? optionSaintIds;
+
   DateTime createdAt;
 
   /// Returns a shallow copy of this [Question]
@@ -74,6 +96,8 @@ abstract class Question
     String? prompt,
     List<String>? options,
     int? correctIndex,
+    _isgn4499.QuestionKind? kind,
+    List<int>? optionSaintIds,
     DateTime? createdAt,
   });
   @override
@@ -85,6 +109,8 @@ abstract class Question
       'prompt': prompt,
       'options': options.toJson(),
       'correctIndex': correctIndex,
+      'kind': kind.toJson(),
+      if (optionSaintIds != null) 'optionSaintIds': optionSaintIds?.toJson(),
       'createdAt': createdAt.toJson(),
     };
   }
@@ -98,6 +124,8 @@ abstract class Question
       'prompt': prompt,
       'options': options.toJson(),
       'correctIndex': correctIndex,
+      'kind': kind.toJson(),
+      if (optionSaintIds != null) 'optionSaintIds': optionSaintIds?.toJson(),
       'createdAt': createdAt.toJson(),
     };
   }
@@ -117,6 +145,8 @@ class _QuestionImpl extends Question {
     required String prompt,
     required List<String> options,
     required int correctIndex,
+    _isgn4499.QuestionKind? kind,
+    List<int>? optionSaintIds,
     DateTime? createdAt,
   }) : super._(
          id: id,
@@ -124,6 +154,8 @@ class _QuestionImpl extends Question {
          prompt: prompt,
          options: options,
          correctIndex: correctIndex,
+         kind: kind,
+         optionSaintIds: optionSaintIds,
          createdAt: createdAt,
        );
 
@@ -137,6 +169,8 @@ class _QuestionImpl extends Question {
     String? prompt,
     List<String>? options,
     int? correctIndex,
+    _isgn4499.QuestionKind? kind,
+    Object? optionSaintIds = _Undefined,
     DateTime? createdAt,
   }) {
     return Question(
@@ -145,6 +179,10 @@ class _QuestionImpl extends Question {
       prompt: prompt ?? this.prompt,
       options: options ?? this.options.map((e0) => e0).toList(),
       correctIndex: correctIndex ?? this.correctIndex,
+      kind: kind ?? this.kind,
+      optionSaintIds: optionSaintIds is List<int>?
+          ? optionSaintIds
+          : this.optionSaintIds?.map((e0) => e0).toList(),
       createdAt: createdAt ?? this.createdAt,
     );
   }

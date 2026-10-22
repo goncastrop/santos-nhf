@@ -11,6 +11,7 @@ import 'dart:io';
 
 import 'package:saints_nhf_server/src/generated/protocol.dart';
 import 'package:saints_nhf_server/src/generated/serverpod.dart';
+import 'package:saints_nhf_server/src/questions/contemporary_questions.dart';
 
 const _prefix = 'demo-';
 
@@ -489,6 +490,16 @@ String _slugify(String input) {
   return s.replaceAll(RegExp(r'^-+|-+$'), '');
 }
 
+/// The contemporaries questions offer saints as options, so loading or
+/// removing 68 of them changes plenty of questions besides their own.
+Future<void> _syncContemporaries(Session session) async {
+  final result = await ContemporaryQuestions.sync(session);
+  stdout.writeln(
+    'Preguntas de contemporáneos: ${result.created} nuevas, '
+    '${result.updated} rehechas, ${result.deleted} borradas.',
+  );
+}
+
 Future<void> main(List<String> args) async {
   final remove = args.contains('--remove');
   final pod = Serverpod(['--mode', 'development', '--role', 'maintenance']);
@@ -510,6 +521,7 @@ Future<void> main(List<String> args) async {
           'Las cartas, preguntas y libros que colgaban de ellos se borran en '
           'cascada.',
         );
+        await _syncContemporaries(session);
       }
       return;
     }
@@ -561,6 +573,7 @@ Future<void> main(List<String> args) async {
       final total = await Saint.db.count(session);
       stdout.writeln('Cargados ${toInsert.length} santos de prueba.');
       stdout.writeln('El catálogo queda con $total santos.');
+      await _syncContemporaries(session);
       stdout.writeln(
         'Para sacarlos: dart run bin/seed_demo_saints.dart --remove',
       );
