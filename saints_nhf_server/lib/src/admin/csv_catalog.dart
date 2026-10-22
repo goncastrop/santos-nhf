@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../books/book_service.dart';
 import '../generated/protocol.dart';
+import '../meetings/meeting_service.dart';
 import '../questions/contemporary_questions.dart';
 import '../saints/saint_revisions.dart';
 import '../saints/score_category_x.dart';
@@ -12,9 +13,10 @@ import '../saints/score_category_x.dart';
 /// spreadsheet.
 ///
 /// Saints are matched by `slug`; questions by `id`, or by saint + prompt when
-/// the id is empty; books by `id`, or by saint + title. Rows never delete
-/// anything. The questions built from the years ([QuestionKind.contemporary])
-/// are neither exported nor imported: they come from the saints file.
+/// the id is empty; books by `id`, or by saint + title; meetings by the pair of
+/// slugs, in either order. Rows never delete anything. The questions built
+/// from the years ([QuestionKind.contemporary]) are neither exported nor
+/// imported: they come from the saints file.
 class CsvCatalog {
   static const saintHeaders = [
     'slug',
@@ -69,6 +71,10 @@ class CsvCatalog {
     'opcion_d',
     'correcta',
   ];
+
+  /// One row per pair of saints who met. The order of the two does not
+  /// matter.
+  static const meetingHeaders = ['santo_slug', 'otro_santo_slug'];
 
   static const _converter = ListToCsvConverter(eol: '\n');
   static const _parser = CsvToListConverter(
@@ -152,6 +158,32 @@ class CsvCatalog {
           b.url ?? '',
           b.note ?? '',
         ],
+    ]);
+  }
+
+  /// Each pair once, the one born first on the left, in the order of the
+  /// timeline.
+  static Future<String> exportMeetings(Session session) async {
+    final saints = await Saint.db.find(session);
+    final byId = {for (final s in saints) s.id!: s};
+    final pairs = <(Saint, Saint)>[];
+    for (final m in await SaintMeeting.db.find(session)) {
+      final a = byId[m.saintAId];
+      final b = byId[m.saintBId];
+      if (a == null || b == null) continue;
+      final ordered = MeetingService.byBirth([a, b]);
+      pairs.add((ordered[0], ordered[1]));
+    }
+    final order = {
+      for (final (i, s) in MeetingService.byBirth(saints).indexed) s.id!: i,
+    };
+    pairs.sort((x, y) {
+      final first = order[x.$1.id]!.compareTo(order[y.$1.id]!);
+      return first != 0 ? first : order[x.$2.id]!.compareTo(order[y.$2.id]!);
+    });
+    return _converter.convert([
+      meetingHeaders,
+      for (final (a, b) in pairs) [a.slug, b.slug],
     ]);
   }
 
@@ -530,6 +562,75 @@ class CsvCatalog {
       applied: apply && errors.isEmpty,
       created: toInsert.length,
       updated: toUpdate.length,
+      unchanged: unchanged,
+      changes: changes,
+      errors: errors,
+    );
+  }
+
+  /// Adds the pairs that are not recorded yet. Like the other files, it never
+  /// deletes: a pair is removed from the panel.
+  static Future<ImportReport> importMeetings(
+    Session session,
+    String csv, {
+    required bool apply,
+  }) async {
+    final rows = _rows(
+      csv,
+      meetingHeaders,
+      required: {'santo_slug', 'otro_santo_slug'},
+    );
+    final saints = await Saint.db.find(session);
+    final bySlug = {for (final s in saints) s.slug: s};
+    final existing = {
+      for (final m in await SaintMeeting.db.find(session))
+        (m.saintAId, m.saintBId),
+    };
+
+    final errors = <String>[];
+    final changes = <String>[];
+    final toInsert = <SaintMeeting>[];
+    final inFile = <(int, int)>{};
+    var unchanged = 0;
+
+    for (final (line, row) in rows) {
+      try {
+        Saint saintOf(String column) {
+          final slug = row[column]!.trim();
+          if (slug.isEmpty) throw 'falta $column';
+          final saint = bySlug[slug];
+          if (saint == null) throw 'no existe un santo con slug "$slug"';
+          return saint;
+        }
+
+        final saint = saintOf('santo_slug');
+        final other = saintOf('otro_santo_slug');
+        final reason = MeetingService.whyNot(saint, other);
+        if (reason != null) throw reason;
+        final key = MeetingService.pair(saint.id!, other.id!);
+        if (!inFile.add(key)) {
+          throw '${saint.name} y ${other.name} ya están en otra línea';
+        }
+        if (existing.contains(key)) {
+          unchanged++;
+        } else {
+          toInsert.add(SaintMeeting(saintAId: key.$1, saintBId: key.$2));
+          changes.add('${saint.name} y ${other.name} se conocieron');
+        }
+      } catch (e) {
+        errors.add('Línea $line: $e');
+      }
+    }
+
+    if (apply && errors.isEmpty && toInsert.isNotEmpty) {
+      await session.db.transaction((tx) async {
+        await SaintMeeting.db.insert(session, toInsert, transaction: tx);
+      });
+    }
+    return ImportReport(
+      applied: apply && errors.isEmpty,
+      created: toInsert.length,
+      updated: 0,
       unchanged: unchanged,
       changes: changes,
       errors: errors,

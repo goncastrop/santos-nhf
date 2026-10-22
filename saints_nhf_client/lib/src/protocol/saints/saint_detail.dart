@@ -23,12 +23,14 @@ abstract class SaintDetail
     required this.saint,
     this.card,
     required this.books,
+    required this.metSaints,
   });
 
   factory SaintDetail({
     required _i38p9z6b.SaintInfo saint,
     _izrixkci.CollectedCard? card,
     required List<_ir46iu8s.SaintBook> books,
+    required List<_i38p9z6b.SaintInfo> metSaints,
   }) = _SaintDetailImpl;
 
   factory SaintDetail.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -44,6 +46,9 @@ abstract class SaintDetail
       books: _ipd1p8hh.Protocol().deserialize<List<_ir46iu8s.SaintBook>>(
         jsonSerialization['books'],
       ),
+      metSaints: _ipd1p8hh.Protocol().deserialize<List<_i38p9z6b.SaintInfo>>(
+        jsonSerialization['metSaints'],
+      ),
     );
   }
 
@@ -54,6 +59,10 @@ abstract class SaintDetail
   /// Recommended reading, already ordered for display.
   List<_ir46iu8s.SaintBook> books;
 
+  /// Published saints they met in life, in the order they were born. Empty
+  /// hides the section.
+  List<_i38p9z6b.SaintInfo> metSaints;
+
   /// Returns a shallow copy of this [SaintDetail]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -61,6 +70,7 @@ abstract class SaintDetail
     _i38p9z6b.SaintInfo? saint,
     _izrixkci.CollectedCard? card,
     List<_ir46iu8s.SaintBook>? books,
+    List<_i38p9z6b.SaintInfo>? metSaints,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -69,6 +79,7 @@ abstract class SaintDetail
       'saint': saint.toJson(),
       if (card != null) 'card': card?.toJson(),
       'books': books.toJson(valueToJson: (v) => v.toJson()),
+      'metSaints': metSaints.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -79,6 +90,7 @@ abstract class SaintDetail
       'saint': saint.toJsonForProtocol(),
       if (card != null) 'card': card?.toJsonForProtocol(),
       'books': books.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'metSaints': metSaints.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -95,10 +107,12 @@ class _SaintDetailImpl extends SaintDetail {
     required _i38p9z6b.SaintInfo saint,
     _izrixkci.CollectedCard? card,
     required List<_ir46iu8s.SaintBook> books,
+    required List<_i38p9z6b.SaintInfo> metSaints,
   }) : super._(
          saint: saint,
          card: card,
          books: books,
+         metSaints: metSaints,
        );
 
   /// Returns a shallow copy of this [SaintDetail]
@@ -109,11 +123,14 @@ class _SaintDetailImpl extends SaintDetail {
     _i38p9z6b.SaintInfo? saint,
     Object? card = _Undefined,
     List<_ir46iu8s.SaintBook>? books,
+    List<_i38p9z6b.SaintInfo>? metSaints,
   }) {
     return SaintDetail(
       saint: saint ?? this.saint.copyWith(),
       card: card is _izrixkci.CollectedCard? ? card : this.card?.copyWith(),
       books: books ?? this.books.map((e0) => e0.copyWith()).toList(),
+      metSaints:
+          metSaints ?? this.metSaints.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

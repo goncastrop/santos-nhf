@@ -161,9 +161,10 @@ carta. Al cierre se muestran las dos listas por separado. Mirar no requiere cuen
 ## Mantenimiento del contenido
 
 - [x] **Importar y exportar CSV** desde el panel admin (Perfil → Importar y exportar):
-  un archivo de santos, otro de preguntas y otro de libros, pensados para editarse en Google
-  Sheets o Excel. Los santos se identifican por `slug`, las preguntas por `id` (o por santo +
-  texto de la pregunta si el id está vacío) y los libros por `id` (o por santo + título).
+  un archivo de santos, otro de preguntas, otro de libros y otro de encuentros, pensados
+  para editarse en Google Sheets o Excel. Los santos se identifican por `slug`, las preguntas
+  por `id` (o por santo + texto de la pregunta si el id está vacío), los libros por `id` (o por
+  santo + título) y los encuentros por el par de slugs, en cualquier orden.
   Las filas nuevas se crean, las existentes se actualizan, nada se borra. Antes de aplicar
   se muestra una vista previa con los cambios y los errores por línea; con errores no se
   importa nada. Cada santo modificado deja una revisión con la
@@ -255,6 +256,15 @@ carta. Al cierre se muestran las dos listas por separado. Mirar no requiere cuen
   el panel admin (botón "Libros" en la ficha, con flechas para ordenar dentro de cada grupo) o
   por el CSV `libros`. Se eligió categoría única y no tags: con 3 a 10 libros por santo los tags
   no aportan y traen el costo de mantener el vocabulario.
+- [x] **Con qué santos se conoció.** La ficha muestra, después de la biografía, una fila
+  horizontal con los retratos de los santos del catálogo con los que se conoció en vida (Juan
+  Pablo II con Teresa de Calcuta y Óscar Romero, Mónica con Agustín). Cada retrato abre su ficha
+  y sale en color o en gris según si la carta está en el álbum, igual que en el resto de la app.
+  El título va en singular cuando es uno solo ("Con qué otra santa se conoció") y la sección no
+  aparece si no hay nadie. No se deduce de los años, porque haber vivido a la vez no es haberse
+  conocido: se carga a mano desde el editor (botón "Con quién se conoció") o por el CSV
+  `encuentros`, y vale para los dos lados. El servidor rechaza solo lo imposible, dos santos que
+  no vivieron en la misma época. Los borradores no se muestran en la ficha.
 - [x] **Años de nacimiento y muerte** (`birthYear`/`deathYear`, negativos para antes de Cristo,
   con `birthApprox`/`deathApprox` para que se lean "c. 1181"). Viajan en `SaintInfo`, así que
   están en el catálogo y en el snapshot offline. Se muestran como chip en la ficha.

@@ -9,6 +9,7 @@ import '../state/app_state.dart';
 import '../theme.dart';
 import '../utils/books.dart';
 import '../utils/feast.dart';
+import '../utils/meetings.dart';
 import '../utils/titles.dart';
 import '../utils/years.dart';
 import '../widgets/common.dart';
@@ -74,9 +75,10 @@ class _SaintDetailScreenState extends State<SaintDetailScreen> {
                   : SaintDetail(
                       saint: cached,
                       card: state.cardFor(widget.saintId),
-                      // The cached catalog has no books: offline the ficha
-                      // shows everything else and skips the reading list.
+                      // The cached catalog has no books nor meetings: offline
+                      // the ficha shows everything else and skips those two.
                       books: const [],
+                      metSaints: const [],
                     ));
           if (detail == null) return const LoadingView();
           return _DetailBody(detail: detail);
@@ -230,6 +232,10 @@ class _DetailBody extends StatelessWidget {
                 saint.bio,
                 style: textTheme.bodyLarge?.copyWith(height: 1.6),
               ),
+              if (detail.metSaints.isNotEmpty) ...[
+                const SizedBox(height: 32),
+                _MetSaintsSection(saints: detail.metSaints),
+              ],
               if (saint.prayer != null && saint.prayer!.trim().isNotEmpty) ...[
                 const SizedBox(height: 32),
                 _PrayerBlock(prayer: saint.prayer!),
@@ -242,6 +248,97 @@ class _DetailBody extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The saints they met in life, as a row of portraits that open each ficha.
+/// Each portrait is in color or in gray like everywhere else: by whether the
+/// card is in the album.
+class _MetSaintsSection extends StatelessWidget {
+  const _MetSaintsSection({required this.saints});
+
+  final List<SaintInfo> saints;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = AppState.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Eyebrow(metHeading(saints)),
+        const SizedBox(height: 12),
+        // A Row rather than a fixed-height ListView: the names wrap, and with
+        // large text a fixed height would cut them off. They are only a few.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final (i, other) in saints.indexed) ...[
+                if (i > 0) const SizedBox(width: 14),
+                _MetSaintTile(
+                  saint: other,
+                  owned: state.cardFor(other.id) != null,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MetSaintTile extends StatelessWidget {
+  const _MetSaintTile({required this.saint, required this.owned});
+
+  final SaintInfo saint;
+  final bool owned;
+
+  static const _width = 92.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _width,
+      child: MergeSemantics(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => SaintDetailScreen.open(context, saint.id),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: _width,
+                  height: _width * 4 / 3,
+                  child: ClipPath(
+                    clipper: const ArchClipper(),
+                    child: SaintIllustration(
+                      url: saint.illustrationUrl,
+                      name: saint.name,
+                      grayscale: !owned,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  saint.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Palette.parchment,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

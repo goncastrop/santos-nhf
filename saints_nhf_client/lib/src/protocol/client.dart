@@ -165,8 +165,8 @@ class EndpointAdminBook extends _isc.EndpointRef {
   );
 }
 
-/// CSV export and import of saints and questions, for maintaining the
-/// content in a spreadsheet.
+/// CSV export and import of saints, questions, books and meetings, for
+/// maintaining the content in a spreadsheet.
 /// {@category Endpoint}
 class EndpointAdminCatalog extends _isc.EndpointRef {
   EndpointAdminCatalog(_isc.EndpointCaller caller) : super(caller);
@@ -189,6 +189,12 @@ class EndpointAdminCatalog extends _isc.EndpointRef {
   _ida.Future<String> exportBooksCsv() => caller.callServerEndpoint<String>(
     'adminCatalog',
     'exportBooksCsv',
+    {},
+  );
+
+  _ida.Future<String> exportMeetingsCsv() => caller.callServerEndpoint<String>(
+    'adminCatalog',
+    'exportMeetingsCsv',
     {},
   );
 
@@ -223,6 +229,18 @@ class EndpointAdminCatalog extends _isc.EndpointRef {
   ) => caller.callServerEndpoint<_i6hsmomy.ImportReport>(
     'adminCatalog',
     'importBooksCsv',
+    {
+      'csv': csv,
+      'apply': apply,
+    },
+  );
+
+  _ida.Future<_i6hsmomy.ImportReport> importMeetingsCsv(
+    String csv,
+    bool apply,
+  ) => caller.callServerEndpoint<_i6hsmomy.ImportReport>(
+    'adminCatalog',
+    'importMeetingsCsv',
     {
       'csv': csv,
       'apply': apply,
@@ -280,6 +298,51 @@ class EndpointAdminCodes extends _isc.EndpointRef {
     'adminCodes',
     'delete',
     {'codeId': codeId},
+  );
+}
+
+/// Admin management of which saints met in life. Each change applies to both
+/// saints of the pair, so it is saved on its own instead of with the saint's
+/// form and leaves no revision.
+/// {@category Endpoint}
+class EndpointAdminMeeting extends _isc.EndpointRef {
+  EndpointAdminMeeting(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'adminMeeting';
+
+  /// The saints [saintId] met, drafts included, oldest first.
+  _ida.Future<List<_i3ylg3gz.Saint>> listFor(int saintId) =>
+      caller.callServerEndpoint<List<_i3ylg3gz.Saint>>(
+        'adminMeeting',
+        'listFor',
+        {'saintId': saintId},
+      );
+
+  /// Records that the two met and returns the updated list of [saintId].
+  _ida.Future<List<_i3ylg3gz.Saint>> add(
+    int saintId,
+    int otherId,
+  ) => caller.callServerEndpoint<List<_i3ylg3gz.Saint>>(
+    'adminMeeting',
+    'add',
+    {
+      'saintId': saintId,
+      'otherId': otherId,
+    },
+  );
+
+  /// Undoes [add] and returns the updated list of [saintId].
+  _ida.Future<List<_i3ylg3gz.Saint>> remove(
+    int saintId,
+    int otherId,
+  ) => caller.callServerEndpoint<List<_i3ylg3gz.Saint>>(
+    'adminMeeting',
+    'remove',
+    {
+      'saintId': saintId,
+      'otherId': otherId,
+    },
   );
 }
 
@@ -1228,6 +1291,7 @@ class Client extends _isc.ServerpodClientShared {
     adminBook = EndpointAdminBook(this);
     adminCatalog = EndpointAdminCatalog(this);
     adminCodes = EndpointAdminCodes(this);
+    adminMeeting = EndpointAdminMeeting(this);
     adminQuestion = EndpointAdminQuestion(this);
     adminSaint = EndpointAdminSaint(this);
     adminUsers = EndpointAdminUsers(this);
@@ -1255,6 +1319,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointAdminCatalog adminCatalog;
 
   late final EndpointAdminCodes adminCodes;
+
+  late final EndpointAdminMeeting adminMeeting;
 
   late final EndpointAdminQuestion adminQuestion;
 
@@ -1295,6 +1361,7 @@ class Client extends _isc.ServerpodClientShared {
     'adminBook': adminBook,
     'adminCatalog': adminCatalog,
     'adminCodes': adminCodes,
+    'adminMeeting': adminMeeting,
     'adminQuestion': adminQuestion,
     'adminSaint': adminSaint,
     'adminUsers': adminUsers,

@@ -14,6 +14,7 @@ import '../../widgets/common.dart';
 import '../../widgets/saint_card.dart';
 import '../../widgets/saint_illustration.dart';
 import 'admin_books_screen.dart';
+import 'admin_meetings_screen.dart';
 import 'admin_questions_screen.dart';
 import 'admin_revisions_screen.dart';
 
@@ -341,6 +342,16 @@ class _SaintFormState extends State<_SaintForm> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => AdminBooksScreen(saint: _saint),
+                ),
+              ),
+            ),
+          if (!isNew)
+            IconButton(
+              tooltip: 'Con quién se conoció',
+              icon: const Icon(Icons.people_outline_rounded),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AdminMeetingsScreen(saint: _saint),
                 ),
               ),
             ),

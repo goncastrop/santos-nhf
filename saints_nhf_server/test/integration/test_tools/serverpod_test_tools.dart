@@ -217,6 +217,8 @@ class TestEndpoints {
 
   late final _AdminCodesEndpoint adminCodes;
 
+  late final _AdminMeetingEndpoint adminMeeting;
+
   late final _AdminQuestionEndpoint adminQuestion;
 
   late final _AdminSaintEndpoint adminSaint;
@@ -272,6 +274,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     adminCodes = _AdminCodesEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    adminMeeting = _AdminMeetingEndpoint(
       endpoints,
       serializationManager,
     );
@@ -726,6 +732,36 @@ class _AdminCatalogEndpoint {
     });
   }
 
+  _ida.Future<String> exportMeetingsCsv(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminCatalog',
+            method: 'exportMeetingsCsv',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminCatalog',
+          methodName: 'exportMeetingsCsv',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<String>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<_i6oy79if.ImportReport> importSaintsCsv(
     _ist.TestSessionBuilder sessionBuilder,
     String csv,
@@ -812,6 +848,41 @@ class _AdminCatalogEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'adminCatalog',
           methodName: 'importBooksCsv',
+          parameters: _ist.testObjectToJson({
+            'csv': csv,
+            'apply': apply,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i6oy79if.ImportReport>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i6oy79if.ImportReport> importMeetingsCsv(
+    _ist.TestSessionBuilder sessionBuilder,
+    String csv,
+    bool apply,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminCatalog',
+            method: 'importMeetingsCsv',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminCatalog',
+          methodName: 'importMeetingsCsv',
           parameters: _ist.testObjectToJson({
             'csv': csv,
             'apply': apply,
@@ -972,6 +1043,118 @@ class _AdminCodesEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _AdminMeetingEndpoint {
+  _AdminMeetingEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_i6crwlsp.Saint>> listFor(
+    _ist.TestSessionBuilder sessionBuilder,
+    int saintId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminMeeting',
+            method: 'listFor',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminMeeting',
+          methodName: 'listFor',
+          parameters: _ist.testObjectToJson({'saintId': saintId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_i6crwlsp.Saint>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_i6crwlsp.Saint>> add(
+    _ist.TestSessionBuilder sessionBuilder,
+    int saintId,
+    int otherId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminMeeting',
+            method: 'add',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminMeeting',
+          methodName: 'add',
+          parameters: _ist.testObjectToJson({
+            'saintId': saintId,
+            'otherId': otherId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_i6crwlsp.Saint>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_i6crwlsp.Saint>> remove(
+    _ist.TestSessionBuilder sessionBuilder,
+    int saintId,
+    int otherId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminMeeting',
+            method: 'remove',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminMeeting',
+          methodName: 'remove',
+          parameters: _ist.testObjectToJson({
+            'saintId': saintId,
+            'otherId': otherId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_i6crwlsp.Saint>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -10,7 +10,7 @@ import '../theme.dart';
 extension SaintTitleX on SaintTitle {
   /// Label for a saint whose name is [saintName].
   String labelFor(String saintName) =>
-      _isFeminine(saintName) ? _feminine : _masculine;
+      isFeminineName(saintName) ? _feminine : _masculine;
 
   String get _masculine => switch (this) {
     SaintTitle.doctor => 'Doctor de la Iglesia',
@@ -86,7 +86,8 @@ extension SaintTitleX on SaintTitle {
   };
 }
 
-bool _isFeminine(String saintName) {
+/// Whether the catalog writes [saintName] as a woman: "Santa" or "Beata".
+bool isFeminineName(String saintName) {
   final n = saintName.trim().toLowerCase();
   return n.startsWith('santa ') || n.startsWith('beata ');
 }

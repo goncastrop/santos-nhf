@@ -4,8 +4,8 @@ import '../generated/protocol.dart';
 import 'admin_scope.dart';
 import 'csv_catalog.dart';
 
-/// CSV export and import of saints and questions, for maintaining the
-/// content in a spreadsheet.
+/// CSV export and import of saints, questions, books and meetings, for
+/// maintaining the content in a spreadsheet.
 class AdminCatalogEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
@@ -21,6 +21,9 @@ class AdminCatalogEndpoint extends Endpoint {
 
   Future<String> exportBooksCsv(Session session) =>
       CsvCatalog.exportBooks(session);
+
+  Future<String> exportMeetingsCsv(Session session) =>
+      CsvCatalog.exportMeetings(session);
 
   /// With [apply] false, only reports what would change.
   Future<ImportReport> importSaintsCsv(
@@ -40,4 +43,10 @@ class AdminCatalogEndpoint extends Endpoint {
     String csv,
     bool apply,
   ) => CsvCatalog.importBooks(session, csv, apply: apply);
+
+  Future<ImportReport> importMeetingsCsv(
+    Session session,
+    String csv,
+    bool apply,
+  ) => CsvCatalog.importMeetings(session, csv, apply: apply);
 }

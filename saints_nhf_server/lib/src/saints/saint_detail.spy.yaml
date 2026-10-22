@@ -5,3 +5,6 @@ fields:
   card: CollectedCard?
   ### Recommended reading, already ordered for display.
   books: List<SaintBook>
+  ### Published saints they met in life, in the order they were born. Empty
+  ### hides the section.
+  metSaints: List<SaintInfo>

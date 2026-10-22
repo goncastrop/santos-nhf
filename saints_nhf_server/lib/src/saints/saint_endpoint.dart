@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../books/book_service.dart';
 import '../collection/collection_service.dart';
 import '../generated/protocol.dart';
+import '../meetings/meeting_service.dart';
 import 'saint_mapper.dart';
 import 'score_category_x.dart';
 
@@ -41,7 +42,13 @@ class SaintEndpoint extends Endpoint {
       card = await CollectionService.cardFor(session, authUserId, saint);
     }
     final books = await BookService.listFor(session, saint.id!);
-    return SaintDetail(saint: info, card: card, books: books);
+    final metSaints = await MeetingService.publicFor(session, saint.id!);
+    return SaintDetail(
+      saint: info,
+      card: card,
+      books: books,
+      metSaints: metSaints,
+    );
   }
 
   /// Recent score changes of published saints ("notas del parche"). Exact

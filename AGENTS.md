@@ -83,11 +83,19 @@ Build for multiple users, use Serverpod's built-in authentication, which is alre
   cada grupo por `position`) y `seed_books.dart`. Viajan en `SaintDetail`, no en `SaintInfo`: el
   catálogo se pide entero y en cada duelo, así que la lista de lectura solo baja al abrir la
   ficha. Por lo mismo no está en el snapshot offline. Se administran con `AdminBookEndpoint`.
+- `meetings/`: con qué santos se conoció en vida cada uno (`SaintMeeting` en la tabla
+  `saint_meeting`, un par por fila con el id menor primero, en cascada con los dos santos, y
+  `MeetingService`). No se deduce de los años: vivir a la vez no es haberse conocido, así que se
+  carga a mano, desde el editor admin (`AdminMeetingEndpoint`, cada cambio se guarda solo y vale
+  para los dos) o por el CSV `encuentros`. `whyNot` rechaza solo lo imposible: un santo consigo
+  mismo o dos que no vivieron en la misma época, con el margen de las fechas "c." de la pregunta
+  de contemporáneos. Viajan en `SaintDetail.metSaints` (solo los publicados, del más antiguo al
+  más nuevo) por la misma razón que los libros, y la ficha esconde la sección si está vacía.
 - `codes/`: códigos de desbloqueo (`UnlockCode`, `UnlockRedemption`), canje en
   `CollectionService.redeem` y `AdminCodesEndpoint`.
-- `admin/csv_catalog.dart` + `AdminCatalogEndpoint`: export/import CSV de santos, preguntas y
-  libros (paquete `csv`, cabeceras en español, upsert por `slug` / `id`, vista previa
-  con `apply: false`). `saints/saint_revisions.dart` guarda revisiones y lo usan tanto el
+- `admin/csv_catalog.dart` + `AdminCatalogEndpoint`: export/import CSV de santos, preguntas,
+  libros y encuentros (paquete `csv`, cabeceras en español, upsert por `slug` / `id`, los
+  encuentros por el par de slugs, vista previa con `apply: false`). `saints/saint_revisions.dart` guarda revisiones y lo usan tanto el
   editor como la importación.
 - `saints/saint_title.spy.yaml`: enum `SaintTitle` con los títulos litúrgicos (doctor, mártir,
   virgen…), guardado en `Saint.titles` y expuesto en `SaintInfo`. El enum está ordenado de más a
@@ -157,7 +165,7 @@ por los endpoints admin. El catálogo público nunca los incluye.
   puntaje, `litany_screen` con La Letanía), `screens/live/` (la trivia en vivo, ver
   `state/live_state.dart`), `screens/friends/`
   (código, amigos, desafiar, rankings, álbum de un amigo) y `screens/admin/` (santos,
-  edición, historial, preguntas, libros, códigos, admins).
+  edición, historial, preguntas, libros, encuentros, códigos, admins).
 - `utils/scores.dart`: extensión sobre el enum compartido `ScoreCategory` (label,
   abreviatura, valor). Las pantallas admin cargan siempre el santo fresco por id antes de editar.
 - `state/app_state.dart` vigila el cambio de día argentino (`watchDayChange` con un Timer hasta la
@@ -189,9 +197,9 @@ por los endpoints admin. El catálogo público nunca los incluye.
 
 **Importar CSV sin pasar por la app**: `dart run bin/import_csv.dart [--apply] <archivos>`
 corre el mismo importador que el panel admin contra la base de desarrollo. El nombre de cada
-archivo decide qué es (santos, preguntas, libros) y el orden se acomoda solo, porque las
-preguntas y los libros necesitan que los santos existan. Sin `--apply` solo muestra la vista
-previa; conviene aplicar primero los santos y después mirar la vista previa de los otros dos.
+archivo decide qué es (santos, preguntas, libros, encuentros) y el orden se acomoda solo,
+porque los otros tres necesitan que los santos existan. Sin `--apply` solo muestra la vista
+previa; conviene aplicar primero los santos y después mirar la vista previa de los otros.
 
 **Catálogo lleno en desarrollo**: `dart run bin/seed_demo_saints.dart` agrega 68 santos de
 prueba (nombres y años reales, biografía y puntajes inventados, slug `demo-` y título corto

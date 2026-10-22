@@ -71,6 +71,7 @@ import 'live/live_phase.dart' as _itq2os4y;
 import 'live/live_rank_entry.dart' as _ij4wbs4b;
 import 'live/live_view.dart' as _iiwgvz3h;
 import 'live/live_winner_view.dart' as _i0z8s1jl;
+import 'meetings/saint_meeting.dart' as _idj7zim5;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_kind.dart' as _ii8rg02g;
@@ -130,6 +131,7 @@ export 'live/live_phase.dart';
 export 'live/live_rank_entry.dart';
 export 'live/live_view.dart';
 export 'live/live_winner_view.dart';
+export 'meetings/saint_meeting.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_kind.dart';
@@ -296,6 +298,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i0z8s1jl.LiveWinnerView) {
       return _i0z8s1jl.LiveWinnerView.fromJson(data) as T;
+    }
+    if (t == _idj7zim5.SaintMeeting) {
+      return _idj7zim5.SaintMeeting.fromJson(data) as T;
     }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
@@ -494,6 +499,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i0z8s1jl.LiveWinnerView?>()) {
       return (data != null ? _i0z8s1jl.LiveWinnerView.fromJson(data) : null)
           as T;
+    }
+    if (t == _isc.getType<_idj7zim5.SaintMeeting?>()) {
+      return (data != null ? _idj7zim5.SaintMeeting.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
@@ -698,14 +706,14 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i3ylg3gz.Saint>) {
+      return (data as List).map((e) => deserialize<_i3ylg3gz.Saint>(e)).toList()
+          as T;
+    }
     if (t == List<_i4pwanzb.Question>) {
       return (data as List)
               .map((e) => deserialize<_i4pwanzb.Question>(e))
               .toList()
-          as T;
-    }
-    if (t == List<_i3ylg3gz.Saint>) {
-      return (data as List).map((e) => deserialize<_i3ylg3gz.Saint>(e)).toList()
           as T;
     }
     if (t == List<_i97ohlx9.SaintRevision>) {
@@ -791,6 +799,7 @@ class Protocol extends _isc.SerializationManager {
       _ij4wbs4b.LiveRankEntry => 'LiveRankEntry',
       _iiwgvz3h.LiveView => 'LiveView',
       _i0z8s1jl.LiveWinnerView => 'LiveWinnerView',
+      _idj7zim5.SaintMeeting => 'SaintMeeting',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _ii8rg02g.QuestionKind => 'QuestionKind',
@@ -900,6 +909,8 @@ class Protocol extends _isc.SerializationManager {
         return 'LiveView';
       case _i0z8s1jl.LiveWinnerView():
         return 'LiveWinnerView';
+      case _idj7zim5.SaintMeeting():
+        return 'SaintMeeting';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -1078,6 +1089,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'LiveWinnerView') {
       return deserialize<_i0z8s1jl.LiveWinnerView>(data['data']);
+    }
+    if (dataClassName == 'SaintMeeting') {
+      return deserialize<_idj7zim5.SaintMeeting>(data['data']);
     }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);

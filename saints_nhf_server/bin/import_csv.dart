@@ -2,7 +2,7 @@
 // without going through the admin screen and its file picker.
 //
 //   dart run bin/import_csv.dart santos.csv preguntas.csv libros.csv
-//   dart run bin/import_csv.dart --apply santos.csv preguntas.csv libros.csv
+//   dart run bin/import_csv.dart --apply santos.csv encuentros.csv
 //
 // Without --apply it only reports what would change, the same preview the
 // admin panel shows. The kind of each file is taken from its name.
@@ -12,13 +12,18 @@ import 'package:saints_nhf_server/src/admin/csv_catalog.dart';
 import 'package:saints_nhf_server/src/generated/protocol.dart';
 import 'package:saints_nhf_server/src/generated/serverpod.dart';
 
+/// The kinds in the order they are applied: saints first, because the other
+/// three hang off them.
+const _kinds = ['santos', 'preguntas', 'libros', 'encuentros'];
+
 Future<void> main(List<String> args) async {
   final apply = args.contains('--apply');
   final paths = args.where((a) => !a.startsWith('--')).toList();
   if (paths.isEmpty) {
     stderr.writeln(
       'Usage: dart run bin/import_csv.dart [--apply] <archivo.csv>...\n'
-      'El nombre del archivo define qué es: santos, preguntas o libros.',
+      'El nombre del archivo define qué es: santos, preguntas, libros o '
+      'encuentros.',
     );
     exit(64);
   }
@@ -28,8 +33,6 @@ Future<void> main(List<String> args) async {
   final session = await pod.createSession();
   var failed = false;
   try {
-    // Saints first: questions and books hang off them.
-    const orden = ['santos', 'preguntas', 'libros'];
     paths.sort((a, b) => _kind(a).compareTo(_kind(b)));
     for (final path in paths) {
       final file = File(path);
@@ -38,19 +41,20 @@ Future<void> main(List<String> args) async {
         failed = true;
         continue;
       }
-      final kind = _kind(path);
+      final kind = _kinds[_kind(path)];
       final csv = file.readAsStringSync();
-      final report = switch (orden[kind]) {
+      final report = switch (kind) {
         'santos' => await CsvCatalog.importSaints(session, csv, apply: apply),
         'preguntas' => await CsvCatalog.importQuestions(
           session,
           csv,
           apply: apply,
         ),
-        _ => await CsvCatalog.importBooks(session, csv, apply: apply),
+        'libros' => await CsvCatalog.importBooks(session, csv, apply: apply),
+        _ => await CsvCatalog.importMeetings(session, csv, apply: apply),
       };
       stdout.writeln(
-        '\n${orden[kind].toUpperCase()}  ${file.uri.pathSegments.last}\n'
+        '\n${kind.toUpperCase()}  ${file.uri.pathSegments.last}\n'
         '  nuevos ${report.created} · actualizados ${report.updated} · '
         'sin cambios ${report.unchanged} · '
         '${report.applied ? 'APLICADO' : 'vista previa'}',
@@ -70,9 +74,10 @@ Future<void> main(List<String> args) async {
       final saints = await Saint.db.count(session);
       final questions = await Question.db.count(session);
       final books = await SaintBook.db.count(session);
+      final meetings = await SaintMeeting.db.count(session);
       stdout.writeln(
-        '\nEl catálogo queda con $saints santos, $questions preguntas y '
-        '$books libros.',
+        '\nEl catálogo queda con $saints santos, $questions preguntas, '
+        '$books libros y $meetings encuentros.',
       );
     }
   } finally {
@@ -82,14 +87,16 @@ Future<void> main(List<String> args) async {
   exit(failed ? 1 : 0);
 }
 
-/// 0 santos, 1 preguntas, 2 libros, por el nombre del archivo.
+/// Index in [_kinds], by the name of the file. "encuentros" is looked for
+/// first, because "encuentros-santos.csv" also says "santo".
 int _kind(String path) {
   final name = path.toLowerCase();
+  if (name.contains('encuentro')) return 3;
   if (name.contains('santo')) return 0;
   if (name.contains('pregunta')) return 1;
   if (name.contains('libro')) return 2;
   throw ArgumentError(
     'No puedo deducir qué es "$path": el nombre tiene que decir '
-    'santos, preguntas o libros.',
+    'santos, preguntas, libros o encuentros.',
   );
 }

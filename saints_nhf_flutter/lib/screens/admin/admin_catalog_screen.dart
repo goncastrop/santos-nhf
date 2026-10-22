@@ -18,11 +18,12 @@ class AdminCatalogScreen extends StatefulWidget {
   State<AdminCatalogScreen> createState() => _AdminCatalogScreenState();
 }
 
-/// The three files the content is maintained in.
+/// The four files the content is maintained in.
 enum _Sheet {
   saints('Santos', 'santos'),
   questions('Preguntas', 'preguntas'),
-  books('Libros', 'libros');
+  books('Libros', 'libros'),
+  meetings('Encuentros', 'encuentros');
 
   const _Sheet(this.title, this.fileName);
 
@@ -33,6 +34,7 @@ enum _Sheet {
     _Sheet.saints => client.adminCatalog.exportSaintsCsv(),
     _Sheet.questions => client.adminCatalog.exportQuestionsCsv(),
     _Sheet.books => client.adminCatalog.exportBooksCsv(),
+    _Sheet.meetings => client.adminCatalog.exportMeetingsCsv(),
   };
 
   Future<ImportReport> import(String csv, {required bool apply}) =>
@@ -40,6 +42,7 @@ enum _Sheet {
         _Sheet.saints => client.adminCatalog.importSaintsCsv(csv, apply),
         _Sheet.questions => client.adminCatalog.importQuestionsCsv(csv, apply),
         _Sheet.books => client.adminCatalog.importBooksCsv(csv, apply),
+        _Sheet.meetings => client.adminCatalog.importMeetingsCsv(csv, apply),
       };
 }
 
@@ -137,8 +140,9 @@ class _AdminCatalogScreenState extends State<AdminCatalogScreen> {
           Text(
             'Mantené el contenido en una planilla. Exportá el CSV, editalo en '
             'Google Sheets o Excel y volvé a importarlo. Los santos se '
-            'identifican por su slug, y las preguntas y los libros por su '
-            'id; las filas nuevas se crean y las existentes se actualizan. '
+            'identifican por su slug, las preguntas y los libros por su id, '
+            'y los encuentros por el par de slugs; las filas nuevas se crean '
+            'y las existentes se actualizan. '
             'Nada se borra desde acá.',
             style: textTheme.bodyMedium?.copyWith(color: Palette.parchmentDim),
           ),
@@ -172,6 +176,17 @@ class _AdminCatalogScreenState extends State<AdminCatalogScreen> {
                 'novela, infantil), anio, editorial, link y nota.',
             onExport: _busy ? null : () => _export(_Sheet.books),
             onImport: _busy ? null : () => _pick(_Sheet.books),
+          ),
+          const SizedBox(height: 14),
+          _Section(
+            title: _Sheet.meetings.title,
+            hint:
+                'Columnas: santo_slug y otro_santo_slug, una fila por cada '
+                'par de santos que se conocieron en vida, en cualquier orden. '
+                'Se agregan los pares nuevos; para quitar uno, editá el santo '
+                'y usá el botón "Con quién se conoció".',
+            onExport: _busy ? null : () => _export(_Sheet.meetings),
+            onImport: _busy ? null : () => _pick(_Sheet.meetings),
           ),
           if (_busy) ...[const SizedBox(height: 24), const LoadingView()],
           if (preview != null) ...[

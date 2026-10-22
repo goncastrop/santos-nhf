@@ -30,6 +30,7 @@ import '../admin/admin_access_endpoint.dart' as _ii14t626;
 import '../admin/admin_book_endpoint.dart' as _iv0rqla0;
 import '../admin/admin_catalog_endpoint.dart' as _i3lzez2m;
 import '../admin/admin_codes_endpoint.dart' as _ia59h2uj;
+import '../admin/admin_meeting_endpoint.dart' as _iiy7u386;
 import '../admin/admin_question_endpoint.dart' as _i9hrktio;
 import '../admin/admin_saint_endpoint.dart' as _inuxycqi;
 import '../admin/admin_users_endpoint.dart' as _i8e7rap6;
@@ -79,6 +80,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'adminCodes',
+          null,
+        ),
+      'adminMeeting': _iiy7u386.AdminMeetingEndpoint()
+        ..initialize(
+          server,
+          'adminMeeting',
           null,
         ),
       'adminQuestion': _i9hrktio.AdminQuestionEndpoint()
@@ -364,6 +371,17 @@ class Endpoints extends _is.EndpointDispatch {
                   (endpoints['adminCatalog'] as _i3lzez2m.AdminCatalogEndpoint)
                       .exportBooksCsv(session),
         ),
+        'exportMeetingsCsv': _is.MethodConnector(
+          name: 'exportMeetingsCsv',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminCatalog'] as _i3lzez2m.AdminCatalogEndpoint)
+                      .exportMeetingsCsv(session),
+        ),
         'importSaintsCsv': _is.MethodConnector(
           name: 'importSaintsCsv',
           params: {
@@ -437,6 +455,32 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['adminCatalog'] as _i3lzez2m.AdminCatalogEndpoint)
                       .importBooksCsv(
+                        session,
+                        params['csv'],
+                        params['apply'],
+                      ),
+        ),
+        'importMeetingsCsv': _is.MethodConnector(
+          name: 'importMeetingsCsv',
+          params: {
+            'csv': _is.ParameterDescription(
+              name: 'csv',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+            'apply': _is.ParameterDescription(
+              name: 'apply',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminCatalog'] as _i3lzez2m.AdminCatalogEndpoint)
+                      .importMeetingsCsv(
                         session,
                         params['csv'],
                         params['apply'],
@@ -547,6 +591,84 @@ class Endpoints extends _is.EndpointDispatch {
                       .delete(
                         session,
                         params['codeId'],
+                      ),
+        ),
+      },
+    );
+    connectors['adminMeeting'] = _is.EndpointConnector(
+      name: 'adminMeeting',
+      endpoint: endpoints['adminMeeting']!,
+      methodConnectors: {
+        'listFor': _is.MethodConnector(
+          name: 'listFor',
+          params: {
+            'saintId': _is.ParameterDescription(
+              name: 'saintId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminMeeting'] as _iiy7u386.AdminMeetingEndpoint)
+                      .listFor(
+                        session,
+                        params['saintId'],
+                      ),
+        ),
+        'add': _is.MethodConnector(
+          name: 'add',
+          params: {
+            'saintId': _is.ParameterDescription(
+              name: 'saintId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'otherId': _is.ParameterDescription(
+              name: 'otherId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminMeeting'] as _iiy7u386.AdminMeetingEndpoint)
+                      .add(
+                        session,
+                        params['saintId'],
+                        params['otherId'],
+                      ),
+        ),
+        'remove': _is.MethodConnector(
+          name: 'remove',
+          params: {
+            'saintId': _is.ParameterDescription(
+              name: 'saintId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'otherId': _is.ParameterDescription(
+              name: 'otherId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminMeeting'] as _iiy7u386.AdminMeetingEndpoint)
+                      .remove(
+                        session,
+                        params['saintId'],
+                        params['otherId'],
                       ),
         ),
       },

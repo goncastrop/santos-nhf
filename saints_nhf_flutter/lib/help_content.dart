@@ -109,8 +109,9 @@ const helpChapters = <HelpChapter>[
           'murió, con los concilios y los hechos grandes de la Iglesia de '
           'fondo.',
       'Mapa: dónde nació y dónde murió cada uno.',
-      'En la ficha están su vida, su oración, los libros recomendados y el '
-          'link al fragmento del programa.',
+      'En la ficha están su vida, los santos del catálogo con los que se '
+          'conoció, su oración, los libros recomendados y el link al '
+          'fragmento del programa.',
       'Los seis puntajes solo se ven en las cartas que ya tenés.',
     ],
   ),

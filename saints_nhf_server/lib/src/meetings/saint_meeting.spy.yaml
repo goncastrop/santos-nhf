@@ -1,0 +1,15 @@
+### Two saints who met in life, e.g. San Juan Pablo II and Santa Teresa de
+### Calcuta. It goes both ways, so each pair is stored once, with the lower
+### saint id first (see `MeetingService.pair`).
+class: SaintMeeting
+table: saint_meeting
+fields:
+  saintAId: int, relation(parent=saint, onDelete=Cascade)
+  saintBId: int, relation(parent=saint, onDelete=Cascade)
+  createdAt: DateTime, default=now
+indexes:
+  saint_meeting_pair_idx:
+    fields: saintAId, saintBId
+    unique: true
+  saint_meeting_b_idx:
+    fields: saintBId

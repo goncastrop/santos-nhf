@@ -13,14 +13,20 @@ adminCatalog:
   - exportSaintsCsv:
   - exportQuestionsCsv:
   - exportBooksCsv:
+  - exportMeetingsCsv:
   - importSaintsCsv:
   - importQuestionsCsv:
   - importBooksCsv:
+  - importMeetingsCsv:
 adminCodes:
   - list:
   - create:
   - setActive:
   - delete:
+adminMeeting:
+  - listFor:
+  - add:
+  - remove:
 adminQuestion:
   - listFor:
   - counts:

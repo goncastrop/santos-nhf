@@ -82,6 +82,7 @@ import 'live/live_signal.dart' as _inzp8g3i;
 import 'live/live_view.dart' as _iiwgvz3h;
 import 'live/live_winner.dart' as _ijb4qkzu;
 import 'live/live_winner_view.dart' as _i0z8s1jl;
+import 'meetings/saint_meeting.dart' as _idj7zim5;
 import 'questions/daily_quiz.dart' as _i0w8jnl1;
 import 'questions/question.dart' as _ihstiddh;
 import 'questions/question_kind.dart' as _ii8rg02g;
@@ -147,6 +148,7 @@ export 'live/live_signal.dart';
 export 'live/live_view.dart';
 export 'live/live_winner.dart';
 export 'live/live_winner_view.dart';
+export 'meetings/saint_meeting.dart';
 export 'questions/daily_quiz.dart';
 export 'questions/question.dart';
 export 'questions/question_kind.dart';
@@ -1673,6 +1675,95 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'saint_meeting',
+      dartName: 'SaintMeeting',
+      schema: 'public',
+      module: 'saints_nhf',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'saintAId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'saintBId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'saint_meeting_fk_0',
+          columns: ['saintAId'],
+          referenceTable: 'saint',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'saint_meeting_fk_1',
+          columns: ['saintBId'],
+          referenceTable: 'saint',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'saint_meeting_pair_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'saintAId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'saintBId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'saint_meeting_b_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'saintBId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'saint_revision',
       dartName: 'SaintRevision',
       schema: 'public',
@@ -2148,6 +2239,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i0z8s1jl.LiveWinnerView) {
       return _i0z8s1jl.LiveWinnerView.fromJson(data) as T;
     }
+    if (t == _idj7zim5.SaintMeeting) {
+      return _idj7zim5.SaintMeeting.fromJson(data) as T;
+    }
     if (t == _i0w8jnl1.DailyQuiz) {
       return _i0w8jnl1.DailyQuiz.fromJson(data) as T;
     }
@@ -2376,6 +2470,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _i0z8s1jl.LiveWinnerView.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_idj7zim5.SaintMeeting?>()) {
+      return (data != null ? _idj7zim5.SaintMeeting.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_i0w8jnl1.DailyQuiz?>()) {
       return (data != null ? _i0w8jnl1.DailyQuiz.fromJson(data) : null) as T;
     }
@@ -2585,14 +2682,14 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i6crwlsp.Saint>) {
+      return (data as List).map((e) => deserialize<_i6crwlsp.Saint>(e)).toList()
+          as T;
+    }
     if (t == List<_i00r6ooi.Question>) {
       return (data as List)
               .map((e) => deserialize<_i00r6ooi.Question>(e))
               .toList()
-          as T;
-    }
-    if (t == List<_i6crwlsp.Saint>) {
-      return (data as List).map((e) => deserialize<_i6crwlsp.Saint>(e)).toList()
           as T;
     }
     if (t == List<_i6idv2va.SaintRevision>) {
@@ -2691,6 +2788,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iiwgvz3h.LiveView => 'LiveView',
       _ijb4qkzu.LiveWinner => 'LiveWinner',
       _i0z8s1jl.LiveWinnerView => 'LiveWinnerView',
+      _idj7zim5.SaintMeeting => 'SaintMeeting',
       _i0w8jnl1.DailyQuiz => 'DailyQuiz',
       _ihstiddh.Question => 'Question',
       _ii8rg02g.QuestionKind => 'QuestionKind',
@@ -2816,6 +2914,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'LiveWinner';
       case _i0z8s1jl.LiveWinnerView():
         return 'LiveWinnerView';
+      case _idj7zim5.SaintMeeting():
+        return 'SaintMeeting';
       case _i0w8jnl1.DailyQuiz():
         return 'DailyQuiz';
       case _ihstiddh.Question():
@@ -3027,6 +3127,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'LiveWinnerView') {
       return deserialize<_i0z8s1jl.LiveWinnerView>(data['data']);
     }
+    if (dataClassName == 'SaintMeeting') {
+      return deserialize<_idj7zim5.SaintMeeting>(data['data']);
+    }
     if (dataClassName == 'DailyQuiz') {
       return deserialize<_i0w8jnl1.DailyQuiz>(data['data']);
     }
@@ -3162,6 +3265,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _is6i5ayg.LiveAnswer.t;
       case _idyo08hd.LiveGame:
         return _idyo08hd.LiveGame.t;
+      case _idj7zim5.SaintMeeting:
+        return _idj7zim5.SaintMeeting.t;
       case _ihstiddh.Question:
         return _ihstiddh.Question.t;
       case _iqz00a3b.QuestionSeen:
